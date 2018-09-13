@@ -34,8 +34,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/tendermint/tendermint/abci/types"
+
+	data "github.com/ndidplatform/smart-contract/abci/protos"
 )
 
 var IsMethod = map[string]bool{
@@ -97,8 +100,8 @@ func checkTxInitNDID(param string, nodeID string, app *DIDApplication) types.Res
 func checkTxRegisterMsqAddress(param string, nodeID string, app *DIDApplication) types.ResponseCheckTx {
 	nodeDetailKey := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
-	var node NodeDetail
-	err := json.Unmarshal([]byte(value), &node)
+	var node data.NodeDetail
+	err := proto.Unmarshal(value, &node)
 	if err != nil {
 		return ReturnCheckTx(code.UnmarshalError, err.Error())
 	}
@@ -114,8 +117,8 @@ func checkTxRegisterMsqAddress(param string, nodeID string, app *DIDApplication)
 func checkNDID(param string, nodeID string, app *DIDApplication) bool {
 	nodeDetailKey := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
-	var node NodeDetail
-	err := json.Unmarshal([]byte(value), &node)
+	var node data.NodeDetail
+	err := proto.Unmarshal(value, &node)
 	if err != nil {
 		return false
 	}
@@ -128,8 +131,8 @@ func checkNDID(param string, nodeID string, app *DIDApplication) bool {
 func checkIdP(param string, nodeID string, app *DIDApplication) bool {
 	nodeDetailKey := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
-	var node NodeDetail
-	err := json.Unmarshal([]byte(value), &node)
+	var node data.NodeDetail
+	err := proto.Unmarshal(value, &node)
 	if err != nil {
 		return false
 	}
@@ -142,8 +145,8 @@ func checkIdP(param string, nodeID string, app *DIDApplication) bool {
 func checkAS(param string, nodeID string, app *DIDApplication) bool {
 	nodeDetailKey := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
-	var node NodeDetail
-	err := json.Unmarshal([]byte(value), &node)
+	var node data.NodeDetail
+	err := proto.Unmarshal(value, &node)
 	if err != nil {
 		return false
 	}
@@ -156,8 +159,8 @@ func checkAS(param string, nodeID string, app *DIDApplication) bool {
 func checkIdPorRP(param string, nodeID string, app *DIDApplication) bool {
 	nodeDetailKey := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
-	var node NodeDetail
-	err := json.Unmarshal([]byte(value), &node)
+	var node data.NodeDetail
+	err := proto.Unmarshal(value, &node)
 	if err != nil {
 		return false
 	}
@@ -279,8 +282,8 @@ func getMasterPublicKeyFromNodeID(nodeID string, app *DIDApplication) string {
 	key := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 	if value != nil {
-		var nodeDetail NodeDetail
-		err := json.Unmarshal([]byte(value), &nodeDetail)
+		var nodeDetail data.NodeDetail
+		err := proto.Unmarshal(value, &nodeDetail)
 		if err != nil {
 			return ""
 		}
@@ -293,8 +296,8 @@ func getPublicKeyFromNodeID(nodeID string, app *DIDApplication) string {
 	key := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 	if value != nil {
-		var nodeDetail NodeDetail
-		err := json.Unmarshal([]byte(value), &nodeDetail)
+		var nodeDetail data.NodeDetail
+		err := proto.Unmarshal(value, &nodeDetail)
 		if err != nil {
 			return ""
 		}
@@ -307,8 +310,8 @@ func getRoleFromNodeID(nodeID string, app *DIDApplication) string {
 	key := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 	if value != nil {
-		var nodeDetail NodeDetail
-		err := json.Unmarshal([]byte(value), &nodeDetail)
+		var nodeDetail data.NodeDetail
+		err := proto.Unmarshal(value, &nodeDetail)
 		if err != nil {
 			return ""
 		}
@@ -523,8 +526,8 @@ func getActiveStatusByNodeID(nodeID string, app *DIDApplication) bool {
 	key := "NodeID" + "|" + nodeID
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 	if value != nil {
-		var nodeDetail NodeDetail
-		err := json.Unmarshal([]byte(value), &nodeDetail)
+		var nodeDetail data.NodeDetail
+		err := proto.Unmarshal(value, &nodeDetail)
 		if err != nil {
 			return false
 		}
