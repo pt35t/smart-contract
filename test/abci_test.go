@@ -459,20 +459,20 @@ func TestQueryGetAsNodesInfoByServiceId(t *testing.T) {
 }
 
 func TestRPCreateRequest(t *testing.T) {
-	var datas []did.DataRequest
-	var data1 did.DataRequest
-	data1.ServiceID = serviceID1
-	data1.Count = 1
+	var datas []*pbParam.DataRequestInParam
+	var data1 pbParam.DataRequestInParam
+	data1.ServiceId = serviceID1
+	data1.MinAs = 1
 	data1.RequestParamsHash = "hash"
-	datas = append(datas, data1)
-	var param did.Request
-	param.RequestID = requestID1.String()
+	datas = append(datas, &data1)
+	var param pbParam.CreateRequestParam
+	param.RequestId = requestID1.String()
 	param.MinIdp = 1
 	param.MinIal = 3
 	param.MinAal = 3
-	param.Timeout = 259200
+	param.RequestTimeout = 259200
 	param.DataRequestList = datas
-	param.MessageHash = "hash('Please allow...')"
+	param.RequestMessageHash = "hash('Please allow...')"
 	param.Mode = 3
 	CreateRequest(t, param, rpPrivK, RP1)
 }
@@ -554,15 +554,15 @@ func TestRPSetDataReceived2(t *testing.T) {
 }
 
 func TestIdPCreateRequestSpecial(t *testing.T) {
-	var datas []did.DataRequest
-	var param did.Request
-	param.RequestID = requestID2.String()
+	var datas []*pbParam.DataRequestInParam
+	var param pbParam.CreateRequestParam
+	param.RequestId = requestID2.String()
 	param.MinIdp = 1
 	param.MinIal = 3
 	param.MinAal = 3
-	param.Timeout = 259200
+	param.RequestTimeout = 259200
 	param.DataRequestList = datas
-	param.MessageHash = "hash('Please allow...')"
+	param.RequestMessageHash = "hash('Please allow...')"
 	param.Mode = 3
 	CreateRequest(t, param, idpPrivK, IdP1)
 }
@@ -672,34 +672,33 @@ func TestQueryGetRequestDetail2(t *testing.T) {
 }
 
 func TestCreateRequest(t *testing.T) {
-	var datas []did.DataRequest
-	var data1 did.DataRequest
-	data1.ServiceID = serviceID1
-	data1.As = []string{
+	var datas []*pbParam.DataRequestInParam
+	var data1 pbParam.DataRequestInParam
+	data1.ServiceId = serviceID1
+	data1.AsIdList = []string{
 		AS1,
 		AS2,
 	}
-	data1.Count = 2
+	data1.MinAs = 2
 	data1.RequestParamsHash = "hash"
-
-	var data2 did.DataRequest
-	data2.ServiceID = "credit"
-	data2.As = []string{
+	var data2 pbParam.DataRequestInParam
+	data2.ServiceId = "credit"
+	data2.AsIdList = []string{
 		AS1,
 		AS2,
 	}
-	data2.Count = 2
+	data2.MinAs = 2
 	data2.RequestParamsHash = "hash"
-	datas = append(datas, data1)
-	datas = append(datas, data2)
-	var param did.Request
-	param.RequestID = requestID3.String()
+	datas = append(datas, &data1)
+	datas = append(datas, &data2)
+	var param pbParam.CreateRequestParam
+	param.RequestId = requestID3.String()
 	param.MinIdp = 1
 	param.MinIal = 3
 	param.MinAal = 3
-	param.Timeout = 259200
+	param.RequestTimeout = 259200
 	param.DataRequestList = datas
-	param.MessageHash = "hash('Please allow...')"
+	param.RequestMessageHash = "hash('Please allow...')"
 	param.Mode = 3
 	CreateRequest(t, param, rpPrivK, RP1)
 }
@@ -1617,20 +1616,20 @@ func TestEnableNodeRP1(t *testing.T) {
 }
 
 func TestRPCreateRequestAferEnableNode(t *testing.T) {
-	var datas []did.DataRequest
-	var data1 did.DataRequest
-	data1.ServiceID = serviceID1
-	data1.Count = 1
+	var datas []*pbParam.DataRequestInParam
+	var data1 pbParam.DataRequestInParam
+	data1.ServiceId = serviceID1
+	data1.MinAs = 1
 	data1.RequestParamsHash = "hash"
-	datas = append(datas, data1)
-	var param did.Request
-	param.RequestID = requestID4.String()
+	datas = append(datas, &data1)
+	var param pbParam.CreateRequestParam
+	param.RequestId = requestID4.String()
 	param.MinIdp = 1
 	param.MinIal = 1
 	param.MinAal = 1
-	param.Timeout = 259200
+	param.RequestTimeout = 259200
 	param.DataRequestList = datas
-	param.MessageHash = "hash('Please allow...')"
+	param.RequestMessageHash = "hash('Please allow...')"
 	param.Mode = 3
 	CreateRequest(t, param, rpPrivK, RP1)
 }

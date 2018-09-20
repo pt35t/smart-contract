@@ -28,13 +28,14 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
 func createRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateRequest, Parameter: %s", param)
-	var funcParam Request
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.CreateRequestParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
@@ -42,24 +43,24 @@ func createRequest(param []byte, app *DIDApplication, nodeID string) types.Respo
 	var request data.Request
 
 	// set request data
-	request.RequestId = funcParam.RequestID
+	request.RequestId = funcParam.RequestId
 	request.MinIdp = int64(funcParam.MinIdp)
 	request.MinAal = funcParam.MinAal
 	request.MinIal = funcParam.MinIal
-	request.RequestTimeout = int64(funcParam.Timeout)
+	request.RequestTimeout = int64(funcParam.RequestTimeout)
 	// request.DataRequestList = funcParam.DataRequestList
-	request.RequestMessageHash = funcParam.MessageHash
+	request.RequestMessageHash = funcParam.RequestMessageHash
 	request.Mode = int64(funcParam.Mode)
 
 	// set data request
 	request.DataRequestList = make([]*data.DataRequest, 0)
 	for index := range funcParam.DataRequestList {
 		var newRow data.DataRequest
-		newRow.ServiceId = funcParam.DataRequestList[index].ServiceID
+		newRow.ServiceId = funcParam.DataRequestList[index].ServiceId
 		newRow.RequestParamsHash = funcParam.DataRequestList[index].RequestParamsHash
-		newRow.MinAs = int64(funcParam.DataRequestList[index].Count)
-		newRow.AsIdList = funcParam.DataRequestList[index].As
-		if funcParam.DataRequestList[index].As == nil {
+		newRow.MinAs = int64(funcParam.DataRequestList[index].MinAs)
+		newRow.AsIdList = funcParam.DataRequestList[index].AsIdList
+		if funcParam.DataRequestList[index].AsIdList == nil {
 			newRow.AsIdList = make([]string, 0)
 		}
 		newRow.AnsweredAsIdList = make([]string, 0)

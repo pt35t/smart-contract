@@ -62,10 +62,10 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 	t.Logf("PASS: %s", fnName)
 }
 
-func CreateRequest(t *testing.T, param did.Request, priveKFile string, nodeID string) {
+func CreateRequest(t *testing.T, param pbParam.CreateRequestParam, priveKFile string, nodeID string) {
 	privKey := getPrivateKeyFromString(priveKFile)
 	byteNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
