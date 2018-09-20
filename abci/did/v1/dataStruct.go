@@ -275,37 +275,37 @@ type MsqAddress struct {
 	Port int64  `json:"port"`
 }
 
-type SetNodeTokenParam struct {
-	NodeID string  `json:"node_id"`
-	Amount float64 `json:"amount"`
-}
+// type SetNodeTokenParam struct {
+// 	NodeID string  `json:"node_id"`
+// 	Amount float64 `json:"amount"`
+// }
 
-type AddNodeTokenParam struct {
-	NodeID string  `json:"node_id"`
-	Amount float64 `json:"amount"`
-}
+// type AddNodeTokenParam struct {
+// 	NodeID string  `json:"node_id"`
+// 	Amount float64 `json:"amount"`
+// }
 
-type ReduceNodeTokenParam struct {
-	NodeID string  `json:"node_id"`
-	Amount float64 `json:"amount"`
-}
+// type ReduceNodeTokenParam struct {
+// 	NodeID string  `json:"node_id"`
+// 	Amount float64 `json:"amount"`
+// }
 
-type GetNodeTokenParam struct {
-	NodeID string `json:"node_id"`
-}
+// type GetNodeTokenParam struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type GetNodeTokenResult struct {
 	Amount float64 `json:"amount"`
 }
 
-type SetPriceFuncParam struct {
-	Func  string  `json:"func"`
-	Price float64 `json:"price"`
-}
+// type SetPriceFuncParam struct {
+// 	Func  string  `json:"func"`
+// 	Price float64 `json:"price"`
+// }
 
-type GetPriceFuncParam struct {
-	Func string `json:"func"`
-}
+// type GetPriceFuncParam struct {
+// 	Func string `json:"func"`
+// }
 
 type GetPriceFuncResult struct {
 	Price float64 `json:"price"`
@@ -388,10 +388,10 @@ type GetAccessorKeyResult struct {
 	Active            bool   `json:"active"`
 }
 
-type SetValidatorParam struct {
-	PublicKey string `json:"public_key"`
-	Power     int64  `json:"power"`
-}
+// type SetValidatorParam struct {
+// 	PublicKey string `json:"public_key"`
+// 	Power     int64  `json:"power"`
+// }
 
 type SetDataReceivedParam struct {
 	RequestID string `json:"request_id"`

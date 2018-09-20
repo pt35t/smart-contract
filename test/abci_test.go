@@ -76,10 +76,9 @@ func TestInitNDID(t *testing.T) {
 }
 
 func TestInitData(t *testing.T) {
-	var param = did.SetPriceFuncParam{
-		"CreateRequest",
-		1,
-	}
+	var param pbParam.SetPriceFuncParam
+	param.Func = "CreateRequest"
+	param.Price = 1
 	SetPriceFunc(t, param)
 }
 
@@ -207,33 +206,29 @@ func TestQueryGetNodePublicKeyAS(t *testing.T) {
 }
 
 func TestAddNodeTokenRP(t *testing.T) {
-	var param = did.AddNodeTokenParam{
-		RP1,
-		111.11,
-	}
+	var param pbParam.AddNodeTokenParam
+	param.NodeId = RP1
+	param.Amount = 111.11
 	AddNodeToken(t, param)
 }
 
 func TestAddNodeTokenIdP(t *testing.T) {
-	var param = did.AddNodeTokenParam{
-		IdP1,
-		222.22,
-	}
+	var param pbParam.AddNodeTokenParam
+	param.NodeId = IdP1
+	param.Amount = 222.22
 	AddNodeToken(t, param)
 }
 
 func TestAddNodeTokenAS(t *testing.T) {
-	var param = did.AddNodeTokenParam{
-		AS1,
-		333.33,
-	}
+	var param pbParam.AddNodeTokenParam
+	param.NodeId = AS1
+	param.Amount = 333.33
 	AddNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRP(t *testing.T) {
-	var param = did.GetNodeTokenParam{
-		RP1,
-	}
+	var param pbParam.GetNodeTokenParam
+	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		111.11,
 	}
@@ -241,17 +236,15 @@ func TestQueryGetNodeTokenRP(t *testing.T) {
 }
 
 func TestReduceNodeTokenRP(t *testing.T) {
-	var param = did.ReduceNodeTokenParam{
-		RP1,
-		61.11,
-	}
+	var param pbParam.ReduceNodeTokenParam
+	param.NodeId = RP1
+	param.Amount = 61.11
 	ReduceNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRPAfterReduce(t *testing.T) {
-	var param = did.GetNodeTokenParam{
-		RP1,
-	}
+	var param pbParam.GetNodeTokenParam
+	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		50.0,
 	}
@@ -259,17 +252,15 @@ func TestQueryGetNodeTokenRPAfterReduce(t *testing.T) {
 }
 
 func TestSetNodeTokenRP(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		RP1,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = RP1
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRPAfterSetToken(t *testing.T) {
-	var param = did.GetNodeTokenParam{
-		RP1,
-	}
+	var param pbParam.GetNodeTokenParam
+	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		100.0,
 	}
@@ -487,9 +478,8 @@ func TestRPCreateRequest(t *testing.T) {
 }
 
 func TestQueryGetNodeTokenRPAfterCreatRequest(t *testing.T) {
-	var param = did.GetNodeTokenParam{
-		RP1,
-	}
+	var param pbParam.GetNodeTokenParam
+	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		99.0,
 	}
@@ -597,17 +587,15 @@ func TestIdPCreateIdpResponseForSpecialRequest(t *testing.T) {
 }
 
 func TestNDIDSetPrice(t *testing.T) {
-	var param = did.SetPriceFuncParam{
-		"CreateRequest",
-		9.99,
-	}
+	var param pbParam.SetPriceFuncParam
+	param.Func = "CreateRequest"
+	param.Price = 9.99
 	SetPriceFunc(t, param)
 }
 
 func TestNDIDGetPrice(t *testing.T) {
-	var param = did.GetPriceFuncParam{
-		"CreateRequest",
-	}
+	var param pbParam.GetPriceFuncParam
+	param.Func = "CreateRequest"
 	var expected = did.GetPriceFuncResult{
 		9.99,
 	}
@@ -935,7 +923,7 @@ func TestIdPUpdateNode(t *testing.T) {
 }
 
 func TestSetValidator(t *testing.T) {
-	var param did.SetValidatorParam
+	var param pbParam.SetValidatorParam
 	param.PublicKey = getValidatorPubkey()
 	param.Power = 100
 	SetValidator(t, param)
@@ -1090,18 +1078,16 @@ func TestRegisterNodeIDP5(t *testing.T) {
 }
 
 func TestSetNodeTokenIDP4(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		IdP4,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = IdP4
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
 func TestSetNodeTokenIDP5(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		IdP5,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = IdP5
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
@@ -1276,10 +1262,9 @@ func TestRegisterNodeAS2(t *testing.T) {
 }
 
 func TestSetNodeTokenAS2(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		AS2,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = AS2
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
@@ -1787,9 +1772,8 @@ func TestQueryGetMsqAddressInvalid(t *testing.T) {
 }
 
 func TestQueryGetNodeTokenInvalid(t *testing.T) {
-	var param = did.GetNodeTokenParam{
-		"RP1-Invalid",
-	}
+	var param pbParam.GetNodeTokenParam
+	param.NodeId = "RP1-Invalid"
 	expected := "not found"
 	GetNodeTokenExpectString(t, param, expected)
 }
@@ -1948,10 +1932,9 @@ func TestRegisterProxyNode(t *testing.T) {
 	RegisterNode(t, param)
 }
 func TestSetNodeTokenProxy1(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		Proxy1,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = Proxy1
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
@@ -2073,10 +2056,9 @@ func TestRegisterAS3BehindProxy1(t *testing.T) {
 }
 
 func TestSetNodeTokenAS3BehindProxy1(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		AS3BehindProxy1,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = AS3BehindProxy1
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
@@ -2150,10 +2132,9 @@ func TestRegisterProxyNodeProxy2(t *testing.T) {
 	RegisterNode(t, param)
 }
 func TestSetNodeTokenProxy2(t *testing.T) {
-	var param = did.SetNodeTokenParam{
-		Proxy2,
-		100.0,
-	}
+	var param pbParam.SetNodeTokenParam
+	param.NodeId = Proxy2
+	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 

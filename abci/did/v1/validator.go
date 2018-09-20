@@ -25,11 +25,12 @@ package did
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"strings"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -88,8 +89,8 @@ func (app *DIDApplication) updateValidator(v types.Validator) types.ResponseDeli
 
 func setValidator(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetValidator, Parameter: %s", param)
-	var funcParam SetValidatorParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.SetValidatorParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}

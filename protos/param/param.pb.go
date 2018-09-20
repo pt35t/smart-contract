@@ -31,7 +31,7 @@ func (m *InitNDIDParam) Reset()         { *m = InitNDIDParam{} }
 func (m *InitNDIDParam) String() string { return proto.CompactTextString(m) }
 func (*InitNDIDParam) ProtoMessage()    {}
 func (*InitNDIDParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_param_015e4771f11293e2, []int{0}
+	return fileDescriptor_param_1094aa66ab97621e, []int{0}
 }
 func (m *InitNDIDParam) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InitNDIDParam.Unmarshal(m, b)
@@ -89,7 +89,7 @@ func (m *RegisterNodeParam) Reset()         { *m = RegisterNodeParam{} }
 func (m *RegisterNodeParam) String() string { return proto.CompactTextString(m) }
 func (*RegisterNodeParam) ProtoMessage()    {}
 func (*RegisterNodeParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_param_015e4771f11293e2, []int{1}
+	return fileDescriptor_param_1094aa66ab97621e, []int{1}
 }
 func (m *RegisterNodeParam) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RegisterNodeParam.Unmarshal(m, b)
@@ -170,7 +170,7 @@ func (m *UpdateNodeParam) Reset()         { *m = UpdateNodeParam{} }
 func (m *UpdateNodeParam) String() string { return proto.CompactTextString(m) }
 func (*UpdateNodeParam) ProtoMessage()    {}
 func (*UpdateNodeParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_param_015e4771f11293e2, []int{2}
+	return fileDescriptor_param_1094aa66ab97621e, []int{2}
 }
 func (m *UpdateNodeParam) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateNodeParam.Unmarshal(m, b)
@@ -204,29 +204,349 @@ func (m *UpdateNodeParam) GetMasterPublicKey() string {
 	return ""
 }
 
+type SetValidatorParam struct {
+	PublicKey            string   `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	Power                int64    `protobuf:"varint,2,opt,name=power,proto3" json:"power,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetValidatorParam) Reset()         { *m = SetValidatorParam{} }
+func (m *SetValidatorParam) String() string { return proto.CompactTextString(m) }
+func (*SetValidatorParam) ProtoMessage()    {}
+func (*SetValidatorParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{3}
+}
+func (m *SetValidatorParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetValidatorParam.Unmarshal(m, b)
+}
+func (m *SetValidatorParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetValidatorParam.Marshal(b, m, deterministic)
+}
+func (dst *SetValidatorParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetValidatorParam.Merge(dst, src)
+}
+func (m *SetValidatorParam) XXX_Size() int {
+	return xxx_messageInfo_SetValidatorParam.Size(m)
+}
+func (m *SetValidatorParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetValidatorParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetValidatorParam proto.InternalMessageInfo
+
+func (m *SetValidatorParam) GetPublicKey() string {
+	if m != nil {
+		return m.PublicKey
+	}
+	return ""
+}
+
+func (m *SetValidatorParam) GetPower() int64 {
+	if m != nil {
+		return m.Power
+	}
+	return 0
+}
+
+type SetPriceFuncParam struct {
+	Func                 string   `protobuf:"bytes,1,opt,name=func,proto3" json:"func,omitempty"`
+	Price                float64  `protobuf:"fixed64,2,opt,name=price,proto3" json:"price,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetPriceFuncParam) Reset()         { *m = SetPriceFuncParam{} }
+func (m *SetPriceFuncParam) String() string { return proto.CompactTextString(m) }
+func (*SetPriceFuncParam) ProtoMessage()    {}
+func (*SetPriceFuncParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{4}
+}
+func (m *SetPriceFuncParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetPriceFuncParam.Unmarshal(m, b)
+}
+func (m *SetPriceFuncParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetPriceFuncParam.Marshal(b, m, deterministic)
+}
+func (dst *SetPriceFuncParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetPriceFuncParam.Merge(dst, src)
+}
+func (m *SetPriceFuncParam) XXX_Size() int {
+	return xxx_messageInfo_SetPriceFuncParam.Size(m)
+}
+func (m *SetPriceFuncParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetPriceFuncParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetPriceFuncParam proto.InternalMessageInfo
+
+func (m *SetPriceFuncParam) GetFunc() string {
+	if m != nil {
+		return m.Func
+	}
+	return ""
+}
+
+func (m *SetPriceFuncParam) GetPrice() float64 {
+	if m != nil {
+		return m.Price
+	}
+	return 0
+}
+
+type GetPriceFuncParam struct {
+	Func                 string   `protobuf:"bytes,1,opt,name=func,proto3" json:"func,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetPriceFuncParam) Reset()         { *m = GetPriceFuncParam{} }
+func (m *GetPriceFuncParam) String() string { return proto.CompactTextString(m) }
+func (*GetPriceFuncParam) ProtoMessage()    {}
+func (*GetPriceFuncParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{5}
+}
+func (m *GetPriceFuncParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetPriceFuncParam.Unmarshal(m, b)
+}
+func (m *GetPriceFuncParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetPriceFuncParam.Marshal(b, m, deterministic)
+}
+func (dst *GetPriceFuncParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetPriceFuncParam.Merge(dst, src)
+}
+func (m *GetPriceFuncParam) XXX_Size() int {
+	return xxx_messageInfo_GetPriceFuncParam.Size(m)
+}
+func (m *GetPriceFuncParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetPriceFuncParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetPriceFuncParam proto.InternalMessageInfo
+
+func (m *GetPriceFuncParam) GetFunc() string {
+	if m != nil {
+		return m.Func
+	}
+	return ""
+}
+
+type SetNodeTokenParam struct {
+	NodeId               string   `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	Amount               float64  `protobuf:"fixed64,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetNodeTokenParam) Reset()         { *m = SetNodeTokenParam{} }
+func (m *SetNodeTokenParam) String() string { return proto.CompactTextString(m) }
+func (*SetNodeTokenParam) ProtoMessage()    {}
+func (*SetNodeTokenParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{6}
+}
+func (m *SetNodeTokenParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetNodeTokenParam.Unmarshal(m, b)
+}
+func (m *SetNodeTokenParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetNodeTokenParam.Marshal(b, m, deterministic)
+}
+func (dst *SetNodeTokenParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetNodeTokenParam.Merge(dst, src)
+}
+func (m *SetNodeTokenParam) XXX_Size() int {
+	return xxx_messageInfo_SetNodeTokenParam.Size(m)
+}
+func (m *SetNodeTokenParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetNodeTokenParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetNodeTokenParam proto.InternalMessageInfo
+
+func (m *SetNodeTokenParam) GetNodeId() string {
+	if m != nil {
+		return m.NodeId
+	}
+	return ""
+}
+
+func (m *SetNodeTokenParam) GetAmount() float64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type AddNodeTokenParam struct {
+	NodeId               string   `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	Amount               float64  `protobuf:"fixed64,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddNodeTokenParam) Reset()         { *m = AddNodeTokenParam{} }
+func (m *AddNodeTokenParam) String() string { return proto.CompactTextString(m) }
+func (*AddNodeTokenParam) ProtoMessage()    {}
+func (*AddNodeTokenParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{7}
+}
+func (m *AddNodeTokenParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddNodeTokenParam.Unmarshal(m, b)
+}
+func (m *AddNodeTokenParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddNodeTokenParam.Marshal(b, m, deterministic)
+}
+func (dst *AddNodeTokenParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddNodeTokenParam.Merge(dst, src)
+}
+func (m *AddNodeTokenParam) XXX_Size() int {
+	return xxx_messageInfo_AddNodeTokenParam.Size(m)
+}
+func (m *AddNodeTokenParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddNodeTokenParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddNodeTokenParam proto.InternalMessageInfo
+
+func (m *AddNodeTokenParam) GetNodeId() string {
+	if m != nil {
+		return m.NodeId
+	}
+	return ""
+}
+
+func (m *AddNodeTokenParam) GetAmount() float64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type ReduceNodeTokenParam struct {
+	NodeId               string   `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	Amount               float64  `protobuf:"fixed64,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ReduceNodeTokenParam) Reset()         { *m = ReduceNodeTokenParam{} }
+func (m *ReduceNodeTokenParam) String() string { return proto.CompactTextString(m) }
+func (*ReduceNodeTokenParam) ProtoMessage()    {}
+func (*ReduceNodeTokenParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{8}
+}
+func (m *ReduceNodeTokenParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReduceNodeTokenParam.Unmarshal(m, b)
+}
+func (m *ReduceNodeTokenParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReduceNodeTokenParam.Marshal(b, m, deterministic)
+}
+func (dst *ReduceNodeTokenParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReduceNodeTokenParam.Merge(dst, src)
+}
+func (m *ReduceNodeTokenParam) XXX_Size() int {
+	return xxx_messageInfo_ReduceNodeTokenParam.Size(m)
+}
+func (m *ReduceNodeTokenParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReduceNodeTokenParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReduceNodeTokenParam proto.InternalMessageInfo
+
+func (m *ReduceNodeTokenParam) GetNodeId() string {
+	if m != nil {
+		return m.NodeId
+	}
+	return ""
+}
+
+func (m *ReduceNodeTokenParam) GetAmount() float64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type GetNodeTokenParam struct {
+	NodeId               string   `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetNodeTokenParam) Reset()         { *m = GetNodeTokenParam{} }
+func (m *GetNodeTokenParam) String() string { return proto.CompactTextString(m) }
+func (*GetNodeTokenParam) ProtoMessage()    {}
+func (*GetNodeTokenParam) Descriptor() ([]byte, []int) {
+	return fileDescriptor_param_1094aa66ab97621e, []int{9}
+}
+func (m *GetNodeTokenParam) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetNodeTokenParam.Unmarshal(m, b)
+}
+func (m *GetNodeTokenParam) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetNodeTokenParam.Marshal(b, m, deterministic)
+}
+func (dst *GetNodeTokenParam) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetNodeTokenParam.Merge(dst, src)
+}
+func (m *GetNodeTokenParam) XXX_Size() int {
+	return xxx_messageInfo_GetNodeTokenParam.Size(m)
+}
+func (m *GetNodeTokenParam) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetNodeTokenParam.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetNodeTokenParam proto.InternalMessageInfo
+
+func (m *GetNodeTokenParam) GetNodeId() string {
+	if m != nil {
+		return m.NodeId
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*InitNDIDParam)(nil), "InitNDIDParam")
 	proto.RegisterType((*RegisterNodeParam)(nil), "RegisterNodeParam")
 	proto.RegisterType((*UpdateNodeParam)(nil), "UpdateNodeParam")
+	proto.RegisterType((*SetValidatorParam)(nil), "SetValidatorParam")
+	proto.RegisterType((*SetPriceFuncParam)(nil), "SetPriceFuncParam")
+	proto.RegisterType((*GetPriceFuncParam)(nil), "GetPriceFuncParam")
+	proto.RegisterType((*SetNodeTokenParam)(nil), "SetNodeTokenParam")
+	proto.RegisterType((*AddNodeTokenParam)(nil), "AddNodeTokenParam")
+	proto.RegisterType((*ReduceNodeTokenParam)(nil), "ReduceNodeTokenParam")
+	proto.RegisterType((*GetNodeTokenParam)(nil), "GetNodeTokenParam")
 }
 
-func init() { proto.RegisterFile("protos/param/param.proto", fileDescriptor_param_015e4771f11293e2) }
+func init() { proto.RegisterFile("protos/param/param.proto", fileDescriptor_param_1094aa66ab97621e) }
 
-var fileDescriptor_param_015e4771f11293e2 = []byte{
-	// 240 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x28, 0x28, 0xca, 0x2f,
-	0xc9, 0x2f, 0xd6, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x85, 0x90, 0x7a, 0x60, 0x21, 0xa5, 0x62, 0x2e,
-	0x5e, 0xcf, 0xbc, 0xcc, 0x12, 0x3f, 0x17, 0x4f, 0x97, 0x00, 0x90, 0xb0, 0x90, 0x38, 0x17, 0x7b,
-	0x5e, 0x7e, 0x4a, 0x6a, 0x7c, 0x66, 0x8a, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x1b, 0x88,
-	0xeb, 0x99, 0x22, 0x24, 0xcb, 0xc5, 0x55, 0x50, 0x9a, 0x94, 0x93, 0x99, 0x1c, 0x9f, 0x9d, 0x5a,
-	0x29, 0xc1, 0x04, 0x96, 0xe3, 0x84, 0x88, 0x78, 0xa7, 0x56, 0x0a, 0x69, 0x71, 0x09, 0xe6, 0x26,
-	0x16, 0x97, 0xa4, 0x16, 0xc5, 0x23, 0xa9, 0x62, 0x06, 0xab, 0xe2, 0x87, 0x48, 0x04, 0xc0, 0xd4,
-	0x2a, 0xdd, 0x62, 0xe4, 0x12, 0x0c, 0x4a, 0x4d, 0xcf, 0x04, 0x89, 0xfa, 0xe5, 0xa7, 0xa4, 0xd2,
-	0xcd, 0x66, 0x21, 0x69, 0x2e, 0x4e, 0xb0, 0x1d, 0x79, 0x89, 0xb9, 0xa9, 0x12, 0x2c, 0x60, 0x35,
-	0x1c, 0x20, 0x01, 0xbf, 0xc4, 0xdc, 0x54, 0x21, 0x21, 0x2e, 0x96, 0xa2, 0xfc, 0x9c, 0x54, 0x09,
-	0x56, 0xb0, 0x38, 0x98, 0x0d, 0x72, 0x54, 0x6e, 0x62, 0x45, 0x7c, 0x66, 0x62, 0x8e, 0x04, 0x9b,
-	0x02, 0xa3, 0x06, 0x63, 0x10, 0x5b, 0x6e, 0x62, 0x85, 0x67, 0x62, 0x0e, 0x4c, 0x22, 0x31, 0x31,
-	0x47, 0x82, 0x1d, 0x2e, 0xe1, 0x98, 0x98, 0xa3, 0x14, 0xc3, 0xc5, 0x1f, 0x5a, 0x90, 0x92, 0x58,
-	0x92, 0x8a, 0xf0, 0x19, 0xaa, 0x07, 0x18, 0x89, 0xf2, 0x00, 0x13, 0x56, 0x0f, 0x24, 0xb1, 0x81,
-	0xa3, 0xcd, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x34, 0xf4, 0xc5, 0x3e, 0xd2, 0x01, 0x00, 0x00,
+var fileDescriptor_param_1094aa66ab97621e = []byte{
+	// 351 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x93, 0xdb, 0x4b, 0xeb, 0x40,
+	0x10, 0xc6, 0x49, 0x2f, 0xe9, 0xe9, 0xc0, 0xa1, 0x24, 0x94, 0x73, 0x02, 0x87, 0x03, 0x25, 0x2f,
+	0x16, 0x11, 0x7d, 0xf0, 0xd9, 0x87, 0x42, 0xb1, 0x06, 0xa1, 0x94, 0x78, 0x79, 0x12, 0xc2, 0x34,
+	0x3b, 0x4a, 0x68, 0xb2, 0x1b, 0xb6, 0x1b, 0x6c, 0xff, 0x55, 0xff, 0x1a, 0xd9, 0x49, 0xeb, 0x05,
+	0x04, 0x03, 0x05, 0x5f, 0xc2, 0xce, 0x37, 0xdf, 0xfc, 0x26, 0xdf, 0x86, 0x40, 0x50, 0x6a, 0x65,
+	0xd4, 0xfa, 0xac, 0x44, 0x8d, 0x45, 0xfd, 0x3c, 0x65, 0x29, 0x5c, 0xc3, 0xef, 0x48, 0x66, 0x66,
+	0x3e, 0x8d, 0xa6, 0x0b, 0x2b, 0xfb, 0x7f, 0xa1, 0x27, 0x95, 0xa0, 0x24, 0x13, 0x81, 0x33, 0x72,
+	0xc6, 0xfd, 0xd8, 0xb5, 0x65, 0x24, 0xfc, 0xff, 0x00, 0x65, 0xb5, 0xcc, 0xb3, 0x34, 0x59, 0xd1,
+	0x36, 0x68, 0x71, 0xaf, 0x5f, 0x2b, 0xd7, 0xb4, 0xf5, 0x8f, 0xc1, 0x2b, 0x70, 0x6d, 0x48, 0x27,
+	0x1f, 0x5c, 0x6d, 0x76, 0x0d, 0xea, 0xc6, 0x62, 0xef, 0x0d, 0x5f, 0x1c, 0xf0, 0x62, 0x7a, 0xca,
+	0xac, 0x3a, 0x57, 0x82, 0x7e, 0x6c, 0xb3, 0xff, 0x0f, 0xfa, 0xbc, 0x43, 0x62, 0x41, 0x41, 0x87,
+	0x3d, 0xbf, 0xac, 0x30, 0xc7, 0x82, 0x7c, 0x1f, 0x3a, 0x5a, 0xe5, 0x14, 0x74, 0x59, 0xe7, 0xb3,
+	0x7d, 0xa9, 0x02, 0x37, 0x49, 0x86, 0x79, 0xe0, 0x8e, 0x9c, 0xb1, 0x13, 0xbb, 0x05, 0x6e, 0x22,
+	0xcc, 0xf7, 0x0d, 0xc4, 0x3c, 0xe8, 0xbd, 0x35, 0x26, 0x98, 0x87, 0x0f, 0x30, 0xb8, 0x2b, 0x05,
+	0x1a, 0x7a, 0x4f, 0xf6, 0x39, 0x80, 0xd3, 0x28, 0x40, 0xeb, 0xeb, 0xab, 0xbb, 0x02, 0xef, 0x86,
+	0xcc, 0x3d, 0xe6, 0x99, 0x40, 0xa3, 0x74, 0x23, 0xfe, 0x10, 0xba, 0xa5, 0x7a, 0x26, 0xcd, 0xcc,
+	0x76, 0x5c, 0x17, 0xe1, 0x05, 0x93, 0x16, 0x3a, 0x4b, 0xe9, 0xb2, 0x92, 0x69, 0x4d, 0xf2, 0xa1,
+	0xf3, 0x58, 0xc9, 0x74, 0xc7, 0xe0, 0x33, 0x8f, 0x5b, 0x17, 0x8f, 0x3b, 0x71, 0x5d, 0x84, 0x47,
+	0xe0, 0xcd, 0x9a, 0x8c, 0x87, 0x53, 0xde, 0x63, 0x2f, 0xe3, 0x56, 0xad, 0x48, 0x7e, 0xf3, 0xad,
+	0xff, 0x80, 0x8b, 0x85, 0xaa, 0xa4, 0xd9, 0x6d, 0xdb, 0x55, 0x96, 0x32, 0x11, 0xe2, 0x50, 0xca,
+	0x0c, 0x86, 0x31, 0x89, 0x2a, 0xa5, 0x43, 0x41, 0x27, 0x9c, 0xbe, 0x21, 0x65, 0xe9, 0xf2, 0xbf,
+	0x76, 0xfe, 0x1a, 0x00, 0x00, 0xff, 0xff, 0x9f, 0x82, 0x45, 0xf1, 0x87, 0x03, 0x00, 0x00,
 }

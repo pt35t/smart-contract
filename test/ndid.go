@@ -135,10 +135,10 @@ func SetTimeOutBlockRegisterMsqDestination(t *testing.T) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddNodeToken(t *testing.T, param did.AddNodeTokenParam) {
+func AddNodeToken(t *testing.T, param pbParam.AddNodeTokenParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -160,10 +160,10 @@ func AddNodeToken(t *testing.T, param did.AddNodeTokenParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func ReduceNodeToken(t *testing.T, param did.ReduceNodeTokenParam) {
+func ReduceNodeToken(t *testing.T, param pbParam.ReduceNodeTokenParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -185,10 +185,10 @@ func ReduceNodeToken(t *testing.T, param did.ReduceNodeTokenParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetNodeToken(t *testing.T, param did.SetNodeTokenParam) {
+func SetNodeToken(t *testing.T, param pbParam.SetNodeTokenParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -336,8 +336,8 @@ func UpdateService(t *testing.T, param did.UpdateServiceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetPriceFunc(t *testing.T, param did.SetPriceFuncParam) {
-	paramJSON, err := json.Marshal(param)
+func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParam) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -436,10 +436,10 @@ func EnableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetValidator(t *testing.T, param did.SetValidatorParam) {
+func SetValidator(t *testing.T, param pbParam.SetValidatorParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

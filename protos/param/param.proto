@@ -20,3 +20,36 @@ message UpdateNodeParam {
   string public_key = 1;
   string master_public_key = 2;
 }
+
+message SetValidatorParam  {
+  string public_key = 1;
+  int64 power = 2;
+}
+
+message SetPriceFuncParam  {
+  string func = 1;
+  double price = 2;
+}
+
+message GetPriceFuncParam  {
+  string func = 1;
+}
+
+message SetNodeTokenParam  {
+  string node_id = 1;
+  double amount = 2;
+}
+
+message AddNodeTokenParam  {
+  string node_id = 1;
+  double amount = 2;
+}
+
+message ReduceNodeTokenParam  {
+  string node_id = 1;
+  double amount = 2;
+}
+
+message GetNodeTokenParam  {
+  string node_id = 1;
+}

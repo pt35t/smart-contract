@@ -30,7 +30,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
 	did "github.com/ndidplatform/smart-contract/abci/did/v1"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 )
 
 func GetNodePublicKey(t *testing.T, param did.GetNodePublicKeyParam, expected string) {
@@ -81,9 +83,9 @@ func GetNodeMasterPublicKey(t *testing.T, param did.GetNodePublicKeyParam, expec
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeToken(t *testing.T, param did.GetNodeTokenParam, expected did.GetNodeTokenResult) {
+func GetNodeToken(t *testing.T, param pbParam.GetNodeTokenParam, expected did.GetNodeTokenResult) {
 	fnName := "GetNodeToken"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -101,9 +103,9 @@ func GetNodeToken(t *testing.T, param did.GetNodeTokenParam, expected did.GetNod
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeTokenExpectString(t *testing.T, param did.GetNodeTokenParam, expected string) {
+func GetNodeTokenExpectString(t *testing.T, param pbParam.GetNodeTokenParam, expected string) {
 	fnName := "GetNodeToken"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -337,9 +339,9 @@ func GetIdentityProofExpectString(t *testing.T, param did.GetIdentityProofParam,
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetPriceFunc(t *testing.T, param did.GetPriceFuncParam, expected did.GetPriceFuncResult) {
+func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParam, expected did.GetPriceFuncResult) {
 	fnName := "GetPriceFunc"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
