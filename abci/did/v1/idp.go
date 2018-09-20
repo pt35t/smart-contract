@@ -31,7 +31,7 @@ import (
 	"github.com/tendermint/tendermint/abci/types"
 )
 
-func createIdentity(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func createIdentity(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateIdentity, Parameter: %s", param)
 	var funcParam CreateIdentityParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -89,7 +89,7 @@ func setCanAddAccessorToFalse(requestID string, app *DIDApplication) {
 	}
 }
 
-func addAccessorMethod(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("AddAccessorMethod, Parameter: %s", param)
 	var funcParam AccessorMethod
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -118,8 +118,8 @@ func addAccessorMethod(param string, app *DIDApplication, nodeID string) types.R
 	if err != nil {
 		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
 	}
-	var request = getRequest(string(getRequestparamJSON), app, app.state.db.Version64())
-	var requestDetail = getRequestDetail(string(getRequestparamJSON), app, app.state.db.Version64())
+	var request = getRequest(getRequestparamJSON, app, app.state.db.Version64())
+	var requestDetail = getRequestDetail(getRequestparamJSON, app, app.state.db.Version64())
 	var requestResult GetRequestResult
 	var requestDetailResult GetRequestDetailResult
 	err = json.Unmarshal([]byte(request.Value), &requestResult)
@@ -172,7 +172,7 @@ func addAccessorMethod(param string, app *DIDApplication, nodeID string) types.R
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func registerMsqDestination(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func registerMsqDestination(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("RegisterMsqDestination, Parameter: %s", param)
 	var funcParam RegisterMsqDestinationParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -285,7 +285,7 @@ func registerMsqDestination(param string, app *DIDApplication, nodeID string) ty
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func createIdpResponse(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func createIdpResponse(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateIdpResponse, Parameter: %s", param)
 	var funcParam CreateIdpResponseParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -392,7 +392,7 @@ func createIdpResponse(param string, app *DIDApplication, nodeID string) types.R
 	return ReturnDeliverTxLog(code.DuplicateResponse, "Duplicate Response", "")
 }
 
-func updateIdentity(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func updateIdentity(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("UpdateIdentity, Parameter: %s", param)
 	var funcParam UpdateIdentityParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -442,7 +442,7 @@ func updateIdentity(param string, app *DIDApplication, nodeID string) types.Resp
 	return ReturnDeliverTxLog(code.HashIDNotFound, "Hash ID not found", "")
 }
 
-func declareIdentityProof(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func declareIdentityProof(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("DeclareIdentityProof, Parameter: %s", param)
 	var funcParam DeclareIdentityProofParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -488,7 +488,7 @@ func declareIdentityProof(param string, app *DIDApplication, nodeID string) type
 	return ReturnDeliverTxLog(code.DuplicateIdentityProof, "Duplicate Identity Proof", "")
 }
 
-func clearRegisterMsqDestinationTimeout(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func clearRegisterMsqDestinationTimeout(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("ClearRegisterMsqDestinationTimeout, Parameter: %s", param)
 	var funcParam ClearRegisterMsqDestinationTimeoutParam
 	err := json.Unmarshal([]byte(param), &funcParam)

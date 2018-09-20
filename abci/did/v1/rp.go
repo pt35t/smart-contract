@@ -31,7 +31,7 @@ import (
 	"github.com/tendermint/tendermint/abci/types"
 )
 
-func createRequest(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func createRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateRequest, Parameter: %s", param)
 	var funcParam Request
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -110,7 +110,7 @@ func createRequest(param string, app *DIDApplication, nodeID string) types.Respo
 	return ReturnDeliverTxLog(code.OK, "success", request.RequestId)
 }
 
-func closeRequest(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func closeRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CloseRequest, Parameter: %s", param)
 	var funcParam CloseRequestParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -181,7 +181,7 @@ func closeRequest(param string, app *DIDApplication, nodeID string) types.Respon
 	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
 }
 
-func timeOutRequest(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("TimeOutRequest, Parameter: %s", param)
 	var funcParam TimeOutRequestParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -253,7 +253,7 @@ func timeOutRequest(param string, app *DIDApplication, nodeID string) types.Resp
 	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
 }
 
-func setDataReceived(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetDataReceived, Parameter: %s", param)
 	var funcParam SetDataReceivedParam
 	err := json.Unmarshal([]byte(param), &funcParam)

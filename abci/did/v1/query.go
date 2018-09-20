@@ -38,12 +38,12 @@ func ReturnQuery(value []byte, log string, height int64, app *DIDApplication) ty
 }
 
 // QueryRouter is Pointer to function
-func QueryRouter(method string, param string, app *DIDApplication, height int64) types.ResponseQuery {
+func QueryRouter(method string, param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	result := callQuery(method, param, app, height)
 	return result
 }
 
-func callQuery(name string, param string, app *DIDApplication, height int64) types.ResponseQuery {
+func callQuery(name string, param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	switch name {
 	case "GetNodePublicKey":
 		return getNodePublicKey(param, app, height)

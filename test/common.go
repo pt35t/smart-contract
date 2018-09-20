@@ -31,7 +31,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
 	did "github.com/ndidplatform/smart-contract/abci/did/v1"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
@@ -109,9 +111,9 @@ func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, 
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateNode(t *testing.T, param did.UpdateNodeParam, masterPriveKFile string, nodeID string) {
+func UpdateNode(t *testing.T, param pbParam.UpdateNodeParam, masterPriveKFile string, nodeID string) {
 	masterKey := getPrivateKeyFromString(masterPriveKFile)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

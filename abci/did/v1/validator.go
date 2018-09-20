@@ -86,7 +86,7 @@ func (app *DIDApplication) updateValidator(v types.Validator) types.ResponseDeli
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func setValidator(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func setValidator(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetValidator, Parameter: %s", param)
 	var funcParam SetValidatorParam
 	err := json.Unmarshal([]byte(param), &funcParam)

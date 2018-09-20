@@ -33,7 +33,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
@@ -43,12 +45,12 @@ func InitNDID(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var initNDIDparam did.InitNDIDParam
-	initNDIDparam.NodeID = "NDID"
+	var initNDIDparam pbParam.InitNDIDParam
+	initNDIDparam.NodeId = "NDID"
 	initNDIDparam.PublicKey = string(ndidpublicKeyBytes)
 	initNDIDparam.MasterPublicKey = string(ndidpublicKeyBytes)
 
-	initNDIDparamJSON, err := json.Marshal(initNDIDparam)
+	initNDIDparamJSON, err := proto.Marshal(&initNDIDparam)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -63,7 +65,7 @@ func InitNDID(t *testing.T) {
 	fnName := "InitNDID"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, ndidKey, newhash, hashed)
 	startTime := time.Now()
-	result, _ := callTendermint([]byte(fnName), initNDIDparamJSON, []byte(nonce), signature, []byte(initNDIDparam.NodeID))
+	result, _ := callTendermint([]byte(fnName), initNDIDparamJSON, []byte(nonce), signature, []byte(initNDIDparam.NodeId))
 	resultObj, _ := result.(ResponseTx)
 	if resultObj.Result.CheckTx.Log == "NDID node is already existed" {
 		t.SkipNow()
@@ -78,8 +80,8 @@ func InitNDID(t *testing.T) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func RegisterNode(t *testing.T, param did.RegisterNode) {
-	paramJSON, err := json.Marshal(param)
+func RegisterNode(t *testing.T, param pbParam.RegisterNodeParam) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

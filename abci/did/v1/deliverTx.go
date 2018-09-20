@@ -51,7 +51,7 @@ func ReturnDeliverTxLog(code uint32, log string, extraData string) types.Respons
 }
 
 // DeliverTxRouter is Pointer to function
-func DeliverTxRouter(method string, param string, nonce string, signature []byte, nodeID string, app *DIDApplication) types.ResponseDeliverTx {
+func DeliverTxRouter(method string, param []byte, nonce string, signature []byte, nodeID string, app *DIDApplication) types.ResponseDeliverTx {
 	// ---- check authorization ----
 	checkTxResult := CheckTxRouter(method, param, nonce, signature, nodeID, app)
 	if checkTxResult.Code != code.OK {
@@ -64,7 +64,7 @@ func DeliverTxRouter(method string, param string, nonce string, signature []byte
 	result := callDeliverTx(method, param, app, nodeID)
 	// ---- Burn token ----
 	if result.Code == code.OK {
-		if !checkNDID(nodeID, nodeID, app) && !isNDIDMethod[method] {
+		if !checkNDID(param, nodeID, app) && !isNDIDMethod[method] {
 			needToken := getTokenPriceByFunc(method, app, app.state.db.Version64())
 			err := reduceToken(nodeID, needToken, app)
 			if err != nil {
@@ -80,7 +80,7 @@ func DeliverTxRouter(method string, param string, nonce string, signature []byte
 	return result
 }
 
-func callDeliverTx(name string, param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func callDeliverTx(name string, param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	switch name {
 	case "InitNDID":
 		return initNDID(param, app, nodeID)

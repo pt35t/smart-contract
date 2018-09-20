@@ -33,6 +33,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 )
 
 var RP1 = RandStringRunes(20)
@@ -95,8 +96,8 @@ func TestRegisterNodeRP(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param did.RegisterNode
-	param.NodeID = RP1
+	var param pbParam.RegisterNodeParam
+	param.NodeId = RP1
 	param.PublicKey = string(rpPublicKeyBytes)
 	param.MasterPublicKey = string(rpPublicKeyBytes2)
 	param.Role = "RP"
@@ -118,8 +119,8 @@ func TestRegisterNodeIDP(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param did.RegisterNode
-	param.NodeID = IdP1
+	var param pbParam.RegisterNodeParam
+	param.NodeId = IdP1
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
 	param.NodeName = "IdP Number 1 from ..."
@@ -143,9 +144,9 @@ func TestRegisterNodeAS(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param did.RegisterNode
+	var param pbParam.RegisterNodeParam
 	param.NodeName = "AS1"
-	param.NodeID = AS1
+	param.NodeId = AS1
 	param.PublicKey = string(asPublicKeyBytes)
 	param.MasterPublicKey = string(asPublicKeyBytes2)
 	param.Role = "AS"
@@ -892,8 +893,8 @@ func TestRegisterNodeIDP2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = IdP2
+	var param pbParam.RegisterNodeParam
+	param.NodeId = IdP2
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.Role = "IdP"
 	param.MaxIal = 3.0
@@ -928,10 +929,8 @@ func TestIdPUpdateNode(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param = did.UpdateNodeParam{
-		string(idpPublicKeyBytes2),
-		"",
-	}
+	var param pbParam.UpdateNodeParam
+	param.PublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP1)
 }
 
@@ -1057,8 +1056,8 @@ func TestRegisterNodeIDP4(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = IdP4
+	var param pbParam.RegisterNodeParam
+	param.NodeId = IdP4
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
 	param.NodeName = "IdP Number 4 from ..."
@@ -1079,8 +1078,8 @@ func TestRegisterNodeIDP5(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = IdP5
+	var param pbParam.RegisterNodeParam
+	param.NodeId = IdP5
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
 	param.NodeName = "IdP Number 5 from ..."
@@ -1112,10 +1111,8 @@ func TestIdPUpdateNode4(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param = did.UpdateNodeParam{
-		string(idpPublicKeyBytes2),
-		"",
-	}
+	var param pbParam.UpdateNodeParam
+	param.PublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP4)
 }
 
@@ -1125,10 +1122,10 @@ func TestIdPUpdateNode5(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param = did.UpdateNodeParam{
-		string(idpPublicKeyBytes2),
-		string(idpPublicKeyBytes2),
-	}
+
+	var param pbParam.UpdateNodeParam
+	param.PublicKey = string(idpPublicKeyBytes2)
+	param.MasterPublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP5)
 }
 
@@ -1269,9 +1266,9 @@ func TestRegisterNodeAS2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
+	var param pbParam.RegisterNodeParam
 	param.NodeName = AS2
-	param.NodeID = AS2
+	param.NodeId = AS2
 	param.PublicKey = string(asPublicKeyBytes)
 	param.MasterPublicKey = string(asPublicKeyBytes2)
 	param.Role = "AS"
@@ -1900,10 +1897,8 @@ func TestUpdateNodeNDID(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param = did.UpdateNodeParam{
-		string(ndidpublicKeyBytes),
-		"",
-	}
+	var param pbParam.UpdateNodeParam
+	param.PublicKey = string(ndidpublicKeyBytes)
 	UpdateNode(t, param, ndidPrivK, "NDID")
 }
 
@@ -1944,8 +1939,8 @@ func TestRegisterProxyNode(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = Proxy1
+	var param pbParam.RegisterNodeParam
+	param.NodeId = Proxy1
 	param.NodeName = "Proxy1"
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes)
@@ -1973,8 +1968,8 @@ func TestRegisterIdP6BehindProxy1(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = IdP6BehindProxy1
+	var param pbParam.RegisterNodeParam
+	param.NodeId = IdP6BehindProxy1
 	param.NodeName = "IdP6BehindProxy1"
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes)
@@ -2068,8 +2063,8 @@ func TestRegisterAS3BehindProxy1(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = AS3BehindProxy1
+	var param pbParam.RegisterNodeParam
+	param.NodeId = AS3BehindProxy1
 	param.NodeName = "AS3BehindProxy1"
 	param.PublicKey = string(asPublicKeyBytes)
 	param.MasterPublicKey = string(asPublicKeyBytes)
@@ -2146,8 +2141,8 @@ func TestRegisterProxyNodeProxy2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param did.RegisterNode
-	param.NodeID = Proxy2
+	var param pbParam.RegisterNodeParam
+	param.NodeId = Proxy2
 	param.NodeName = "Proxy2"
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes)

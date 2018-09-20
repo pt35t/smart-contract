@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+message InitNDIDParam  {
+  string node_id = 1;
+  string public_key = 2;
+  string master_public_key = 3;
+}
+
+message RegisterNodeParam  {
+  string node_id = 1;
+  string public_key = 2;
+  string master_public_key = 3;
+  string node_name = 4;
+  string role = 5;
+  double max_ial = 6;
+  double max_aal = 7;
+}
+
+message UpdateNodeParam {
+  string public_key = 1;
+  string master_public_key = 2;
+}

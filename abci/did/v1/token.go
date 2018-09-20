@@ -65,7 +65,7 @@ func setToken(nodeID string, amount float64, app *DIDApplication) error {
 	return errors.New("token account not found")
 }
 
-func setPriceFunc(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func setPriceFunc(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetPriceFunc, Parameter: %s", param)
 	var funcParam SetPriceFuncParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -76,7 +76,7 @@ func setPriceFunc(param string, app *DIDApplication, nodeID string) types.Respon
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func getPriceFunc(param string, app *DIDApplication, height int64) types.ResponseQuery {
+func getPriceFunc(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetPriceFunc, Parameter: %s", param)
 	var funcParam GetPriceFuncParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -152,7 +152,7 @@ func getToken(nodeID string, app *DIDApplication) (float64, error) {
 	return 0, errors.New("token account not found")
 }
 
-func setNodeToken(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func setNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetNodeToken, Parameter: %s", param)
 	var funcParam SetNodeTokenParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -174,7 +174,7 @@ func setNodeToken(param string, app *DIDApplication, nodeID string) types.Respon
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func addNodeToken(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func addNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("AddNodeToken, Parameter: %s", param)
 	var funcParam AddNodeTokenParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -196,7 +196,7 @@ func addNodeToken(param string, app *DIDApplication, nodeID string) types.Respon
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func reduceNodeToken(param string, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
+func reduceNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("ReduceNodeToken, Parameter: %s", param)
 	var funcParam ReduceNodeTokenParam
 	err := json.Unmarshal([]byte(param), &funcParam)
@@ -218,7 +218,7 @@ func reduceNodeToken(param string, app *DIDApplication, nodeID string) types.Res
 	return ReturnDeliverTxLog(code.OK, "success", "")
 }
 
-func getNodeToken(param string, app *DIDApplication, height int64) types.ResponseQuery {
+func getNodeToken(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetNodeToken, Parameter: %s", param)
 	var funcParam GetNodeTokenParam
 	err := json.Unmarshal([]byte(param), &funcParam)
