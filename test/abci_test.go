@@ -356,11 +356,11 @@ func TestQueryGetIdpNodes(t *testing.T) {
 func TestQueryGetMsqAddress(t *testing.T) {
 	var param pbParam.GetMsqAddressParams
 	param.NodeId = IdP1
-	var expected []did.MsqAddress
-	var msq did.MsqAddress
-	msq.IP = "192.168.3.99"
+	var expected pbResult.GetMsqAddressResult
+	var msq pbResult.MsqAddressInResult
+	msq.Ip = "192.168.3.99"
 	msq.Port = 8000
-	expected = append(expected, msq)
+	expected.Mq = append(expected.Mq, &msq)
 	GetMsqAddress(t, param, expected)
 }
 
@@ -660,7 +660,38 @@ func TestReportGetUsedTokenAS(t *testing.T) {
 func TestQueryGetRequestDetail1(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = requestID1.String()
-	var expected = `{"request_id":"` + requestID1.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":[],"min_as":1,"request_params_hash":"hash","answered_as_id_list":["` + AS1 + `"],"received_data_from_list":["` + AS1 + `"]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":null,"valid_ial":null,"valid_signature":null}],"closed":false,"timed_out":false,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
+
+	var data pbResult.DataRequestInResult
+	data.ServiceId = serviceID1
+	data.AsIdList = make([]string, 0)
+	data.MinAs = 1
+	data.AnsweredAsIdList = append(data.AnsweredAsIdList, AS1)
+	data.ReceivedDataFromList = append(data.ReceivedDataFromList, AS1)
+	data.RequestParamsHash = "hash"
+
+	var response pbResult.ResponseInResult
+	response.Ial = 3.0
+	response.Aal = 3.0
+	response.Status = "accept"
+	response.Signature = "signature"
+	response.IdentityProof = "Magic"
+	response.PrivateProofHash = "Magic"
+	response.IdpId = IdP1
+
+	var expected pbResult.GetRequestDetailResult
+	expected.RequestId = requestID1.String()
+	expected.MinIdp = 1
+	expected.MinIal = 3.0
+	expected.MinAal = 3.0
+	expected.RequestTimeout = 259200
+	expected.DataRequestList = append(expected.DataRequestList, &data)
+	expected.RequestMessageHash = "hash('Please allow...')"
+	expected.ResponseList = append(expected.ResponseList, &response)
+	expected.Closed = false
+	expected.TimedOut = false
+	expected.Special = false
+	expected.Mode = 3
+	expected.RequesterNodeId = RP1
 	GetRequestDetail(t, param, expected)
 }
 
@@ -687,19 +718,59 @@ func TestRPCloseRequest(t *testing.T) {
 func TestQueryGetRequestClosed(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = requestID1.String()
-	var expected = did.GetRequestResult{
-		true,
-		false,
-		"hash('Please allow...')",
-		3,
-	}
+	var expected pbResult.GetRequestResult
+	expected.Closed = true
+	expected.TimedOut = false
+	expected.RequestMessageHash = "hash('Please allow...')"
+	expected.Mode = 3
 	GetRequest(t, param, expected)
 }
 
 func TestQueryGetRequestDetail2(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = requestID1.String()
-	var expected = `{"request_id":"` + requestID1.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":[],"min_as":1,"request_params_hash":"hash","answered_as_id_list":["` + AS1 + `"],"received_data_from_list":["` + AS1 + `"]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":true,"valid_ial":true,"valid_signature":true}],"closed":true,"timed_out":false,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
+
+	var data pbResult.DataRequestInResult
+	data.ServiceId = serviceID1
+	data.AsIdList = make([]string, 0)
+	data.MinAs = 1
+	data.AnsweredAsIdList = append(data.AnsweredAsIdList, AS1)
+	data.ReceivedDataFromList = append(data.ReceivedDataFromList, AS1)
+	data.RequestParamsHash = "hash"
+
+	var response pbResult.ResponseInResult
+	response.Ial = 3.0
+	response.Aal = 3.0
+	response.Status = "accept"
+	response.Signature = "signature"
+	response.IdentityProof = "Magic"
+	response.PrivateProofHash = "Magic"
+	response.IdpId = IdP1
+
+	var boolIal pbResult.ResponseInResult_ValidIalBool
+	boolIal.ValidIalBool = true
+	response.ValidIal = &boolIal
+	var boolProof pbResult.ResponseInResult_ValidProofBool
+	boolProof.ValidProofBool = true
+	response.ValidProof = &boolProof
+	var boolSignature pbResult.ResponseInResult_ValidSignatureBool
+	boolSignature.ValidSignatureBool = true
+	response.ValidSignature = &boolSignature
+
+	var expected pbResult.GetRequestDetailResult
+	expected.RequestId = requestID1.String()
+	expected.MinIdp = 1
+	expected.MinIal = 3.0
+	expected.MinAal = 3.0
+	expected.RequestTimeout = 259200
+	expected.DataRequestList = append(expected.DataRequestList, &data)
+	expected.RequestMessageHash = "hash('Please allow...')"
+	expected.ResponseList = append(expected.ResponseList, &response)
+	expected.Closed = true
+	expected.TimedOut = false
+	expected.Special = false
+	expected.Mode = 3
+	expected.RequesterNodeId = RP1
 	GetRequestDetail(t, param, expected)
 }
 
@@ -777,19 +848,68 @@ func TestRPTimeOutRequest(t *testing.T) {
 func TestQueryGetRequestDetail3(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = requestID3.String()
-	var expected = `{"request_id":"` + requestID3.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":["` + AS1 + `","` + AS2 + `"],"min_as":2,"request_params_hash":"hash","answered_as_id_list":[],"received_data_from_list":[]},{"service_id":"credit","as_id_list":["` + AS1 + `","` + AS2 + `"],"min_as":2,"request_params_hash":"hash","answered_as_id_list":[],"received_data_from_list":[]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":false,"valid_ial":false,"valid_signature":false}],"closed":false,"timed_out":true,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
+
+	var data pbResult.DataRequestInResult
+	data.ServiceId = serviceID1
+	data.AsIdList = make([]string, 0)
+	data.MinAs = 2
+	data.RequestParamsHash = "hash"
+	data.AsIdList = append(data.AsIdList, AS1)
+	data.AsIdList = append(data.AsIdList, AS2)
+
+	var data2 pbResult.DataRequestInResult
+	data2.ServiceId = "credit"
+	data2.AsIdList = make([]string, 0)
+	data2.MinAs = 2
+	data2.RequestParamsHash = "hash"
+	data2.AsIdList = append(data2.AsIdList, AS1)
+	data2.AsIdList = append(data2.AsIdList, AS2)
+
+	var response pbResult.ResponseInResult
+	response.Ial = 3.0
+	response.Aal = 3.0
+	response.Status = "accept"
+	response.Signature = "signature"
+	response.IdentityProof = "Magic"
+	response.PrivateProofHash = "Magic"
+	response.IdpId = IdP1
+
+	var boolIal pbResult.ResponseInResult_ValidIalBool
+	boolIal.ValidIalBool = false
+	response.ValidIal = &boolIal
+	var boolProof pbResult.ResponseInResult_ValidProofBool
+	boolProof.ValidProofBool = false
+	response.ValidProof = &boolProof
+	var boolSignature pbResult.ResponseInResult_ValidSignatureBool
+	boolSignature.ValidSignatureBool = false
+	response.ValidSignature = &boolSignature
+
+	var expected pbResult.GetRequestDetailResult
+	expected.RequestId = requestID3.String()
+	expected.MinIdp = 1
+	expected.MinIal = 3.0
+	expected.MinAal = 3.0
+	expected.RequestTimeout = 259200
+	expected.DataRequestList = append(expected.DataRequestList, &data)
+	expected.DataRequestList = append(expected.DataRequestList, &data2)
+	expected.RequestMessageHash = "hash('Please allow...')"
+	expected.ResponseList = append(expected.ResponseList, &response)
+	expected.Closed = false
+	expected.TimedOut = true
+	expected.Special = false
+	expected.Mode = 3
+	expected.RequesterNodeId = RP1
 	GetRequestDetail(t, param, expected)
 }
 
 func TestQueryGetRequestTimedOut(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = requestID3.String()
-	var expected = did.GetRequestResult{
-		false,
-		true,
-		"hash('Please allow...')",
-		3,
-	}
+	var expected pbResult.GetRequestResult
+	expected.Closed = false
+	expected.TimedOut = true
+	expected.RequestMessageHash = "hash('Please allow...')"
+	expected.Mode = 3
 	GetRequest(t, param, expected)
 }
 
@@ -1789,14 +1909,14 @@ func TestQueryGetIdpNodesInvalid(t *testing.T) {
 func TestQueryGetRequestInvalid(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = "ef6f4c9c-818b-42b8-8904-3d97c-invalid"
-	expected := "not found"
-	GetRequestExpectString(t, param, expected)
+	var expected pbResult.GetRequestResult
+	GetRequest(t, param, expected)
 }
 
 func TestQueryGetRequestDetailInvalid(t *testing.T) {
 	var param pbParam.GetRequestParams
 	param.RequestId = "ef6f4c9c-818b-42b8-8904-3d97c-invalid"
-	expected := "not found"
+	var expected pbResult.GetRequestDetailResult
 	GetRequestDetail(t, param, expected)
 }
 

@@ -106,28 +106,28 @@ type Response struct {
 	ValidSignature   *bool   `json:"valid_signature"`
 }
 
-type GetRequestResult struct {
-	IsClosed    bool   `json:"closed"`
-	IsTimedOut  bool   `json:"timed_out"`
-	MessageHash string `json:"request_message_hash"`
-	Mode        int    `json:"mode"`
-}
+// type GetRequestResult struct {
+// 	IsClosed    bool   `json:"closed"`
+// 	IsTimedOut  bool   `json:"timed_out"`
+// 	MessageHash string `json:"request_message_hash"`
+// 	Mode        int    `json:"mode"`
+// }
 
-type GetRequestDetailResult struct {
-	RequestID       string        `json:"request_id"`
-	MinIdp          int           `json:"min_idp"`
-	MinAal          float64       `json:"min_aal"`
-	MinIal          float64       `json:"min_ial"`
-	Timeout         int           `json:"request_timeout"`
-	DataRequestList []DataRequest `json:"data_request_list"`
-	MessageHash     string        `json:"request_message_hash"`
-	Responses       []Response    `json:"response_list"`
-	IsClosed        bool          `json:"closed"`
-	IsTimedOut      bool          `json:"timed_out"`
-	Special         bool          `json:"special"`
-	Mode            int           `json:"mode"`
-	RequesterNodeID string        `json:"requester_node_id"`
-}
+// type GetRequestDetailResult struct {
+// 	RequestID       string        `json:"request_id"`
+// 	MinIdp          int           `json:"min_idp"`
+// 	MinAal          float64       `json:"min_aal"`
+// 	MinIal          float64       `json:"min_ial"`
+// 	Timeout         int           `json:"request_timeout"`
+// 	DataRequestList []DataRequest `json:"data_request_list"`
+// 	MessageHash     string        `json:"request_message_hash"`
+// 	Responses       []Response    `json:"response_list"`
+// 	IsClosed        bool          `json:"closed"`
+// 	IsTimedOut      bool          `json:"timed_out"`
+// 	Special         bool          `json:"special"`
+// 	Mode            int           `json:"mode"`
+// 	RequesterNodeID string        `json:"requester_node_id"`
+// }
 
 // type ASNode struct {
 // 	ID        string  `json:"node_id"`
@@ -184,11 +184,6 @@ type NodeDetail struct {
 type MaxIalAal struct {
 	MaxIal float64 `json:"max_ial"`
 	MaxAal float64 `json:"max_aal"`
-}
-
-type MsqAddress struct {
-	IP   string `json:"ip"`
-	Port int64  `json:"port"`
 }
 
 // type GetNodeTokenResult struct {
@@ -443,4 +438,9 @@ type GetNodeIDListResult struct {
 	NodeIDList []string `json:"node_id_list"`
 }
 
-type GetMsqAddressResult []MsqAddress
+type MsqAddress struct {
+	IP   string `json:"ip"`
+	Port int64  `json:"port"`
+}
+
+// type GetMsqAddressResult []MsqAddress

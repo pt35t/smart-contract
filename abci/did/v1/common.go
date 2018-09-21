@@ -378,14 +378,15 @@ func getMsqAddress(param []byte, app *DIDApplication, height int64) types.Respon
 		value = []byte("[]")
 		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
 	}
-	var result GetMsqAddressResult
+	var result pbResult.GetMsqAddressResult
+	result.Mq = make([]*pbResult.MsqAddressInResult, 0)
 	for _, msq := range nodeDetail.Mq {
-		var newRow MsqAddress
-		newRow.IP = msq.Ip
+		var newRow pbResult.MsqAddressInResult
+		newRow.Ip = msq.Ip
 		newRow.Port = msq.Port
-		result = append(result, newRow)
+		result.Mq = append(result.Mq, &newRow)
 	}
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -419,8 +420,7 @@ func getRequest(param []byte, app *DIDApplication, height int64) types.ResponseQ
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 
 	if value == nil {
-		valueJSON := []byte("{}")
-		return ReturnQuery(valueJSON, "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
 	var request data.Request
 	err = proto.Unmarshal([]byte(value), &request)
@@ -428,13 +428,13 @@ func getRequest(param []byte, app *DIDApplication, height int64) types.ResponseQ
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var res GetRequestResult
-	res.IsClosed = request.Closed
-	res.IsTimedOut = request.TimedOut
-	res.MessageHash = request.RequestMessageHash
-	res.Mode = int(request.Mode)
+	var res pbResult.GetRequestResult
+	res.Closed = request.Closed
+	res.TimedOut = request.TimedOut
+	res.RequestMessageHash = request.RequestMessageHash
+	res.Mode = request.Mode
 
-	valueJSON, err := json.Marshal(res)
+	valueJSON, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -457,7 +457,7 @@ func getRequestDetail(param []byte, app *DIDApplication, height int64) types.Res
 		return ReturnQuery(valueJSON, "not found", app.state.db.Version64(), app)
 	}
 
-	var result GetRequestDetailResult
+	var result pbResult.GetRequestDetailResult
 	var request data.Request
 	err = proto.Unmarshal([]byte(value), &request)
 	if err != nil {
@@ -465,21 +465,21 @@ func getRequestDetail(param []byte, app *DIDApplication, height int64) types.Res
 		return ReturnQuery(value, err.Error(), app.state.db.Version64(), app)
 	}
 
-	result.RequestID = request.RequestId
-	result.MinIdp = int(request.MinIdp)
+	result.RequestId = request.RequestId
+	result.MinIdp = request.MinIdp
 	result.MinAal = float64(request.MinAal)
 	result.MinIal = float64(request.MinIal)
-	result.Timeout = int(request.RequestTimeout)
+	result.RequestTimeout = request.RequestTimeout
 	for _, dataRequest := range request.DataRequestList {
-		var newRow DataRequest
-		newRow.ServiceID = dataRequest.ServiceId
-		newRow.As = dataRequest.AsIdList
-		newRow.Count = int(dataRequest.MinAs)
+		var newRow pbResult.DataRequestInResult
+		newRow.ServiceId = dataRequest.ServiceId
+		newRow.AsIdList = dataRequest.AsIdList
+		newRow.MinAs = dataRequest.MinAs
 		newRow.AnsweredAsIdList = dataRequest.AnsweredAsIdList
 		newRow.ReceivedDataFromList = dataRequest.ReceivedDataFromList
 		newRow.RequestParamsHash = dataRequest.RequestParamsHash
-		if newRow.As == nil {
-			newRow.As = make([]string, 0)
+		if newRow.AsIdList == nil {
+			newRow.AsIdList = make([]string, 0)
 		}
 		if newRow.AnsweredAsIdList == nil {
 			newRow.AnsweredAsIdList = make([]string, 0)
@@ -487,53 +487,59 @@ func getRequestDetail(param []byte, app *DIDApplication, height int64) types.Res
 		if newRow.ReceivedDataFromList == nil {
 			newRow.ReceivedDataFromList = make([]string, 0)
 		}
-		result.DataRequestList = append(result.DataRequestList, newRow)
+		result.DataRequestList = append(result.DataRequestList, &newRow)
 	}
-	result.MessageHash = request.RequestMessageHash
+	result.RequestMessageHash = request.RequestMessageHash
 	for _, response := range request.ResponseList {
-		var newRow Response
-		newRow.Ial = float64(response.Ial)
-		newRow.Aal = float64(response.Aal)
+		var newRow pbResult.ResponseInResult
+		newRow.Ial = response.Ial
+		newRow.Aal = response.Aal
 		newRow.Status = response.Status
 		newRow.Signature = response.Signature
 		newRow.IdentityProof = response.IdentityProof
 		newRow.PrivateProofHash = response.PrivateProofHash
-		newRow.IdpID = response.IdpId
+		newRow.IdpId = response.IdpId
 		if response.ValidProof != "" {
 			if response.ValidProof == "true" {
-				tValue := true
-				newRow.ValidProof = &tValue
+				var boolProof pbResult.ResponseInResult_ValidProofBool
+				boolProof.ValidProofBool = true
+				newRow.ValidProof = &boolProof
 			} else {
-				fValue := false
-				newRow.ValidProof = &fValue
+				var boolProof pbResult.ResponseInResult_ValidProofBool
+				boolProof.ValidProofBool = false
+				newRow.ValidProof = &boolProof
 			}
 
 		}
 		if response.ValidIal != "" {
 			if response.ValidIal == "true" {
-				tValue := true
-				newRow.ValidIal = &tValue
+				var boolIal pbResult.ResponseInResult_ValidIalBool
+				boolIal.ValidIalBool = true
+				newRow.ValidIal = &boolIal
 			} else {
-				fValue := false
-				newRow.ValidIal = &fValue
+				var boolIal pbResult.ResponseInResult_ValidIalBool
+				boolIal.ValidIalBool = false
+				newRow.ValidIal = &boolIal
 			}
 
 		}
 		if response.ValidSignature != "" {
 			if response.ValidSignature == "true" {
-				tValue := true
-				newRow.ValidSignature = &tValue
+				var boolSignature pbResult.ResponseInResult_ValidSignatureBool
+				boolSignature.ValidSignatureBool = true
+				newRow.ValidSignature = &boolSignature
 			} else {
-				fValue := false
-				newRow.ValidSignature = &fValue
+				var boolSignature pbResult.ResponseInResult_ValidSignatureBool
+				boolSignature.ValidSignatureBool = false
+				newRow.ValidSignature = &boolSignature
 			}
 
 		}
-		result.Responses = append(result.Responses, newRow)
+		result.ResponseList = append(result.ResponseList, &newRow)
 	}
-	result.IsClosed = request.Closed
-	result.IsTimedOut = request.TimedOut
-	result.Mode = int(request.Mode)
+	result.Closed = request.Closed
+	result.TimedOut = request.TimedOut
+	result.Mode = request.Mode
 
 	// Check Role, If it's IdP then Set set special = true
 	ownerRole := getRoleFromNodeID(request.Owner, app)
@@ -542,8 +548,8 @@ func getRequestDetail(param []byte, app *DIDApplication, height int64) types.Res
 	}
 
 	// Set requester_node_id
-	result.RequesterNodeID = request.Owner
-	resultJSON, err := json.Marshal(result)
+	result.RequesterNodeId = request.Owner
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		value = []byte("")
 		return ReturnQuery(value, err.Error(), app.state.db.Version64(), app)

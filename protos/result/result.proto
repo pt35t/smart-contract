@@ -47,3 +47,63 @@ message ASNodeInGetAsNodesByServiceIdResult {
 message GetAsNodesByServiceIdResult {
   repeated ASNodeInGetAsNodesByServiceIdResult node = 1;
 }
+
+message MsqAddressInResult {
+  string ip = 1;
+  int64 port = 2;
+}
+
+message GetMsqAddressResult {
+  repeated MsqAddressInResult mq = 1;
+}
+
+message GetRequestResult {
+  bool closed = 1;
+  bool timed_out = 2;
+  string request_message_hash = 3;
+  int64 mode = 4;
+}
+
+message DataRequestInResult {
+  string service_id = 1;
+  repeated string as_id_list = 2;
+  int64 min_as = 3;
+  string request_params_hash = 4;
+  repeated string answered_as_id_list = 5;
+  repeated string received_data_from_list = 6;
+}
+
+message ResponseInResult {
+  double ial = 1;
+  double aal = 2;
+  string status = 3;
+  string signature = 4;
+  string identity_proof = 5;
+  string private_proof_hash = 6;
+  string idp_id = 7;
+  oneof valid_proof {
+    bool valid_proof_bool = 8;
+  }
+  oneof valid_ial {
+    bool valid_ial_bool = 9;
+  }
+  oneof valid_signature {
+    bool valid_signature_bool = 10;
+  }
+}
+
+message GetRequestDetailResult {
+  string request_id = 1;
+  int64 min_idp = 2;
+  double min_aal = 3;
+  double min_ial = 4;
+  int64 request_timeout = 5;
+  repeated DataRequestInResult data_request_list = 6;
+  string request_message_hash = 7;
+  repeated ResponseInResult response_list = 8;
+  bool closed = 9;
+  bool timed_out = 10;
+  bool special = 11;
+  int64 mode = 12;
+  string requester_node_id = 13;
+}
