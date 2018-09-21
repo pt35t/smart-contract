@@ -229,7 +229,7 @@ func checkIsOwnerRequest(param []byte, nodeID string, app *DIDApplication) types
 	return ReturnCheckTx(code.NotOwnerOfRequest, "This node is not owner of request")
 }
 
-func verifySignature(param []byte, nonce []byte, signature []byte, publicKey string) (result bool, err error) {
+func verifySignature(param []byte, nonce []byte, signature []byte, publicKey string, method string) (result bool, err error) {
 	publicKey = strings.Replace(publicKey, "\t", "", -1)
 	block, _ := pem.Decode([]byte(publicKey))
 	senderPublicKeyInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
@@ -237,7 +237,8 @@ func verifySignature(param []byte, nonce []byte, signature []byte, publicKey str
 	if err != nil {
 		return false, err
 	}
-	tempPSSmessage := append(param, []byte(nonce)...)
+	tempPSSmessage := append([]byte(method), param...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
@@ -421,7 +422,7 @@ func CheckTxRouter(method string, param []byte, nonce []byte, signature []byte, 
 		}
 	}
 
-	verifyResult, err := verifySignature(param, nonce, signature, publicKey)
+	verifyResult, err := verifySignature(param, nonce, signature, publicKey, method)
 	if err != nil || verifyResult == false {
 		return ReturnCheckTx(code.VerifySignatureError, err.Error())
 	}

@@ -42,14 +42,15 @@ func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected
 	}
 	rpKey := getPrivateKeyFromString(rpPrivK)
 	rpNodeID := []byte(nodeID)
+	fnName := "SetDataReceived"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "SetDataReceived"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -67,14 +68,15 @@ func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string)
 	}
 	rpKey := getPrivateKeyFromString(rpPrivK)
 	rpNodeID := []byte(nodeID)
+	fnName := "CloseRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "CloseRequest"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -93,14 +95,15 @@ func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParams, nodeID str
 	}
 	rpKey := getPrivateKeyFromString(rpPrivK)
 	rpNodeID := []byte(nodeID)
+	fnName := "TimeOutRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "TimeOutRequest"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)

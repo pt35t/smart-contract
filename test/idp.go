@@ -42,14 +42,15 @@ func RegisterMsqDestination(t *testing.T, param pbParam.RegisterMsqDestinationPa
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "RegisterMsqDestination"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "RegisterMsqDestination"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -67,14 +68,15 @@ func DeclareIdentityProof(t *testing.T, param pbParam.DeclareIdentityProofParams
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "DeclareIdentityProof"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "DeclareIdentityProof"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -93,14 +95,15 @@ func CreateIdpResponse(t *testing.T, param pbParam.CreateIdpResponseParams, priv
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "CreateIdpResponse"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "CreateIdpResponse"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -119,14 +122,15 @@ func CreateIdentity(t *testing.T, param pbParam.CreateIdentityParams, nodeID str
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "CreateIdentity"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "CreateIdentity"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -145,14 +149,15 @@ func AddAccessorMethod(t *testing.T, param pbParam.AccessorMethodParams, nodeID 
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "AddAccessorMethod"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "AddAccessorMethod"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -171,14 +176,15 @@ func ClearRegisterMsqDestinationTimeout(t *testing.T, param pbParam.ClearRegiste
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "ClearRegisterMsqDestinationTimeout"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "ClearRegisterMsqDestinationTimeout"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
@@ -197,14 +203,15 @@ func UpdateIdentity(t *testing.T, param pbParam.UpdateIdentityParams, nodeID str
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	fnName := "UpdateIdentity"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
-	fnName := "UpdateIdentity"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
 	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
