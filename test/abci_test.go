@@ -387,20 +387,18 @@ func TestASRegisterServiceDestinationByNDIDForAS1(t *testing.T) {
 }
 
 func TestASRegisterServiceDestination(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID1,
-		1.1,
-		1.2,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID1
+	param.MinIal = 1.1
+	param.MinAal = 1.2
 	RegisterServiceDestination(t, param, asPrivK, AS1, "success")
 }
 
 func TestASRegisterServiceDestination2(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID1,
-		1.1,
-		1.2,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID1
+	param.MinIal = 1.1
+	param.MinAal = 1.2
 	RegisterServiceDestination(t, param, asPrivK, AS1, "Duplicate service ID in provide service list")
 }
 
@@ -425,11 +423,10 @@ func TestQueryGetServiceDetail(t *testing.T) {
 }
 
 func TestASUpdateServiceDestination(t *testing.T) {
-	var param = did.UpdateServiceDestinationParam{
-		serviceID1,
-		1.4,
-		1.5,
-	}
+	var param pbParam.UpdateServiceDestinationParams
+	param.ServiceId = serviceID1
+	param.MinIal = 1.4
+	param.MinAal = 1.5
 	UpdateServiceDestination(t, param, AS1)
 }
 
@@ -518,20 +515,18 @@ func TestIdPCreateIdpResponse(t *testing.T) {
 }
 
 func TestASSignData(t *testing.T) {
-	var param = did.SignDataParam{
-		serviceID1,
-		requestID1.String(),
-		"sign(data,asKey)",
-	}
+	var param pbParam.SignDataParams
+	param.ServiceId = serviceID1
+	param.RequestId = requestID1.String()
+	param.Signature = "sign(data,asKey)"
 	SignData(t, param, "success", AS1)
 }
 
 func TestASSignData2(t *testing.T) {
-	var param = did.SignDataParam{
-		serviceID1,
-		requestID1.String(),
-		"sign(data,asKey)",
-	}
+	var param pbParam.SignDataParams
+	param.ServiceId = serviceID1
+	param.RequestId = requestID1.String()
+	param.Signature = "sign(data,asKey)"
 	SignData(t, param, "Duplicate AS ID in answered AS list", AS1)
 }
 
@@ -1282,11 +1277,10 @@ func TestASRegisterServiceDestinationByNDID(t *testing.T) {
 }
 
 func TestAS2RegisterServiceDestination(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID1,
-		2.8,
-		2.9,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID1
+	param.MinIal = 2.8
+	param.MinAal = 2.9
 	RegisterServiceDestination(t, param, asPrivK2, AS2, "success")
 }
 
@@ -1378,38 +1372,34 @@ func TestASRegisterServiceDestinationByNDID5(t *testing.T) {
 }
 
 func TestAS1RegisterServiceDestinationBankStatement1(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID3,
-		2.8,
-		2.9,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID3
+	param.MinIal = 2.8
+	param.MinAal = 2.9
 	RegisterServiceDestination(t, param, asPrivK, AS1, "success")
 }
 
 func TestAS1RegisterServiceDestinationBankStatement2(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID4,
-		2.2,
-		2.2,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID4
+	param.MinIal = 2.2
+	param.MinAal = 2.2
 	RegisterServiceDestination(t, param, asPrivK, AS1, "success")
 }
 
 func TestAS1RegisterServiceDestinationBankStatement3(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID5,
-		3.3,
-		3.3,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID5
+	param.MinIal = 3.3
+	param.MinAal = 3.3
 	RegisterServiceDestination(t, param, asPrivK, AS1, "success")
 }
 
 func TestASUpdateServiceDestination2(t *testing.T) {
-	var param = did.UpdateServiceDestinationParam{
-		serviceID3,
-		1.1,
-		1.1,
-	}
+	var param pbParam.UpdateServiceDestinationParams
+	param.ServiceId = serviceID3
+	param.MinIal = 1.1
+	param.MinAal = 1.1
 	UpdateServiceDestination(t, param, AS1)
 }
 
@@ -1563,9 +1553,8 @@ func TestQueryGetNodeInfoRP1(t *testing.T) {
 }
 
 func TestASDisableServiceDestination(t *testing.T) {
-	var param = did.DisableServiceDestinationParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceDestinationParams
+	param.ServiceId = serviceID1
 	DisableServiceDestination(t, param, AS1)
 }
 
@@ -1577,9 +1566,8 @@ func TestQueryGetAsNodesByServiceId7(t *testing.T) {
 }
 
 func TestASEnableServiceDestination(t *testing.T) {
-	var param = did.DisableServiceDestinationParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceDestinationParams
+	param.ServiceId = serviceID1
 	EnableServiceDestination(t, param, AS1)
 }
 
@@ -1669,11 +1657,10 @@ func TestNDIDDisableServiceDestinationByNDIDForTest(t *testing.T) {
 }
 
 func TestASSignDataForNewRequest(t *testing.T) {
-	var param = did.SignDataParam{
-		serviceID1,
-		requestID4.String(),
-		"sign(data,asKey)",
-	}
+	var param pbParam.SignDataParams
+	param.ServiceId = serviceID1
+	param.RequestId = requestID4.String()
+	param.Signature = "sign(data,asKey)"
 	SignData(t, param, "Service destination is not approved by NDID", AS1)
 }
 
@@ -1686,18 +1673,16 @@ func TestNDIDEnableServiceDestinationByNDIDForTest(t *testing.T) {
 }
 
 func TestASDisableServiceDestination2(t *testing.T) {
-	var param = did.DisableServiceDestinationParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceDestinationParams
+	param.ServiceId = serviceID1
 	DisableServiceDestination(t, param, AS1)
 }
 
 func TestASSignDataForNewRequest1(t *testing.T) {
-	var param = did.SignDataParam{
-		serviceID1,
-		requestID4.String(),
-		"sign(data,asKey)",
-	}
+	var param pbParam.SignDataParams
+	param.ServiceId = serviceID1
+	param.RequestId = requestID4.String()
+	param.Signature = "sign(data,asKey)"
 	SignData(t, param, "Service destination is not active", AS1)
 }
 func TestNDIDDisableServiceForTest(t *testing.T) {
@@ -1708,11 +1693,10 @@ func TestNDIDDisableServiceForTest(t *testing.T) {
 }
 
 func TestASSignDataForNewRequest2(t *testing.T) {
-	var param = did.SignDataParam{
-		serviceID1,
-		requestID4.String(),
-		"sign(data,asKey)",
-	}
+	var param pbParam.SignDataParams
+	param.ServiceId = serviceID1
+	param.RequestId = requestID4.String()
+	param.Signature = "sign(data,asKey)"
 	SignData(t, param, "Service is not active", AS1)
 }
 
@@ -2107,11 +2091,10 @@ func TestASRegisterServiceDestinationByNDIDForserviceID6(t *testing.T) {
 }
 
 func TestASRegisterServiceDestinationserviceID6(t *testing.T) {
-	var param = did.RegisterServiceDestinationParam{
-		serviceID6,
-		1.1,
-		1.2,
-	}
+	var param pbParam.RegisterServiceDestinationParams
+	param.ServiceId = serviceID6
+	param.MinIal = 1.1
+	param.MinAal = 1.2
 	RegisterServiceDestination(t, param, asPrivK, AS3BehindProxy1, "success")
 }
 

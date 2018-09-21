@@ -168,11 +168,11 @@ type GetRequestDetailResult struct {
 	RequesterNodeID string        `json:"requester_node_id"`
 }
 
-type SignDataParam struct {
-	ServiceID string `json:"service_id"`
-	RequestID string `json:"request_id"`
-	Signature string `json:"signature"`
-}
+// type SignDataParam struct {
+// 	ServiceID string `json:"service_id"`
+// 	RequestID string `json:"request_id"`
+// 	Signature string `json:"signature"`
+// }
 
 type AddServiceParam struct {
 	ServiceID   string `json:"service_id"`
@@ -183,11 +183,11 @@ type DisableServiceParam struct {
 	ServiceID string `json:"service_id"`
 }
 
-type RegisterServiceDestinationParam struct {
-	ServiceID string  `json:"service_id"`
-	MinIal    float64 `json:"min_ial"`
-	MinAal    float64 `json:"min_aal"`
-}
+// type RegisterServiceDestinationParam struct {
+// 	ServiceID string  `json:"service_id"`
+// 	MinIal    float64 `json:"min_ial"`
+// 	MinAal    float64 `json:"min_aal"`
+// }
 
 type GetServiceDetailParam struct {
 	ServiceID string `json:"service_id"`
@@ -501,11 +501,11 @@ type GetIdentityProofResult struct {
 	IdentityProof string `json:"identity_proof"`
 }
 
-type UpdateServiceDestinationParam struct {
-	ServiceID string  `json:"service_id"`
-	MinIal    float64 `json:"min_ial"`
-	MinAal    float64 `json:"min_aal"`
-}
+// type UpdateServiceDestinationParam struct {
+// 	ServiceID string  `json:"service_id"`
+// 	MinIal    float64 `json:"min_ial"`
+// 	MinAal    float64 `json:"min_aal"`
+// }
 
 type UpdateServiceParam struct {
 	ServiceID   string `json:"service_id"`
@@ -554,9 +554,9 @@ type ApproveService struct {
 	Active bool `json:"active"`
 }
 
-type DisableServiceDestinationParam struct {
-	ServiceID string `json:"service_id"`
-}
+// type DisableServiceDestinationParam struct {
+// 	ServiceID string `json:"service_id"`
+// }
 
 type ClearRegisterMsqDestinationTimeoutParam struct {
 	HashID string `json:"hash_id"`

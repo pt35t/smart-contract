@@ -120,3 +120,25 @@ message SetDataReceivedParams {
   string service_id = 2;
   string as_id = 3;
 }
+
+message SignDataParams {
+  string service_id = 1;
+  string request_id = 2;
+  string signature = 3;
+}
+
+message RegisterServiceDestinationParams {
+  string service_id = 1;
+  double min_ial = 2;
+  double min_aal = 3;
+}
+
+message UpdateServiceDestinationParams {
+  string service_id = 1;
+  double min_ial = 2;
+  double min_aal = 3;
+}
+
+message DisableServiceDestinationParams {
+	string service_id = 1;
+}

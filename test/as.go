@@ -27,19 +27,19 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 	"testing"
 
-	did "github.com/ndidplatform/smart-contract/abci/did/v1"
+	"github.com/gogo/protobuf/proto"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
-func RegisterServiceDestination(t *testing.T, param did.RegisterServiceDestinationParam, priveKFile string, nodeID string, expected string) {
+func RegisterServiceDestination(t *testing.T, param pbParam.RegisterServiceDestinationParams, priveKFile string, nodeID string, expected string) {
 	asKey := getPrivateKeyFromString(priveKFile)
 	asNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -60,10 +60,10 @@ func RegisterServiceDestination(t *testing.T, param did.RegisterServiceDestinati
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateServiceDestination(t *testing.T, param did.UpdateServiceDestinationParam, nodeID string) {
+func UpdateServiceDestination(t *testing.T, param pbParam.UpdateServiceDestinationParams, nodeID string) {
 	asKey := getPrivateKeyFromString(asPrivK)
 	asNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -85,10 +85,10 @@ func UpdateServiceDestination(t *testing.T, param did.UpdateServiceDestinationPa
 	t.Logf("PASS: %s", fnName)
 }
 
-func SignData(t *testing.T, param did.SignDataParam, expected string, nodeID string) {
+func SignData(t *testing.T, param pbParam.SignDataParams, expected string, nodeID string) {
 	asKey := getPrivateKeyFromString(asPrivK)
 	asNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -109,10 +109,10 @@ func SignData(t *testing.T, param did.SignDataParam, expected string, nodeID str
 	t.Logf("PASS: %s", fnName)
 }
 
-func DisableServiceDestination(t *testing.T, param did.DisableServiceDestinationParam, nodeID string) {
+func DisableServiceDestination(t *testing.T, param pbParam.DisableServiceDestinationParams, nodeID string) {
 	asKey := getPrivateKeyFromString(asPrivK)
 	asNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -134,10 +134,10 @@ func DisableServiceDestination(t *testing.T, param did.DisableServiceDestination
 	t.Logf("PASS: %s", fnName)
 }
 
-func EnableServiceDestination(t *testing.T, param did.DisableServiceDestinationParam, nodeID string) {
+func EnableServiceDestination(t *testing.T, param pbParam.DisableServiceDestinationParams, nodeID string) {
 	asKey := getPrivateKeyFromString(asPrivK)
 	asNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
