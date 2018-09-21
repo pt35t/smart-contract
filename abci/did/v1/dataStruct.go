@@ -174,14 +174,14 @@ type GetRequestDetailResult struct {
 // 	Signature string `json:"signature"`
 // }
 
-type AddServiceParam struct {
-	ServiceID   string `json:"service_id"`
-	ServiceName string `json:"service_name"`
-}
+// type AddServiceParam struct {
+// 	ServiceID   string `json:"service_id"`
+// 	ServiceName string `json:"service_name"`
+// }
 
-type DisableServiceParam struct {
-	ServiceID string `json:"service_id"`
-}
+// type DisableServiceParam struct {
+// 	ServiceID string `json:"service_id"`
+// }
 
 // type RegisterServiceDestinationParam struct {
 // 	ServiceID string  `json:"service_id"`
@@ -331,9 +331,9 @@ type Namespace struct {
 	Active      bool   `json:"active"`
 }
 
-type DisableNamespaceParam struct {
-	Namespace string `json:"namespace"`
-}
+// type DisableNamespaceParam struct {
+// 	Namespace string `json:"namespace"`
+// }
 
 type UpdateNodeParam struct {
 	PublicKey       string `json:"public_key"`
@@ -448,12 +448,12 @@ type GetIdentityInfoResult struct {
 	Ial float64 `json:"ial"`
 }
 
-type UpdateNodeByNDIDParam struct {
-	NodeID   string  `json:"node_id"`
-	MaxIal   float64 `json:"max_ial"`
-	MaxAal   float64 `json:"max_aal"`
-	NodeName string  `json:"node_name"`
-}
+// type UpdateNodeByNDIDParam struct {
+// 	NodeID   string  `json:"node_id"`
+// 	MaxIal   float64 `json:"max_ial"`
+// 	MaxAal   float64 `json:"max_aal"`
+// 	NodeName string  `json:"node_name"`
+// }
 
 // type UpdateIdentityParam struct {
 // 	HashID string  `json:"hash_id"`
@@ -507,10 +507,10 @@ type GetIdentityProofResult struct {
 // 	MinAal    float64 `json:"min_aal"`
 // }
 
-type UpdateServiceParam struct {
-	ServiceID   string `json:"service_id"`
-	ServiceName string `json:"service_name"`
-}
+// type UpdateServiceParam struct {
+// 	ServiceID   string `json:"service_id"`
+// 	ServiceName string `json:"service_name"`
+// }
 
 type DisableMsqDestinationParam struct {
 	HashID string `json:"hash_id"`
@@ -520,14 +520,14 @@ type DisableAccessorMethodParam struct {
 	AccessorID string `json:"accessor_id"`
 }
 
-type RegisterServiceDestinationByNDIDParam struct {
-	ServiceID string `json:"service_id"`
-	NodeID    string `json:"node_id"`
-}
+// type RegisterServiceDestinationByNDIDParam struct {
+// 	ServiceID string `json:"service_id"`
+// 	NodeID    string `json:"node_id"`
+// }
 
-type DisableNodeParam struct {
-	NodeID string `json:"node_id"`
-}
+// type DisableNodeParam struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type Service struct {
 	ServiceID string  `json:"service_id"`
@@ -545,10 +545,10 @@ type GetServicesByAsIDResult struct {
 	Services []Service `json:"services"`
 }
 
-type DisableServiceDestinationByNDIDParam struct {
-	ServiceID string `json:"service_id"`
-	NodeID    string `json:"node_id"`
-}
+// type DisableServiceDestinationByNDIDParam struct {
+// 	ServiceID string `json:"service_id"`
+// 	NodeID    string `json:"node_id"`
+// }
 
 type ApproveService struct {
 	Active bool `json:"active"`
@@ -562,9 +562,9 @@ type ApproveService struct {
 // 	HashID string `json:"hash_id"`
 // }
 
-type TimeOutBlockRegisterMsqDestination struct {
-	TimeOutBlock int64 `json:"time_out_block"`
-}
+// type TimeOutBlockRegisterMsqDestination struct {
+// 	TimeOutBlock int64 `json:"time_out_block"`
+// }
 
 type GetIdpNodesInfoResult struct {
 	Node []interface{} `json:"node"`
@@ -592,11 +592,11 @@ type GetAsNodesInfoByServiceIdResult struct {
 	Node []interface{} `json:"node"`
 }
 
-type AddNodeToProxyNodeParam struct {
-	NodeID      string `json:"node_id"`
-	ProxyNodeID string `json:"proxy_node_id"`
-	Config      string `json:"config"`
-}
+// type AddNodeToProxyNodeParam struct {
+// 	NodeID      string `json:"node_id"`
+// 	ProxyNodeID string `json:"proxy_node_id"`
+// 	Config      string `json:"config"`
+// }
 
 type GetNodeInfoResultRPandASBehindProxy struct {
 	PublicKey       string `json:"public_key"`
@@ -630,15 +630,15 @@ type GetNodeInfoResultIdPandASBehindProxy struct {
 	} `json:"proxy"`
 }
 
-type UpdateNodeProxyNodeParam struct {
-	NodeID      string `json:"node_id"`
-	ProxyNodeID string `json:"proxy_node_id"`
-	Config      string `json:"config"`
-}
+// type UpdateNodeProxyNodeParam struct {
+// 	NodeID      string `json:"node_id"`
+// 	ProxyNodeID string `json:"proxy_node_id"`
+// 	Config      string `json:"config"`
+// }
 
-type RemoveNodeFromProxyNode struct {
-	NodeID string `json:"node_id"`
-}
+// type RemoveNodeFromProxyNode struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type IdpNodeBehindProxy struct {
 	NodeID    string  `json:"node_id"`

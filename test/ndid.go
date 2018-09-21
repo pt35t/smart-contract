@@ -27,14 +27,12 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 	"testing"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
@@ -113,9 +111,9 @@ func RegisterNode(t *testing.T, param pbParam.RegisterNodeParams) {
 
 func SetTimeOutBlockRegisterMsqDestination(t *testing.T) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
-	var param did.TimeOutBlockRegisterMsqDestination
+	var param pbParam.TimeOutBlockRegisterMsqDestinationParams
 	param.TimeOutBlock = 100
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -220,10 +218,10 @@ func SetNodeToken(t *testing.T, param pbParam.SetNodeTokenParams) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddService(t *testing.T, param did.AddServiceParam) {
+func AddService(t *testing.T, param pbParam.AddServiceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -247,10 +245,10 @@ func AddService(t *testing.T, param did.AddServiceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func DisableService(t *testing.T, param did.DisableServiceParam) {
+func DisableService(t *testing.T, param pbParam.DisableServiceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -274,10 +272,10 @@ func DisableService(t *testing.T, param did.DisableServiceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func EnableService(t *testing.T, param did.DisableServiceParam) {
+func EnableService(t *testing.T, param pbParam.DisableServiceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -301,10 +299,10 @@ func EnableService(t *testing.T, param did.DisableServiceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func RegisterServiceDestinationByNDID(t *testing.T, param did.RegisterServiceDestinationByNDIDParam) {
+func RegisterServiceDestinationByNDID(t *testing.T, param pbParam.RegisterServiceDestinationByNDIDParams) {
 	key := getPrivateKeyFromString(ndidPrivK)
 	nodeID := []byte("NDID")
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -328,10 +326,10 @@ func RegisterServiceDestinationByNDID(t *testing.T, param did.RegisterServiceDes
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateService(t *testing.T, param did.UpdateServiceParam) {
+func UpdateService(t *testing.T, param pbParam.UpdateServiceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -382,10 +380,10 @@ func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParams) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddNamespace(t *testing.T, param did.Namespace) {
+func AddNamespace(t *testing.T, param pbParam.AddNamespaceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -409,10 +407,10 @@ func AddNamespace(t *testing.T, param did.Namespace) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func DisableNamespace(t *testing.T, param did.DisableNamespaceParam) {
+func DisableNamespace(t *testing.T, param pbParam.DisableNamespaceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -436,10 +434,10 @@ func DisableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func EnableNamespace(t *testing.T, param did.DisableNamespaceParam) {
+func EnableNamespace(t *testing.T, param pbParam.DisableNamespaceParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -490,8 +488,8 @@ func SetValidator(t *testing.T, param pbParam.SetValidatorParams) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateNodeByNDID(t *testing.T, param did.UpdateNodeByNDIDParam) {
-	paramJSON, err := json.Marshal(param)
+func UpdateNodeByNDID(t *testing.T, param pbParam.UpdateNodeByNDIDParams) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -517,8 +515,8 @@ func UpdateNodeByNDID(t *testing.T, param did.UpdateNodeByNDIDParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func DisableNode(t *testing.T, param did.DisableNodeParam) {
-	paramJSON, err := json.Marshal(param)
+func DisableNode(t *testing.T, param pbParam.DisableNodeParams) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -544,8 +542,8 @@ func DisableNode(t *testing.T, param did.DisableNodeParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func EnableNode(t *testing.T, param did.DisableNodeParam) {
-	paramJSON, err := json.Marshal(param)
+func EnableNode(t *testing.T, param pbParam.DisableNodeParams) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -571,10 +569,10 @@ func EnableNode(t *testing.T, param did.DisableNodeParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func DisableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDestinationByNDIDParam) {
+func DisableServiceDestinationByNDID(t *testing.T, param pbParam.DisableServiceDestinationByNDIDParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -598,10 +596,10 @@ func DisableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDesti
 	t.Logf("PASS: %s", fnName)
 }
 
-func EnableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDestinationByNDIDParam) {
+func EnableServiceDestinationByNDID(t *testing.T, param pbParam.DisableServiceDestinationByNDIDParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -625,8 +623,8 @@ func EnableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDestin
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddNodeToProxyNode(t *testing.T, param did.AddNodeToProxyNodeParam, expected string) {
-	paramJSON, err := json.Marshal(param)
+func AddNodeToProxyNode(t *testing.T, param pbParam.AddNodeToProxyNodeParams, expected string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -653,8 +651,8 @@ func AddNodeToProxyNode(t *testing.T, param did.AddNodeToProxyNodeParam, expecte
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateNodeProxyNode(t *testing.T, param did.UpdateNodeProxyNodeParam, expected string) {
-	paramJSON, err := json.Marshal(param)
+func UpdateNodeProxyNode(t *testing.T, param pbParam.UpdateNodeProxyNodeParams, expected string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -679,8 +677,8 @@ func UpdateNodeProxyNode(t *testing.T, param did.UpdateNodeProxyNodeParam, expec
 	t.Logf("PASS: %s", fnName)
 }
 
-func RemoveNodeFromProxyNode(t *testing.T, param did.RemoveNodeFromProxyNode, expected string) {
-	paramJSON, err := json.Marshal(param)
+func RemoveNodeFromProxyNode(t *testing.T, param pbParam.RemoveNodeFromProxyNodeParams, expected string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

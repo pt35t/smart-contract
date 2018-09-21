@@ -177,3 +177,68 @@ message User {
 message RegisterMsqDestinationParams {
   repeated User users = 1;
 }
+
+message AddNamespaceParams {
+  string namespace = 1;
+  string description = 2;
+  bool active = 3;
+}
+
+message DisableNamespaceParams {
+  string namespace = 1;
+}
+
+message AddServiceParams {
+  string service_id = 1;
+  string service_name = 2;
+}
+
+message DisableServiceParams {
+  string service_id = 1;
+}
+
+message UpdateNodeByNDIDParams {
+  string node_id = 1;
+  double max_ial = 2;
+  double max_aal = 3;
+  string node_name = 4;
+}
+
+message UpdateServiceParams {
+  string service_id = 1;
+  string service_name = 2;
+}
+
+message DisableNodeParams {
+  string node_id = 1;
+}
+
+message RegisterServiceDestinationByNDIDParams {
+  string service_id = 1;
+  string node_id = 2;
+}
+
+message DisableServiceDestinationByNDIDParams {
+  string service_id = 1;
+  string node_id = 2;
+}
+
+message TimeOutBlockRegisterMsqDestinationParams {
+  int64 time_out_block = 1;
+}
+
+message AddNodeToProxyNodeParams {
+  string node_id = 1;
+  string proxy_node_id = 2;
+  string config = 3;
+}
+
+message UpdateNodeProxyNodeParams {
+  string node_id = 1;
+  string proxy_node_id = 2;
+  string config = 3;
+}
+
+message RemoveNodeFromProxyNodeParams {
+  string node_id = 1;
+}

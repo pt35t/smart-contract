@@ -268,25 +268,22 @@ func TestQueryGetNodeTokenRPAfterSetToken(t *testing.T) {
 }
 
 func TestNDIDAddService(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID1,
-		"Bank statement",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID1
+	param.ServiceName = "Bank statement"
 	AddService(t, param)
 }
 
 func TestNDIDAddServiceAgain(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID2,
-		"Bank statement",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID2
+	param.ServiceName = "Bank statement"
 	AddService(t, param)
 }
 
 func TestNDIDDisableService(t *testing.T) {
-	var param = did.DisableServiceParam{
-		serviceID2,
-	}
+	var param pbParam.DisableServiceParams
+	param.ServiceId = serviceID2
 	DisableService(t, param)
 }
 
@@ -316,8 +313,8 @@ func TestDisableOldIdPNode1(t *testing.T) {
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
 		if idp.ID != IdP1 {
-			var param did.DisableNodeParam
-			param.NodeID = idp.ID
+			var param pbParam.DisableNodeParams
+			param.NodeId = idp.ID
 			DisableNode(t, param)
 		}
 	}
@@ -377,10 +374,9 @@ func TestQueryGetMsqAddress(t *testing.T) {
 }
 
 func TestASRegisterServiceDestinationByNDIDForAS1(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID1,
-		AS1,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID1
+	param.NodeId = AS1
 	RegisterServiceDestinationByNDID(t, param)
 }
 
@@ -401,10 +397,9 @@ func TestASRegisterServiceDestination2(t *testing.T) {
 }
 
 func TestNDIDUpdateService(t *testing.T) {
-	var param = did.UpdateServiceParam{
-		serviceID1,
-		"Bank statement (ย้อนหลัง 3 เดือน)",
-	}
+	var param pbParam.UpdateServiceParams
+	param.ServiceId = serviceID1
+	param.ServiceName = "Bank statement (ย้อนหลัง 3 เดือน)"
 	UpdateService(t, param)
 }
 
@@ -756,7 +751,7 @@ func TestQueryGetRequestTimedOut(t *testing.T) {
 func TestDisableOldNamespace(t *testing.T) {
 	namespaces := GetNamespaceListForDisable(t)
 	for _, namespace := range namespaces {
-		var param did.DisableNamespaceParam
+		var param pbParam.DisableNamespaceParams
 		param.Namespace = namespace.Namespace
 		DisableNamespace(t, param)
 	}
@@ -764,21 +759,21 @@ func TestDisableOldNamespace(t *testing.T) {
 }
 
 func TestAddNamespaceCID(t *testing.T) {
-	var param did.Namespace
+	var param pbParam.AddNamespaceParams
 	param.Namespace = namespaceID1
 	param.Description = "Citizen ID"
 	AddNamespace(t, param)
 }
 
 func TestAddNamespaceTel(t *testing.T) {
-	var param did.Namespace
+	var param pbParam.AddNamespaceParams
 	param.Namespace = namespaceID2
 	param.Description = "Tel number"
 	AddNamespace(t, param)
 }
 
 func TestDisableNamespace(t *testing.T) {
-	var param did.DisableNamespaceParam
+	var param pbParam.DisableNamespaceParams
 	param.Namespace = namespaceID2
 	DisableNamespace(t, param)
 }
@@ -856,8 +851,8 @@ func TestDisableOldIdPNode2(t *testing.T) {
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
 		if idp.ID != IdP1 {
-			var param did.DisableNodeParam
-			param.NodeID = idp.ID
+			var param pbParam.DisableNodeParams
+			param.NodeId = idp.ID
 			DisableNode(t, param)
 		}
 	}
@@ -921,9 +916,8 @@ func TestDisableOldService(t *testing.T) {
 	services := GetServiceListForDisable(t)
 	for _, service := range services {
 		if service.ServiceID != serviceID1 {
-			var param = did.DisableServiceParam{
-				service.ServiceID,
-			}
+			var param pbParam.DisableServiceParams
+			param.ServiceId = service.ServiceID
 			DisableService(t, param)
 		}
 	}
@@ -941,16 +935,16 @@ func TestQueryGetServiceList(t *testing.T) {
 }
 
 func TestUpdateNodeByNDID(t *testing.T) {
-	var param did.UpdateNodeByNDIDParam
-	param.NodeID = IdP1
+	var param pbParam.UpdateNodeByNDIDParams
+	param.NodeId = IdP1
 	param.MaxIal = 2.3
 	param.MaxAal = 2.4
 	UpdateNodeByNDID(t, param)
 }
 
 func TestUpdateNodeRPByNDID(t *testing.T) {
-	var param did.UpdateNodeByNDIDParam
-	param.NodeID = RP1
+	var param pbParam.UpdateNodeByNDIDParams
+	param.NodeId = RP1
 	param.NodeName = "Node RP 1 edited"
 	UpdateNodeByNDID(t, param)
 }
@@ -1014,8 +1008,8 @@ func TestDisableOldIdPNode3(t *testing.T) {
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
 		if idp.ID != IdP1 && idp.ID != IdP4 {
-			var param did.DisableNodeParam
-			param.NodeID = idp.ID
+			var param pbParam.DisableNodeParams
+			param.NodeId = idp.ID
 			DisableNode(t, param)
 		}
 	}
@@ -1248,10 +1242,9 @@ func TestSetNodeTokenAS2(t *testing.T) {
 }
 
 func TestASRegisterServiceDestinationByNDID(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID1,
-		AS2,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID1
+	param.NodeId = AS2
 	RegisterServiceDestinationByNDID(t, param)
 }
 
@@ -1271,14 +1264,14 @@ func TestQueryGetAsNodesByServiceId2(t *testing.T) {
 }
 
 func TestDisableNode(t *testing.T) {
-	var param did.DisableNodeParam
-	param.NodeID = IdP1
+	var param pbParam.DisableNodeParams
+	param.NodeId = IdP1
 	DisableNode(t, param)
 }
 
 func TestDisableNode2(t *testing.T) {
-	var param did.DisableNodeParam
-	param.NodeID = AS2
+	var param pbParam.DisableNodeParams
+	param.NodeId = AS2
 	DisableNode(t, param)
 }
 
@@ -1290,9 +1283,8 @@ func TestQueryGetAsNodesByServiceId3(t *testing.T) {
 }
 
 func TestNDIDDisableService2(t *testing.T) {
-	var param = did.DisableServiceParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceParams
+	param.ServiceId = serviceID1
 	DisableService(t, param)
 }
 func TestQueryGetAsNodesByServiceId4(t *testing.T) {
@@ -1303,50 +1295,44 @@ func TestQueryGetAsNodesByServiceId4(t *testing.T) {
 }
 
 func TestNDIDAddService3(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID3,
-		"Bank statement",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID3
+	param.ServiceName = "Bank statement"
 	AddService(t, param)
 }
 
 func TestNDIDAddService4(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID4,
-		"Bank statement",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID4
+	param.ServiceName = "Bank statement"
 	AddService(t, param)
 }
 
 func TestNDIDAddService5(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID5,
-		"Bank statement",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID5
+	param.ServiceName = "Bank statement"
 	AddService(t, param)
 }
 
 func TestASRegisterServiceDestinationByNDID3(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID3,
-		AS1,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID3
+	param.NodeId = AS1
 	RegisterServiceDestinationByNDID(t, param)
 }
 
 func TestASRegisterServiceDestinationByNDID4(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID4,
-		AS1,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID4
+	param.NodeId = AS1
 	RegisterServiceDestinationByNDID(t, param)
 }
 
 func TestASRegisterServiceDestinationByNDID5(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID5,
-		AS1,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID5
+	param.NodeId = AS1
 	RegisterServiceDestinationByNDID(t, param)
 }
 
@@ -1391,17 +1377,15 @@ func TestQueryGetServicesByAsID(t *testing.T) {
 }
 
 func TestNDIDDisableService3(t *testing.T) {
-	var param = did.DisableServiceParam{
-		serviceID3,
-	}
+	var param pbParam.DisableServiceParams
+	param.ServiceId = serviceID3
 	DisableService(t, param)
 }
 
 func TestNDIDDisableServiceDestinationByNDID(t *testing.T) {
-	var param = did.DisableServiceDestinationByNDIDParam{
-		serviceID4,
-		AS1,
-	}
+	var param pbParam.DisableServiceDestinationByNDIDParams
+	param.ServiceId = serviceID4
+	param.NodeId = AS1
 	DisableServiceDestinationByNDID(t, param)
 }
 
@@ -1441,8 +1425,8 @@ func TestQueryGetAccessorKey3(t *testing.T) {
 }
 
 func TestEnableNode(t *testing.T) {
-	var param did.DisableNodeParam
-	param.NodeID = IdP1
+	var param pbParam.DisableNodeParams
+	param.NodeId = IdP1
 	EnableNode(t, param)
 }
 
@@ -1459,10 +1443,9 @@ func TestQueryGetIdpNodes7(t *testing.T) {
 }
 
 func TestNDIDEnableServiceDestinationByNDID(t *testing.T) {
-	var param = did.DisableServiceDestinationByNDIDParam{
-		serviceID4,
-		AS1,
-	}
+	var param pbParam.DisableServiceDestinationByNDIDParams
+	param.ServiceId = serviceID4
+	param.NodeId = AS1
 	EnableServiceDestinationByNDID(t, param)
 }
 
@@ -1482,7 +1465,7 @@ func TestQueryGetServicesByAsID3(t *testing.T) {
 }
 
 func TestEnableNamespace(t *testing.T) {
-	var param did.DisableNamespaceParam
+	var param pbParam.DisableNamespaceParams
 	param.Namespace = namespaceID2
 	EnableNamespace(t, param)
 }
@@ -1493,9 +1476,8 @@ func TestQueryGetNamespaceList2(t *testing.T) {
 }
 
 func TestNDIDEnableService(t *testing.T) {
-	var param = did.DisableServiceParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceParams
+	param.ServiceId = serviceID1
 	EnableService(t, param)
 }
 
@@ -1558,8 +1540,8 @@ func TestQueryGetAsNodesByServiceId8(t *testing.T) {
 }
 
 func TestDisableNodeRP(t *testing.T) {
-	var param did.DisableNodeParam
-	param.NodeID = RP1
+	var param pbParam.DisableNodeParams
+	param.NodeId = RP1
 	DisableNode(t, param)
 }
 
@@ -1583,8 +1565,8 @@ func TestRPCreateRequestAferDisableNode(t *testing.T) {
 }
 
 func TestEnableNodeRP1(t *testing.T) {
-	var param did.DisableNodeParam
-	param.NodeID = RP1
+	var param pbParam.DisableNodeParams
+	param.NodeId = RP1
 	EnableNode(t, param)
 }
 
@@ -1627,10 +1609,9 @@ func TestIdPCreateIdpResponseNewRequest(t *testing.T) {
 }
 
 func TestNDIDDisableServiceDestinationByNDIDForTest(t *testing.T) {
-	var param = did.DisableServiceDestinationByNDIDParam{
-		serviceID1,
-		AS1,
-	}
+	var param pbParam.DisableServiceDestinationByNDIDParams
+	param.ServiceId = serviceID1
+	param.NodeId = AS1
 	DisableServiceDestinationByNDID(t, param)
 }
 
@@ -1643,10 +1624,9 @@ func TestASSignDataForNewRequest(t *testing.T) {
 }
 
 func TestNDIDEnableServiceDestinationByNDIDForTest(t *testing.T) {
-	var param = did.DisableServiceDestinationByNDIDParam{
-		serviceID1,
-		AS1,
-	}
+	var param pbParam.DisableServiceDestinationByNDIDParams
+	param.ServiceId = serviceID1
+	param.NodeId = AS1
 	EnableServiceDestinationByNDID(t, param)
 }
 
@@ -1664,9 +1644,8 @@ func TestASSignDataForNewRequest1(t *testing.T) {
 	SignData(t, param, "Service destination is not active", AS1)
 }
 func TestNDIDDisableServiceForTest(t *testing.T) {
-	var param = did.DisableServiceParam{
-		serviceID1,
-	}
+	var param pbParam.DisableServiceParams
+	param.ServiceId = serviceID1
 	DisableService(t, param)
 }
 
@@ -1828,8 +1807,8 @@ func TestQueryGetAsNodesByServiceIdBeforeUpdateNodeName(t *testing.T) {
 }
 
 func TestUpdateNodeAS1ByNDID(t *testing.T) {
-	var param did.UpdateNodeByNDIDParam
-	param.NodeID = AS1
+	var param pbParam.UpdateNodeByNDIDParams
+	param.NodeId = AS1
 	param.NodeName = "UpdatedName_AS1"
 	UpdateNodeByNDID(t, param)
 }
@@ -1929,29 +1908,26 @@ func TestRegisterIdP6BehindProxy1(t *testing.T) {
 }
 
 func TestAddNodeToProxyNodeProxy1(t *testing.T) {
-	var param = did.AddNodeToProxyNodeParam{
-		IdP6BehindProxy1,
-		Proxy1,
-		"KEY_ON_PROXY",
-	}
+	var param pbParam.AddNodeToProxyNodeParams
+	param.NodeId = IdP6BehindProxy1
+	param.ProxyNodeId = Proxy1
+	param.Config = "KEY_ON_PROXY"
 	AddNodeToProxyNode(t, param, "success")
 }
 
 func TestAddNodeToProxyNodeProxy2(t *testing.T) {
-	var param = did.AddNodeToProxyNodeParam{
-		IdP6BehindProxy1,
-		Proxy1,
-		"KEY_ON_PROXY",
-	}
+	var param pbParam.AddNodeToProxyNodeParams
+	param.NodeId = IdP6BehindProxy1
+	param.ProxyNodeId = Proxy1
+	param.Config = "KEY_ON_PROXY"
 	AddNodeToProxyNode(t, param, "This node ID is already associated with a proxy node")
 }
 
 func TestAddNodeToProxyNodeProxy1Proxy1(t *testing.T) {
-	var param = did.AddNodeToProxyNodeParam{
-		Proxy1,
-		Proxy1,
-		"KEY_ON_PROXY",
-	}
+	var param pbParam.AddNodeToProxyNodeParams
+	param.NodeId = Proxy1
+	param.ProxyNodeId = Proxy1
+	param.Config = "KEY_ON_PROXY"
 	AddNodeToProxyNode(t, param, "This node ID is an ID of a proxy node")
 }
 
@@ -2029,11 +2005,10 @@ func TestSetNodeTokenAS3BehindProxy1(t *testing.T) {
 }
 
 func TestAddNodeToProxyNodeAS3BehindProxy1(t *testing.T) {
-	var param = did.AddNodeToProxyNodeParam{
-		AS3BehindProxy1,
-		Proxy1,
-		"KEY_ON_PROXY",
-	}
+	var param pbParam.AddNodeToProxyNodeParams
+	param.NodeId = AS3BehindProxy1
+	param.ProxyNodeId = Proxy1
+	param.Config = "KEY_ON_PROXY"
 	AddNodeToProxyNode(t, param, "success")
 }
 
@@ -2052,18 +2027,16 @@ func TestQueryGetGetNodesBehindProxyNode2(t *testing.T) {
 }
 
 func TestNDIDAddServiceserviceID6(t *testing.T) {
-	var param = did.AddServiceParam{
-		serviceID6,
-		"Service 6",
-	}
+	var param pbParam.AddServiceParams
+	param.ServiceId = serviceID6
+	param.ServiceName = "Service 6"
 	AddService(t, param)
 }
 
 func TestASRegisterServiceDestinationByNDIDForserviceID6(t *testing.T) {
-	var param = did.RegisterServiceDestinationByNDIDParam{
-		serviceID6,
-		AS3BehindProxy1,
-	}
+	var param pbParam.RegisterServiceDestinationByNDIDParams
+	param.ServiceId = serviceID6
+	param.NodeId = AS3BehindProxy1
 	RegisterServiceDestinationByNDID(t, param)
 }
 
@@ -2115,11 +2088,10 @@ func TestRegisterMsqAddressProxy2(t *testing.T) {
 }
 
 func TestUpdateNodeProxyNodeProxy2(t *testing.T) {
-	var param = did.UpdateNodeProxyNodeParam{
-		IdP6BehindProxy1,
-		Proxy2,
-		"KEY_ON_PROXY",
-	}
+	var param pbParam.UpdateNodeProxyNodeParams
+	param.NodeId = IdP6BehindProxy1
+	param.ProxyNodeId = Proxy2
+	param.Config = "KEY_ON_PROXY"
 	UpdateNodeProxyNode(t, param, "success")
 }
 
@@ -2144,9 +2116,8 @@ func TestQueryGetNodeInfoIdP6BehindProxy2(t *testing.T) {
 }
 
 func TestRemoveNodeFromProxyNode1(t *testing.T) {
-	var param = did.RemoveNodeFromProxyNode{
-		IdP6BehindProxy1,
-	}
+	var param pbParam.RemoveNodeFromProxyNodeParams
+	param.NodeId = IdP6BehindProxy1
 	RemoveNodeFromProxyNode(t, param, "success")
 }
 
@@ -2206,8 +2177,8 @@ func TestDisableAllNode(t *testing.T) {
 	var param did.GetNodeIDListParam
 	allNode := GetNodeIDListForDisable(t, param)
 	for _, nodeID := range allNode {
-		var param did.DisableNodeParam
-		param.NodeID = nodeID
+		var param pbParam.DisableNodeParams
+		param.NodeId = nodeID
 		DisableNode(t, param)
 	}
 }
