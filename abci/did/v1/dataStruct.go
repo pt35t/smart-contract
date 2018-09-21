@@ -27,13 +27,13 @@ type NodePublicKey struct {
 	PublicKey string `json:"public_key"`
 }
 
-type GetNodePublicKeyResult struct {
-	PublicKey string `json:"public_key"`
-}
+// type GetNodePublicKeyResult struct {
+// 	PublicKey string `json:"public_key"`
+// }
 
-type GetNodeMasterPublicKeyResult struct {
-	MasterPublicKey string `json:"master_public_key"`
-}
+// type GetNodeMasterPublicKeyResult struct {
+// 	MasterPublicKey string `json:"master_public_key"`
+// }
 
 type Node struct {
 	Ial          float64 `json:"ial"`
@@ -47,16 +47,16 @@ type MsqDestination struct {
 	Nodes []Node `json:"nodes"`
 }
 
-type MsqDestinationNode struct {
-	ID     string  `json:"node_id"`
-	Name   string  `json:"node_name"`
-	MaxIal float64 `json:"max_ial"`
-	MaxAal float64 `json:"max_aal"`
-}
+// type MsqDestinationNode struct {
+// 	ID     string  `json:"node_id"`
+// 	Name   string  `json:"node_name"`
+// 	MaxIal float64 `json:"max_ial"`
+// 	MaxAal float64 `json:"max_aal"`
+// }
 
-type GetIdpNodesResult struct {
-	Node []MsqDestinationNode `json:"node"`
-}
+// type GetIdpNodesResult struct {
+// 	Node []MsqDestinationNode `json:"node"`
+// }
 
 type GetAccessorMethodParam struct {
 	AccessorID string `json:"accessor_id"`

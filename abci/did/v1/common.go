@@ -30,6 +30,7 @@ import (
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
+	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -72,9 +73,9 @@ func getNodeMasterPublicKey(param []byte, app *DIDApplication, height int64) typ
 	}
 	key := "NodeID" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
-	var res GetNodeMasterPublicKeyResult
+	var res pbResult.GetNodeMasterPublicKeyResult
 	if value == nil {
-		valueJSON, err := json.Marshal(res)
+		valueJSON, err := proto.Marshal(&res)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -86,7 +87,7 @@ func getNodeMasterPublicKey(param []byte, app *DIDApplication, height int64) typ
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	res.MasterPublicKey = nodeDetail.MasterPublicKey
-	valueJSON, err := json.Marshal(res)
+	valueJSON, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -103,9 +104,9 @@ func getNodePublicKey(param []byte, app *DIDApplication, height int64) types.Res
 	}
 	key := "NodeID" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
-	var res GetNodePublicKeyResult
+	var res pbResult.GetNodePublicKeyResult
 	if value == nil {
-		valueJSON, err := json.Marshal(res)
+		valueJSON, err := proto.Marshal(&res)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -117,7 +118,7 @@ func getNodePublicKey(param []byte, app *DIDApplication, height int64) types.Res
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	res.PublicKey = nodeDetail.PublicKey
-	valueJSON, err := json.Marshal(res)
+	valueJSON, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -146,8 +147,8 @@ func getIdpNodes(param []byte, app *DIDApplication, height int64) types.Response
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var returnNodes GetIdpNodesResult
-	returnNodes.Node = make([]MsqDestinationNode, 0)
+	var returnNodes pbResult.GetIdpNodesResult
+	returnNodes.Node = make([]*pbResult.MsqDestinationNode, 0)
 
 	if funcParam.HashId == "" {
 		idpsKey := "IdPList"
@@ -178,13 +179,12 @@ func getIdpNodes(param []byte, app *DIDApplication, height int64) types.Response
 					nodeDetail.MaxAal >= funcParam.MinAal) {
 					continue
 				}
-				var msqDesNode = MsqDestinationNode{
-					idp,
-					nodeDetail.NodeName,
-					nodeDetail.MaxIal,
-					nodeDetail.MaxAal,
-				}
-				returnNodes.Node = append(returnNodes.Node, msqDesNode)
+				var msqDesNode pbResult.MsqDestinationNode
+				msqDesNode.NodeId = idp
+				msqDesNode.NodeName = nodeDetail.NodeName
+				msqDesNode.MaxIal = nodeDetail.MaxIal
+				msqDesNode.MaxAal = nodeDetail.MaxAal
+				returnNodes.Node = append(returnNodes.Node, &msqDesNode)
 			}
 		}
 	} else {
@@ -230,18 +230,17 @@ func getIdpNodes(param []byte, app *DIDApplication, height int64) types.Response
 					nodeDetail.MaxAal >= funcParam.MinAal) {
 					continue
 				}
-				var msqDesNode = MsqDestinationNode{
-					node.NodeId,
-					nodeDetail.NodeName,
-					nodeDetail.MaxIal,
-					nodeDetail.MaxAal,
-				}
-				returnNodes.Node = append(returnNodes.Node, msqDesNode)
+				var msqDesNode pbResult.MsqDestinationNode
+				msqDesNode.NodeId = node.NodeId
+				msqDesNode.NodeName = nodeDetail.NodeName
+				msqDesNode.MaxIal = nodeDetail.MaxIal
+				msqDesNode.MaxAal = nodeDetail.MaxAal
+				returnNodes.Node = append(returnNodes.Node, &msqDesNode)
 			}
 		}
 	}
 
-	value, err := json.Marshal(returnNodes)
+	value, err := proto.Marshal(&returnNodes)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}

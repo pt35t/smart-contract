@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+message GetPriceFuncResult {
+  double price = 1;
+}
+
+message GetNodeTokenResult {
+  double amount = 1;
+}
+
+message ReportInResult {
+  string method = 1;
+  double price = 2;
+  string data = 3;
+}
+
+message GetUsedTokenReportResult {
+  repeated ReportInResult reports = 1;
+}
+
+message GetNodePublicKeyResult {
+  string public_key = 1;
+}
+
+message GetNodeMasterPublicKeyResult {
+  string master_public_key = 1;
+}
+
+message MsqDestinationNode {
+  string node_id = 1;
+  string node_name = 2;
+  double max_ial = 3;
+  double max_aal = 4;
+}
+
+message GetIdpNodesResult {
+  repeated MsqDestinationNode node = 1;
+}

@@ -45,8 +45,8 @@ func GetNodePublicKey(t *testing.T, param pbParam.GetNodePublicKeyParams, expect
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetNodePublicKeyResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetNodePublicKeyResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -69,8 +69,8 @@ func GetNodeMasterPublicKey(t *testing.T, param pbParam.GetNodeMasterPublicKeyPa
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetNodeMasterPublicKeyResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetNodeMasterPublicKeyResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -128,7 +128,7 @@ func GetNodeTokenExpectString(t *testing.T, param pbParam.GetNodeTokenParams, ex
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdpNodes(t *testing.T, param pbParam.GetIdpNodesParams, expected []did.MsqDestinationNode) {
+func GetIdpNodes(t *testing.T, param pbParam.GetIdpNodesParams, expected pbResult.GetIdpNodesResult) {
 	fnName := "GetIdpNodes"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -137,18 +137,18 @@ func GetIdpNodes(t *testing.T, param pbParam.GetIdpNodesParams, expected []did.M
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetIdpNodesResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetIdpNodesResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	if actual := res.Node; !reflect.DeepEqual(actual, expected) {
+	if actual := res; !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdpNodesForDisable(t *testing.T, param pbParam.GetIdpNodesParams) (expected []did.MsqDestinationNode) {
+func GetIdpNodesForDisable(t *testing.T, param pbParam.GetIdpNodesParams) []*pbResult.MsqDestinationNode {
 	fnName := "GetIdpNodes"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -157,32 +157,32 @@ func GetIdpNodesForDisable(t *testing.T, param pbParam.GetIdpNodesParams) (expec
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetIdpNodesResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetIdpNodesResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	return res.Node
 }
 
-func GetIdpNodesExpectString(t *testing.T, param pbParam.GetIdpNodesParams, expected string) {
-	fnName := "GetIdpNodes"
-	paramsByte, err := proto.Marshal(&param)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	result, _ := queryTendermint([]byte(fnName), paramsByte)
-	resultObj, _ := result.(ResponseQuery)
-	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if resultObj.Result.Response.Log == expected {
-		t.Logf("PASS: %s", fnName)
-		return
-	}
-	if actual := string(resultString); actual != expected {
-		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
-	}
-	t.Logf("PASS: %s", fnName)
-}
+// func GetIdpNodesExpectString(t *testing.T, param pbParam.GetIdpNodesParams, expected string) {
+// 	fnName := "GetIdpNodes"
+// 	paramsByte, err := proto.Marshal(&param)
+// 	if err != nil {
+// 		fmt.Println("error:", err)
+// 	}
+// 	result, _ := queryTendermint([]byte(fnName), paramsByte)
+// 	resultObj, _ := result.(ResponseQuery)
+// 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
+// 	if resultObj.Result.Response.Log == expected {
+// 		t.Logf("PASS: %s", fnName)
+// 		return
+// 	}
+// 	if actual := string(resultString); actual != expected {
+// 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
+// 	}
+// 	t.Logf("PASS: %s", fnName)
+// }
 
 func GetMsqAddress(t *testing.T, param pbParam.GetMsqAddressParams, expected []did.MsqAddress) {
 	fnName := "GetMsqAddress"

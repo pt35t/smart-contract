@@ -306,9 +306,9 @@ func TestDisableOldIdPNode1(t *testing.T) {
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
-		if idp.ID != IdP1 {
+		if idp.NodeId != IdP1 {
 			var param pbParam.DisableNodeParams
-			param.NodeId = idp.ID
+			param.NodeId = idp.NodeId
 			DisableNode(t, param)
 		}
 	}
@@ -343,14 +343,13 @@ func TestQueryGetIdpNodes(t *testing.T) {
 	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
-	var expected = []did.MsqDestinationNode{
-		{
-			IdP1,
-			"IdP Number 1 from ...",
-			3.0,
-			3.0,
-		},
-	}
+	var row1 pbResult.MsqDestinationNode
+	row1.NodeId = IdP1
+	row1.NodeName = "IdP Number 1 from ..."
+	row1.MaxIal = 3.0
+	row1.MaxAal = 3.0
+	var expected pbResult.GetIdpNodesResult
+	expected.Node = append(expected.Node, &row1)
 	GetIdpNodes(t, param, expected)
 }
 
@@ -887,9 +886,9 @@ func TestDisableOldIdPNode2(t *testing.T) {
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
-		if idp.ID != IdP1 {
+		if idp.NodeId != IdP1 {
 			var param pbParam.DisableNodeParams
-			param.NodeId = idp.ID
+			param.NodeId = idp.NodeId
 			DisableNode(t, param)
 		}
 	}
@@ -914,20 +913,19 @@ func TestQueryGetIdpNodes2(t *testing.T) {
 	var param pbParam.GetIdpNodesParams
 	param.MinIal = 3
 	param.MinAal = 3
-	var expected = []did.MsqDestinationNode{
-		{
-			IdP1,
-			"IdP Number 1 from ...",
-			3.0,
-			3.0,
-		},
-		{
-			IdP2,
-			"",
-			3.0,
-			3.0,
-		},
-	}
+	var row1 pbResult.MsqDestinationNode
+	row1.NodeId = IdP1
+	row1.NodeName = "IdP Number 1 from ..."
+	row1.MaxIal = 3.0
+	row1.MaxAal = 3.0
+	var row2 pbResult.MsqDestinationNode
+	row2.NodeId = IdP2
+	row2.NodeName = ""
+	row2.MaxIal = 3.0
+	row2.MaxAal = 3.0
+	var expected pbResult.GetIdpNodesResult
+	expected.Node = append(expected.Node, &row1)
+	expected.Node = append(expected.Node, &row2)
 	GetIdpNodes(t, param, expected)
 }
 
@@ -1044,9 +1042,9 @@ func TestDisableOldIdPNode3(t *testing.T) {
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
 	for _, idp := range idps {
-		if idp.ID != IdP1 && idp.ID != IdP4 {
+		if idp.NodeId != IdP1 && idp.NodeId != IdP4 {
 			var param pbParam.DisableNodeParams
-			param.NodeId = idp.ID
+			param.NodeId = idp.NodeId
 			DisableNode(t, param)
 		}
 	}
@@ -1245,8 +1243,20 @@ func TestQueryGetIdpNodes3(t *testing.T) {
 	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
-	var expected = `{"node":[{"node_id":"` + IdP1 + `","node_name":"IdP Number 1 from ...","max_ial":2.3,"max_aal":2.4},{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
-	GetIdpNodesExpectString(t, param, expected)
+	var row1 pbResult.MsqDestinationNode
+	row1.NodeId = IdP1
+	row1.NodeName = "IdP Number 1 from ..."
+	row1.MaxIal = 2.3
+	row1.MaxAal = 2.4
+	var row2 pbResult.MsqDestinationNode
+	row2.NodeId = IdP4
+	row2.NodeName = "IdP Number 4 from ..."
+	row2.MaxIal = 3.0
+	row2.MaxAal = 3.0
+	var expected pbResult.GetIdpNodesResult
+	expected.Node = append(expected.Node, &row1)
+	expected.Node = append(expected.Node, &row2)
+	GetIdpNodes(t, param, expected)
 }
 
 func TestRegisterNodeAS2(t *testing.T) {
@@ -1445,8 +1455,14 @@ func TestQueryGetIdpNodes6(t *testing.T) {
 	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
-	var expected = `{"node":[{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
-	GetIdpNodesExpectString(t, param, expected)
+	var row1 pbResult.MsqDestinationNode
+	row1.NodeId = IdP4
+	row1.NodeName = "IdP Number 4 from ..."
+	row1.MaxIal = 3.0
+	row1.MaxAal = 3.0
+	var expected pbResult.GetIdpNodesResult
+	expected.Node = append(expected.Node, &row1)
+	GetIdpNodes(t, param, expected)
 }
 
 func TestQueryGetAccessorKey3(t *testing.T) {
@@ -1470,8 +1486,20 @@ func TestQueryGetIdpNodes7(t *testing.T) {
 	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
-	var expected = `{"node":[{"node_id":"` + IdP1 + `","node_name":"IdP Number 1 from ...","max_ial":2.3,"max_aal":2.4},{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
-	GetIdpNodesExpectString(t, param, expected)
+	var row1 pbResult.MsqDestinationNode
+	row1.NodeId = IdP1
+	row1.NodeName = "IdP Number 1 from ..."
+	row1.MaxIal = 2.3
+	row1.MaxAal = 2.4
+	var row2 pbResult.MsqDestinationNode
+	row2.NodeId = IdP4
+	row2.NodeName = "IdP Number 4 from ..."
+	row2.MaxIal = 3.0
+	row2.MaxAal = 3.0
+	var expected pbResult.GetIdpNodesResult
+	expected.Node = append(expected.Node, &row1)
+	expected.Node = append(expected.Node, &row2)
+	GetIdpNodes(t, param, expected)
 }
 
 func TestNDIDEnableServiceDestinationByNDID(t *testing.T) {
@@ -1710,8 +1738,8 @@ func TestQueryGetIdpNodesInvalid(t *testing.T) {
 	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
-	expected := "not found"
-	GetIdpNodesExpectString(t, param, expected)
+	var expected pbResult.GetIdpNodesResult
+	GetIdpNodes(t, param, expected)
 }
 
 func TestQueryGetRequestInvalid(t *testing.T) {
