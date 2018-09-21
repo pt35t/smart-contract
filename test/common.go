@@ -38,7 +38,7 @@ import (
 )
 
 func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKFile string, nodeID string) {
-	paramJSON, err := json.Marshal(param)
+	paramsByte, err := json.Marshal(param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -46,7 +46,7 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 	idpNodeID := []byte(nodeID)
 	fnName := "RegisterMsqAddress"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -54,7 +54,7 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, idpKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, idpNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, idpNodeID)
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -67,13 +67,13 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile string, nodeID string) {
 	privKey := getPrivateKeyFromString(priveKFile)
 	byteNodeID := []byte(nodeID)
-	paramJSON, err := proto.Marshal(&param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	fnName := "CreateRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -81,7 +81,7 @@ func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile s
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, privKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, byteNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, byteNodeID)
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -94,13 +94,13 @@ func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile s
 func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, nodeID string, expected string) {
 	privKey := getPrivateKeyFromString(priveKFile)
 	byteNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramsByte, err := json.Marshal(param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	fnName := "CreateRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -108,7 +108,7 @@ func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, 
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, privKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, byteNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, byteNodeID)
 	resultObj, _ := result.(ResponseTx)
 	if actual := resultObj.Result.CheckTx.Log; actual != expected {
 		t.Errorf("\n"+`CheckTx log: "%s"`, resultObj.Result.CheckTx.Log)
@@ -119,14 +119,14 @@ func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, 
 
 func UpdateNode(t *testing.T, param pbParam.UpdateNodeParams, masterPriveKFile string, nodeID string) {
 	masterKey := getPrivateKeyFromString(masterPriveKFile)
-	paramJSON, err := proto.Marshal(&param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	byteNodeID := []byte(nodeID)
 	fnName := "UpdateNode"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -134,7 +134,7 @@ func UpdateNode(t *testing.T, param pbParam.UpdateNodeParams, masterPriveKFile s
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, masterKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, byteNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, byteNodeID)
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {

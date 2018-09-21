@@ -36,7 +36,7 @@ import (
 )
 
 func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected string, nodeID string) {
-	paramJSON, err := proto.Marshal(&param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -44,7 +44,7 @@ func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected
 	rpNodeID := []byte(nodeID)
 	fnName := "SetDataReceived"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -52,7 +52,7 @@ func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
 		t.Errorf("\n"+`CheckTx log: "%s"`, resultObj.Result.CheckTx.Log)
@@ -62,7 +62,7 @@ func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected
 }
 
 func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string) {
-	paramJSON, err := proto.Marshal(&param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -70,7 +70,7 @@ func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string)
 	rpNodeID := []byte(nodeID)
 	fnName := "CloseRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -78,7 +78,7 @@ func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string)
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -89,7 +89,7 @@ func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string)
 }
 
 func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParams, nodeID string) {
-	paramJSON, err := proto.Marshal(&param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -97,7 +97,7 @@ func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParams, nodeID str
 	rpNodeID := []byte(nodeID)
 	fnName := "TimeOutRequest"
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	tempPSSmessage := append([]byte(fnName), paramJSON...)
+	tempPSSmessage := append([]byte(fnName), paramsByte...)
 	tempPSSmessage = append(tempPSSmessage, []byte(nonce)...)
 	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
@@ -105,7 +105,7 @@ func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParams, nodeID str
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rpKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, rpNodeID)
+	result, _ := callTendermint([]byte(fnName), paramsByte, []byte(nonce), signature, rpNodeID)
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
