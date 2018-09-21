@@ -23,13 +23,13 @@
 package did
 
 import (
-	"encoding/json"
 	"errors"
 	"strconv"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
+	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -86,10 +86,9 @@ func getPriceFunc(param []byte, app *DIDApplication, height int64) types.Respons
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	price := getTokenPriceByFunc(funcParam.Func, app, height)
-	var res = GetPriceFuncResult{
-		price,
-	}
-	value, err := json.Marshal(res)
+	var res pbResult.GetPriceFuncResult
+	res.Price = price
+	value, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -225,16 +224,15 @@ func getNodeToken(param []byte, app *DIDApplication, height int64) types.Respons
 	var funcParam pbParam.GetNodeTokenParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
-		return ReturnQuery([]byte("{}"), err.Error(), app.state.db.Version64(), app)
+		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	tokenAmount, err := getToken(funcParam.NodeId, app)
 	if err != nil {
-		return ReturnQuery([]byte("{}"), "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
-	var res = GetNodeTokenResult{
-		tokenAmount,
-	}
-	value, err := json.Marshal(res)
+	var res pbResult.GetNodeTokenResult
+	res.Amount = tokenAmount
+	value, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}

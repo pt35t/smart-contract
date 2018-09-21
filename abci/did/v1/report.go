@@ -23,11 +23,10 @@
 package did
 
 import (
-	"encoding/json"
-
 	"github.com/gogo/protobuf/proto"
 	pbData "github.com/ndidplatform/smart-contract/protos/data"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
+	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -72,23 +71,22 @@ func getUsedTokenReport(param []byte, app *DIDApplication, height int64) types.R
 	key := "SpendGas" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	if value == nil {
-		value = []byte("[]")
-		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
-	var result GetUsedTokenReportResult
+	var result pbResult.GetUsedTokenReportResult
 	var reports pbData.ReportList
 	err = proto.Unmarshal([]byte(value), &reports)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	for _, report := range reports.Reports {
-		var newRow Report
+		var newRow pbResult.ReportInResult
 		newRow.Method = report.Method
 		newRow.Price = float64(report.Price)
 		newRow.Data = report.Data
-		result = append(result, newRow)
+		result.Reports = append(result.Reports, &newRow)
 	}
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}

@@ -191,19 +191,13 @@ type MsqAddress struct {
 	Port int64  `json:"port"`
 }
 
-type GetNodeTokenResult struct {
-	Amount float64 `json:"amount"`
-}
+// type GetNodeTokenResult struct {
+// 	Amount float64 `json:"amount"`
+// }
 
-type GetPriceFuncResult struct {
-	Price float64 `json:"price"`
-}
-
-type Report struct {
-	Method string  `json:"method"`
-	Price  float64 `json:"price"`
-	Data   string  `json:"data"`
-}
+// type GetPriceFuncResult struct {
+// 	Price float64 `json:"price"`
+// }
 
 type RequestIDParam struct {
 	RequestID string `json:"request_id"`
@@ -437,7 +431,13 @@ type Proxy struct {
 	Config      string `json:"config"`
 }
 
-type GetUsedTokenReportResult []Report
+// type Report struct {
+// 	Method string  `json:"method"`
+// 	Price  float64 `json:"price"`
+// 	Data   string  `json:"data"`
+// }
+
+// type GetUsedTokenReportResult []Report
 
 type GetNodeIDListResult struct {
 	NodeIDList []string `json:"node_id_list"`

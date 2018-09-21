@@ -33,6 +33,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	did "github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
+	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 )
 
 func GetNodePublicKey(t *testing.T, param pbParam.GetNodePublicKeyParams, expected string) {
@@ -83,7 +84,7 @@ func GetNodeMasterPublicKey(t *testing.T, param pbParam.GetNodeMasterPublicKeyPa
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeToken(t *testing.T, param pbParam.GetNodeTokenParams, expected did.GetNodeTokenResult) {
+func GetNodeToken(t *testing.T, param pbParam.GetNodeTokenParams, expected pbResult.GetNodeTokenResult) {
 	fnName := "GetNodeToken"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -92,8 +93,8 @@ func GetNodeToken(t *testing.T, param pbParam.GetNodeTokenParams, expected did.G
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetNodeTokenResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetNodeTokenResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -112,8 +113,8 @@ func GetNodeTokenExpectString(t *testing.T, param pbParam.GetNodeTokenParams, ex
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetNodeTokenResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetNodeTokenResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -339,7 +340,7 @@ func GetIdentityProofExpectString(t *testing.T, param pbParam.GetIdentityProofPa
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParams, expected did.GetPriceFuncResult) {
+func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParams, expected pbResult.GetPriceFuncResult) {
 	fnName := "GetPriceFunc"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -349,8 +350,8 @@ func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParams, expected did.G
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
 
-	var res did.GetPriceFuncResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetPriceFuncResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -360,7 +361,7 @@ func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParams, expected did.G
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetUsedTokenReport(t *testing.T, param pbParam.GetUsedTokenReportParams, expectedString string) {
+func GetUsedTokenReport(t *testing.T, param pbParam.GetUsedTokenReportParams, expected pbResult.GetUsedTokenReportResult) {
 	fnName := "GetUsedTokenReport"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -369,17 +370,10 @@ func GetUsedTokenReport(t *testing.T, param pbParam.GetUsedTokenReportParams, ex
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	// fmt.Println(string(resultString))
-	var res []did.Report
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetUsedTokenReportResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
-	}
-	var expected []did.Report
-	json.Unmarshal([]byte(expectedString), &expected)
-	if resultObj.Result.Response.Log == expectedString {
-		t.Logf("PASS: %s", fnName)
-		return
 	}
 	if actual := res; !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)

@@ -34,6 +34,7 @@ import (
 
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
+	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 )
 
 var RP1 = RandStringRunes(20)
@@ -225,9 +226,8 @@ func TestAddNodeTokenAS(t *testing.T) {
 func TestQueryGetNodeTokenRP(t *testing.T) {
 	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
-	var expected = did.GetNodeTokenResult{
-		111.11,
-	}
+	var expected pbResult.GetNodeTokenResult
+	expected.Amount = 111.11
 	GetNodeToken(t, param, expected)
 }
 
@@ -241,9 +241,8 @@ func TestReduceNodeTokenRP(t *testing.T) {
 func TestQueryGetNodeTokenRPAfterReduce(t *testing.T) {
 	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
-	var expected = did.GetNodeTokenResult{
-		50.0,
-	}
+	var expected pbResult.GetNodeTokenResult
+	expected.Amount = 50.0
 	GetNodeToken(t, param, expected)
 }
 
@@ -257,9 +256,8 @@ func TestSetNodeTokenRP(t *testing.T) {
 func TestQueryGetNodeTokenRPAfterSetToken(t *testing.T) {
 	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
-	var expected = did.GetNodeTokenResult{
-		100.0,
-	}
+	var expected pbResult.GetNodeTokenResult
+	expected.Amount = 100.0
 	GetNodeToken(t, param, expected)
 }
 
@@ -462,9 +460,8 @@ func TestRPCreateRequest(t *testing.T) {
 func TestQueryGetNodeTokenRPAfterCreatRequest(t *testing.T) {
 	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
-	var expected = did.GetNodeTokenResult{
-		99.0,
-	}
+	var expected pbResult.GetNodeTokenResult
+	expected.Amount = 99.0
 	GetNodeToken(t, param, expected)
 }
 
@@ -571,31 +568,88 @@ func TestNDIDSetPrice(t *testing.T) {
 func TestNDIDGetPrice(t *testing.T) {
 	var param pbParam.GetPriceFuncParams
 	param.Func = "CreateRequest"
-	var expected = did.GetPriceFuncResult{
-		9.99,
-	}
+	var expected pbResult.GetPriceFuncResult
+	expected.Price = 9.99
 	GetPriceFunc(t, param, expected)
 }
 
 func TestReportGetUsedTokenRP(t *testing.T) {
-	expectedString := `[{"method":"CreateRequest","price":1,"data":"` + requestID1.String() + `"},{"method":"SetDataReceived","price":1,"data":"` + requestID1.String() + `"}]`
 	var param pbParam.GetUsedTokenReportParams
 	param.NodeId = RP1
-	GetUsedTokenReport(t, param, expectedString)
+	var row1 pbResult.ReportInResult
+	row1.Method = "CreateRequest"
+	row1.Price = 1
+	row1.Data = requestID1.String()
+	var row2 pbResult.ReportInResult
+	row2.Method = "SetDataReceived"
+	row2.Price = 1
+	row2.Data = requestID1.String()
+	var expected pbResult.GetUsedTokenReportResult
+	expected.Reports = append(expected.Reports, &row1)
+	expected.Reports = append(expected.Reports, &row2)
+	GetUsedTokenReport(t, param, expected)
 }
 
 func TestReportGetUsedTokenIdP(t *testing.T) {
-	expectedString := `[{"method":"RegisterMsqDestination","price":1,"data":""},{"method":"RegisterMsqAddress","price":1,"data":""},{"method":"DeclareIdentityProof","price":1,"data":""},{"method":"CreateIdpResponse","price":1,"data":"` + requestID1.String() + `"},{"method":"CreateRequest","price":1,"data":"` + requestID2.String() + `"},{"method":"DeclareIdentityProof","price":1,"data":""},{"method":"CreateIdpResponse","price":1,"data":"` + requestID2.String() + `"}]`
+	var row1 pbResult.ReportInResult
+	row1.Method = "RegisterMsqDestination"
+	row1.Price = 1
+	var row2 pbResult.ReportInResult
+	row2.Method = "RegisterMsqAddress"
+	row2.Price = 1
+	var row3 pbResult.ReportInResult
+	row3.Method = "DeclareIdentityProof"
+	row3.Price = 1
+	var row4 pbResult.ReportInResult
+	row4.Method = "CreateIdpResponse"
+	row4.Price = 1
+	row4.Data = requestID1.String()
+	var row5 pbResult.ReportInResult
+	row5.Method = "CreateRequest"
+	row5.Price = 1
+	row5.Data = requestID2.String()
+	var row6 pbResult.ReportInResult
+	row6.Method = "DeclareIdentityProof"
+	row6.Price = 1
+	var row7 pbResult.ReportInResult
+	row7.Method = "CreateIdpResponse"
+	row7.Price = 1
+	row7.Data = requestID2.String()
 	var param pbParam.GetUsedTokenReportParams
 	param.NodeId = IdP1
-	GetUsedTokenReport(t, param, expectedString)
+	var expected pbResult.GetUsedTokenReportResult
+	expected.Reports = append(expected.Reports, &row1)
+	expected.Reports = append(expected.Reports, &row2)
+	expected.Reports = append(expected.Reports, &row3)
+	expected.Reports = append(expected.Reports, &row4)
+	expected.Reports = append(expected.Reports, &row5)
+	expected.Reports = append(expected.Reports, &row6)
+	expected.Reports = append(expected.Reports, &row7)
+	GetUsedTokenReport(t, param, expected)
 }
 
 func TestReportGetUsedTokenAS(t *testing.T) {
 	var param pbParam.GetUsedTokenReportParams
 	param.NodeId = AS1
-	expectedString := `[{"method":"RegisterServiceDestination","price":1,"data":""},{"method":"UpdateServiceDestination","price":1,"data":""},{"method":"RegisterMsqAddress","price":1,"data":""},{"method":"SignData","price":1,"data":"` + requestID1.String() + `"}]`
-	GetUsedTokenReport(t, param, expectedString)
+	var row1 pbResult.ReportInResult
+	row1.Method = "RegisterServiceDestination"
+	row1.Price = 1
+	var row2 pbResult.ReportInResult
+	row2.Method = "UpdateServiceDestination"
+	row2.Price = 1
+	var row3 pbResult.ReportInResult
+	row3.Method = "RegisterMsqAddress"
+	row3.Price = 1
+	var row4 pbResult.ReportInResult
+	row4.Method = "SignData"
+	row4.Price = 1
+	row4.Data = requestID1.String()
+	var expected pbResult.GetUsedTokenReportResult
+	expected.Reports = append(expected.Reports, &row1)
+	expected.Reports = append(expected.Reports, &row2)
+	expected.Reports = append(expected.Reports, &row3)
+	expected.Reports = append(expected.Reports, &row4)
+	GetUsedTokenReport(t, param, expected)
 }
 
 func TestQueryGetRequestDetail1(t *testing.T) {
@@ -1698,7 +1752,7 @@ func TestQueryGetNodeTokenInvalid(t *testing.T) {
 func TestReportGetUsedTokenInvalid(t *testing.T) {
 	var param pbParam.GetUsedTokenReportParams
 	param.NodeId = "RP1-Invalid"
-	expected := "not found"
+	var expected pbResult.GetUsedTokenReportResult
 	GetUsedTokenReport(t, param, expected)
 }
 
