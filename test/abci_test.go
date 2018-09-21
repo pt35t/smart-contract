@@ -25,11 +25,11 @@ package test
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"log"
 	"strings"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
@@ -302,8 +302,8 @@ func TestDisableOldIdPNode1(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
@@ -329,8 +329,8 @@ func TestQueryGetIdpNodesInfo1(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
 	var expected = `{"node":[{"node_id":"` + IdP1 + `","name":"IdP Number 1 from ...","max_ial":3,"max_aal":3,"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}]}]}`
@@ -341,8 +341,8 @@ func TestQueryGetIdpNodes(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
 	var expected = []did.MsqDestinationNode{
@@ -357,9 +357,8 @@ func TestQueryGetIdpNodes(t *testing.T) {
 }
 
 func TestQueryGetMsqAddress(t *testing.T) {
-	var param = did.GetMsqAddressParam{
-		IdP1,
-	}
+	var param pbParam.GetMsqAddressParams
+	param.NodeId = IdP1
 	var expected []did.MsqAddress
 	var msq did.MsqAddress
 	msq.IP = "192.168.3.99"
@@ -399,9 +398,8 @@ func TestNDIDUpdateService(t *testing.T) {
 }
 
 func TestQueryGetServiceDetail(t *testing.T) {
-	var param = did.GetServiceDetailParam{
-		serviceID1,
-	}
+	var param pbParam.GetServiceDetailParams
+	param.ServiceId = serviceID1
 	var expected = did.ServiceDetail{
 		serviceID1,
 		"Bank statement (ย้อนหลัง 3 เดือน)",
@@ -419,8 +417,8 @@ func TestASUpdateServiceDestination(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -436,8 +434,8 @@ func TestAS1RegisterMsqAddress(t *testing.T) {
 }
 
 func TestQueryGetAsNodesInfoByServiceId(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","name":"AS1","min_ial":1.4,"min_aal":1.5,"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.102","port":8000}]}]}`
 	GetAsNodesInfoByServiceId(t, param, expected)
 }
@@ -478,10 +476,9 @@ func TestIdPDeclareIdentityProof(t *testing.T) {
 }
 
 func TestQueryGetIdentityProof(t *testing.T) {
-	var param = did.GetIdentityProofParam{
-		IdP1,
-		requestID1.String(),
-	}
+	var param pbParam.GetIdentityProofParams
+	param.IdpId = IdP1
+	param.RequestId = requestID1.String()
 	var expected = did.GetIdentityProofResult{
 		"Magic",
 	}
@@ -602,9 +599,8 @@ func TestReportGetUsedTokenAS(t *testing.T) {
 }
 
 func TestQueryGetRequestDetail1(t *testing.T) {
-	var param = did.GetRequestParam{
-		requestID1.String(),
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = requestID1.String()
 	var expected = `{"request_id":"` + requestID1.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":[],"min_as":1,"request_params_hash":"hash","answered_as_id_list":["` + AS1 + `"],"received_data_from_list":["` + AS1 + `"]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":null,"valid_ial":null,"valid_signature":null}],"closed":false,"timed_out":false,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
 	GetRequestDetail(t, param, expected)
 }
@@ -630,9 +626,8 @@ func TestRPCloseRequest(t *testing.T) {
 }
 
 func TestQueryGetRequestClosed(t *testing.T) {
-	var param = did.GetRequestParam{
-		requestID1.String(),
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = requestID1.String()
 	var expected = did.GetRequestResult{
 		true,
 		false,
@@ -643,9 +638,8 @@ func TestQueryGetRequestClosed(t *testing.T) {
 }
 
 func TestQueryGetRequestDetail2(t *testing.T) {
-	var param = did.GetRequestParam{
-		requestID1.String(),
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = requestID1.String()
 	var expected = `{"request_id":"` + requestID1.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":[],"min_as":1,"request_params_hash":"hash","answered_as_id_list":["` + AS1 + `"],"received_data_from_list":["` + AS1 + `"]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":true,"valid_ial":true,"valid_signature":true}],"closed":true,"timed_out":false,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
 	GetRequestDetail(t, param, expected)
 }
@@ -722,17 +716,15 @@ func TestRPTimeOutRequest(t *testing.T) {
 }
 
 func TestQueryGetRequestDetail3(t *testing.T) {
-	var param = did.GetRequestParam{
-		requestID3.String(),
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = requestID3.String()
 	var expected = `{"request_id":"` + requestID3.String() + `","min_idp":1,"min_aal":3,"min_ial":3,"request_timeout":259200,"data_request_list":[{"service_id":"` + serviceID1 + `","as_id_list":["` + AS1 + `","` + AS2 + `"],"min_as":2,"request_params_hash":"hash","answered_as_id_list":[],"received_data_from_list":[]},{"service_id":"credit","as_id_list":["` + AS1 + `","` + AS2 + `"],"min_as":2,"request_params_hash":"hash","answered_as_id_list":[],"received_data_from_list":[]}],"request_message_hash":"hash('Please allow...')","response_list":[{"ial":3,"aal":3,"status":"accept","signature":"signature","identity_proof":"Magic","private_proof_hash":"Magic","idp_id":"` + IdP1 + `","valid_proof":false,"valid_ial":false,"valid_signature":false}],"closed":false,"timed_out":true,"special":false,"mode":3,"requester_node_id":"` + RP1 + `"}`
 	GetRequestDetail(t, param, expected)
 }
 
 func TestQueryGetRequestTimedOut(t *testing.T) {
-	var param = did.GetRequestParam{
-		requestID3.String(),
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = requestID3.String()
 	var expected = did.GetRequestResult{
 		false,
 		true,
@@ -815,31 +807,28 @@ func TestQueryCheckExistingIdentity(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param = did.CheckExistingIdentityParam{
-		hex.EncodeToString(userHash),
-	}
+	var param pbParam.CheckExistingIdentityParams
+	param.HashId = hex.EncodeToString(userHash)
 	var expected = `{"exist":true}`
 	CheckExistingIdentity(t, param, expected)
 }
 
 func TestQueryGetAccessorGroupID(t *testing.T) {
-	var param = did.GetAccessorGroupIDParam{
-		accessorID2.String(),
-	}
+	var param pbParam.GetAccessorGroupIDParams
+	param.AccessorId = accessorID2.String()
 	var expected = `{"accessor_group_id":"` + accessorGroupID1.String() + `"}`
 	GetAccessorGroupID(t, param, expected)
 }
 
 func TestQueryGetAccessorKey(t *testing.T) {
-	var param = did.GetAccessorGroupIDParam{
-		accessorID1.String(),
-	}
+	var param pbParam.GetAccessorKeyParams
+	param.AccessorId = accessorID1.String()
 	var expected = `{"accessor_public_key":"` + strings.Replace(accessorPubKey, "\n", "\\n", -1) + `","active":true}`
 	GetAccessorKey(t, param, expected)
 }
 
 func TestDisableOldIdPNode2(t *testing.T) {
-	var param did.GetIdpNodesParam
+	var param pbParam.GetIdpNodesParams
 	param.MinIal = 3
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
@@ -868,7 +857,7 @@ func TestRegisterNodeIDP2(t *testing.T) {
 }
 
 func TestQueryGetIdpNodes2(t *testing.T) {
-	var param did.GetIdpNodesParam
+	var param pbParam.GetIdpNodesParams
 	param.MinIal = 3
 	param.MinAal = 3
 	var expected = []did.MsqDestinationNode{
@@ -944,22 +933,22 @@ func TestUpdateNodeRPByNDID(t *testing.T) {
 }
 
 func TestQueryGetNodeInfo(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdcKj/gAetVyg6Nn2lDi\nm/UJYQsQCav60EVbECm5EVT8WgnpzO+GrRyBtxqWUdtGar7d6orLh1RX1ikU7Yx2\nSA8Xlf+ZDaCELba/85Nb+IppLBdPywixgumoto9G9dDGSnPkHAlq5lXXA1eeUS7j\niU1lf37lwTZaO0COAuu8Vt9GcwYPh7SSf4/eXabQGbo/TMUVpXX1w5N1A07Qh5DG\nr/ZKzEE9/5bJJJRS635OA2T4gIY9XRWYiTxtiZz6AFCxP92Cjz/sNvSc/Cuvwi15\nycS4C35tjM8iT5djsRcR+MJeXyvurkaYgMGJTDIWub/A5oavVD3VwusZZNZvpDpD\nPwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAukTxVg8qpwXebALGCrly\niv8PNNxLo0CEX3N33cR1TNfImItd5nFwmozLJLM9LpNF711PrkH3EBLJM+qwASlC\nBayeMiMT8tDmOtv1RqIxyLjEU8M0RBBedk/TsKQwNmmeU3n5Ap+GRTYoEOwTKNra\nI8YDfbjb9fNtSICiDzn3UcQj13iLz5x4MjaewtC6PR1r8uVfLyS4uI+3/qau0zWV\n+s6b3JdqU2zdHeuaj9XjX7aNV7mvnjYgzk/O7M/p/86RBEOm7pt6JmTGnFu44jBO\nez6GqF2hZzqR9nM1K4aOedBMHintVnhh1oOPG9uRiDnJWvN16PNTfr7XBOUzL03X\nDQIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP Number 1 from ...","role":"IdP","max_ial":2.3,"max_aal":2.4,"mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryCheckExistingAccessorID(t *testing.T) {
-	var param did.CheckExistingAccessorIDParam
-	param.AccessorID = accessorID1.String()
+	var param pbParam.CheckExistingAccessorIDParams
+	param.AccessorId = accessorID1.String()
 	expected := `{"exist":true}`
 	CheckExistingAccessorID(t, param, expected)
 }
 
 func TestQueryCheckExistingAccessorGroupID(t *testing.T) {
-	var param did.CheckExistingAccessorGroupIDParam
-	param.AccessorGroupID = accessorGroupID1.String()
+	var param pbParam.CheckExistingAccessorGroupIDParams
+	param.AccessorGroupId = accessorGroupID1.String()
 	expected := `{"exist":true}`
 	CheckExistingAccessorGroupID(t, param, expected)
 }
@@ -975,28 +964,28 @@ func TestIdPUpdateIdentity(t *testing.T) {
 }
 
 func TestQueryGetIdentityInfo(t *testing.T) {
-	var param did.GetIdentityInfoParam
+	var param pbParam.GetIdentityInfoParams
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	param.NodeID = IdP1
-	param.HashID = hex.EncodeToString(userHash)
+	param.NodeId = IdP1
+	param.HashId = hex.EncodeToString(userHash)
 	expected := `{"ial":2.2}`
 	GetIdentityInfo(t, param, expected)
 }
 
 func TestQueryGetDataSignature(t *testing.T) {
-	var param did.GetDataSignatureParam
-	param.NodeID = AS1
-	param.RequestID = requestID1.String()
-	param.ServiceID = serviceID1
+	var param pbParam.GetDataSignatureParams
+	param.NodeId = AS1
+	param.RequestId = requestID1.String()
+	param.ServiceId = serviceID1
 	expected := `{"signature":"sign(data,asKey)"}`
 	GetDataSignature(t, param, expected)
 }
 
 func TestDisableOldIdPNode3(t *testing.T) {
-	var param did.GetIdpNodesParam
-	param.HashID = ""
+	var param pbParam.GetIdpNodesParams
+	param.HashId = ""
 	param.MinIal = 3
 	param.MinAal = 3
 	idps := GetIdpNodesForDisable(t, param)
@@ -1112,15 +1101,15 @@ func TestIdP5RegisterMsqAddress(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoIdP4(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP4
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP4
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu9+CK/vznpXtAUC0QhuJ\ngYKCfMMBiIgVcp2A+e+SsKvv6ESQ72R8K6nQAhH2MGtnj3ScLI0tMwCtgotWCEGi\nyUXKXLVTiqAqtwflCUVuxCDVuvOm3GQCxvwzE34jEgbGZ33G3tV7uKTtifhoJzVY\nD+WkZVslBhaBgQCUewCX4zkCCTYC5VEhkr7K8HGEr6n1eBOO5VORCkrHKYoZK7eu\nNjyWvWYyVN07F8K0RhgIF9Xsa6Tiu1Yf8zuyJ/awR6U4Nw+oTkvRpx64+caBNYgR\n4n8peg9ZJeTAwV49o1ymx34pPjHUgSdpyhZX4i3z9ji+o7KbNkA/O0l+3doMuH1e\nxwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAukTxVg8qpwXebALGCrly\niv8PNNxLo0CEX3N33cR1TNfImItd5nFwmozLJLM9LpNF711PrkH3EBLJM+qwASlC\nBayeMiMT8tDmOtv1RqIxyLjEU8M0RBBedk/TsKQwNmmeU3n5Ap+GRTYoEOwTKNra\nI8YDfbjb9fNtSICiDzn3UcQj13iLz5x4MjaewtC6PR1r8uVfLyS4uI+3/qau0zWV\n+s6b3JdqU2zdHeuaj9XjX7aNV7mvnjYgzk/O7M/p/86RBEOm7pt6JmTGnFu44jBO\nez6GqF2hZzqR9nM1K4aOedBMHintVnhh1oOPG9uRiDnJWvN16PNTfr7XBOUzL03X\nDQIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP Number 4 from ...","role":"IdP","max_ial":3,"max_aal":3,"mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetNodeInfoIdP5(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP5
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP5
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApbxaA5aKnkpnV7+dMW5x\n7iEINouvjhQ8gl6+8A6ApiVbYIzJCCaexU9mn7jDP634SyjFNSxzhjklEm7qFPaH\nOk1FfX6tk5i5uGWifRQHueXhXjR8HSBkjQAoZ0eqBqTsxsSpASsT4qoBKtsIVN7X\nHdh9Mqz+XAkq4T6vtdaocduarNG6ALZFkX+pAgkCj4hIhRmHjlyYIh1yOZw1KM3T\nHkM9noP2AYEH2MBHCzuu+bifCwurOBq+ZKAdfroCG4rPGfOXuDQK8BHpru1lg0jd\nAmbbqMyGpAsF+WjW4V2rcTMFZOoYFYE5m2ssxC4O9h3f/H2gBtjjWzYv6bRC6ZdP\n2wIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApbxaA5aKnkpnV7+dMW5x\n7iEINouvjhQ8gl6+8A6ApiVbYIzJCCaexU9mn7jDP634SyjFNSxzhjklEm7qFPaH\nOk1FfX6tk5i5uGWifRQHueXhXjR8HSBkjQAoZ0eqBqTsxsSpASsT4qoBKtsIVN7X\nHdh9Mqz+XAkq4T6vtdaocduarNG6ALZFkX+pAgkCj4hIhRmHjlyYIh1yOZw1KM3T\nHkM9noP2AYEH2MBHCzuu+bifCwurOBq+ZKAdfroCG4rPGfOXuDQK8BHpru1lg0jd\nAmbbqMyGpAsF+WjW4V2rcTMFZOoYFYE5m2ssxC4O9h3f/H2gBtjjWzYv6bRC6ZdP\n2wIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP Number 5 from ...","role":"IdP","max_ial":3,"max_aal":3,"mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
@@ -1198,8 +1187,8 @@ func TestQueryGetIdpNodes3(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
 	var expected = `{"node":[{"node_id":"` + IdP1 + `","node_name":"IdP Number 1 from ...","max_ial":2.3,"max_aal":2.4},{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
@@ -1249,8 +1238,8 @@ func TestAS2RegisterServiceDestination(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId2(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5},{"node_id":"` + AS2 + `","node_name":"` + AS2 + `","min_ial":2.8,"min_aal":2.9}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1268,8 +1257,8 @@ func TestDisableNode2(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId3(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1280,8 +1269,8 @@ func TestNDIDDisableService2(t *testing.T) {
 	DisableService(t, param)
 }
 func TestQueryGetAsNodesByServiceId4(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1361,9 +1350,8 @@ func TestASUpdateServiceDestination2(t *testing.T) {
 }
 
 func TestQueryGetServicesByAsID(t *testing.T) {
-	var param = did.GetServicesByAsIDParam{
-		AS1,
-	}
+	var param pbParam.GetServicesByAsIDParams
+	param.AsId = AS1
 	var expected = `{"services":[{"service_id":"` + serviceID3 + `","min_ial":1.1,"min_aal":1.1,"active":true,"suspended":false},{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
@@ -1382,16 +1370,15 @@ func TestNDIDDisableServiceDestinationByNDID(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceID(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID4
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID4
 	var expected = `{"node":[]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
 
 func TestQueryGetServicesByAsID2(t *testing.T) {
-	var param = did.GetServicesByAsIDParam{
-		AS1,
-	}
+	var param pbParam.GetServicesByAsIDParams
+	param.AsId = AS1
 	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
@@ -1400,8 +1387,8 @@ func TestQueryGetIdpNodes6(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
 	var expected = `{"node":[{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
@@ -1409,9 +1396,8 @@ func TestQueryGetIdpNodes6(t *testing.T) {
 }
 
 func TestQueryGetAccessorKey3(t *testing.T) {
-	var param = did.GetAccessorGroupIDParam{
-		accessorID1.String(),
-	}
+	var param pbParam.GetAccessorKeyParams
+	param.AccessorId = accessorID1.String()
 	var expected = `{"accessor_public_key":"` + strings.Replace(accessorPubKey, "\n", "\\n", -1) + `","active":true}`
 	GetAccessorKey(t, param, expected)
 }
@@ -1426,8 +1412,8 @@ func TestQueryGetIdpNodes7(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 1
 	param.MinAal = 1
 	var expected = `{"node":[{"node_id":"` + IdP1 + `","node_name":"IdP Number 1 from ...","max_ial":2.3,"max_aal":2.4},{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
@@ -1442,16 +1428,15 @@ func TestNDIDEnableServiceDestinationByNDID(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceIDAfterEnable(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID4
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID4
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":2.2,"min_aal":2.2}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
 
 func TestQueryGetServicesByAsID3(t *testing.T) {
-	var param = did.GetServicesByAsIDParam{
-		AS1,
-	}
+	var param pbParam.GetServicesByAsIDParams
+	param.AsId = AS1
 	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
@@ -1474,15 +1459,15 @@ func TestNDIDEnableService(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId6(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
 
 func TestQueryGetNodeNotFound(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = "123123"
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = "123123"
 	expected := `{}`
 	GetNodeInfo(t, param, expected)
 }
@@ -1498,8 +1483,8 @@ func TestRP1RegisterMsqAddress(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoRP1(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = RP1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = RP1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwCB4UBzQcnd6GAzPgbt9\nj2idW23qKZrsvldPNifmOPLfLlMusv4EcyJf4L42/aQbTn1rVSu1blGkuCK+oRlK\nWmZEWh3xv9qrwCwov9Jme/KOE98zOMB10/xwnYotPadV0de80wGvKT7OlBlGulQR\nRhhgENNCPSxdUlozrPhrzGstXDr9zTYQoR3UD/7Ntmew3mnXvKj/8+U48hw913Xn\n6btBP3Uqg2OurXDGdrWciWgIMDEGyk65NOc8FOGa4AjYXzyi9TqOIfmysWhzKzU+\nfLysZQo10DfznnQN3w9+pI+20j2zB6ggpL75RjZKYgHU49pbvjF/eOSTOg9o5HwX\n0wIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAukTxVg8qpwXebALGCrly\niv8PNNxLo0CEX3N33cR1TNfImItd5nFwmozLJLM9LpNF711PrkH3EBLJM+qwASlC\nBayeMiMT8tDmOtv1RqIxyLjEU8M0RBBedk/TsKQwNmmeU3n5Ap+GRTYoEOwTKNra\nI8YDfbjb9fNtSICiDzn3UcQj13iLz5x4MjaewtC6PR1r8uVfLyS4uI+3/qau0zWV\n+s6b3JdqU2zdHeuaj9XjX7aNV7mvnjYgzk/O7M/p/86RBEOm7pt6JmTGnFu44jBO\nez6GqF2hZzqR9nM1K4aOedBMHintVnhh1oOPG9uRiDnJWvN16PNTfr7XBOUzL03X\nDQIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"Node RP 1 edited","role":"RP","mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
@@ -1511,8 +1496,8 @@ func TestASDisableServiceDestination(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId7(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1524,8 +1509,8 @@ func TestASEnableServiceDestination(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceId8(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID1
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID1
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1667,8 +1652,8 @@ func TestQueryGetIdpNodesInvalid(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + "invalid user"))
 	userHash := h.Sum(nil)
-	var param did.GetIdpNodesParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.GetIdpNodesParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.MinIal = 3
 	param.MinAal = 3
 	expected := "not found"
@@ -1676,32 +1661,29 @@ func TestQueryGetIdpNodesInvalid(t *testing.T) {
 }
 
 func TestQueryGetRequestInvalid(t *testing.T) {
-	var param = did.GetRequestParam{
-		"ef6f4c9c-818b-42b8-8904-3d97c-invalid",
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = "ef6f4c9c-818b-42b8-8904-3d97c-invalid"
 	expected := "not found"
 	GetRequestExpectString(t, param, expected)
 }
 
 func TestQueryGetRequestDetailInvalid(t *testing.T) {
-	var param = did.GetRequestParam{
-		"ef6f4c9c-818b-42b8-8904-3d97c-invalid",
-	}
+	var param pbParam.GetRequestParams
+	param.RequestId = "ef6f4c9c-818b-42b8-8904-3d97c-invalid"
 	expected := "not found"
 	GetRequestDetail(t, param, expected)
 }
 
 func TestQueryGetAsNodesByServiceIdInvalid(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = "statement-invalid"
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = "statement-invalid"
 	expected := "not found"
 	GetAsNodesByServiceId(t, param, expected)
 }
 
 func TestQueryGetMsqAddressInvalid(t *testing.T) {
-	var param = did.GetMsqAddressParam{
-		"IdP1-Invalid",
-	}
+	var param pbParam.GetMsqAddressParams
+	param.NodeId = "IdP1-Invalid"
 	expected := "not found"
 	GetMsqAddressExpectString(t, param, expected)
 }
@@ -1721,76 +1703,71 @@ func TestReportGetUsedTokenInvalid(t *testing.T) {
 }
 
 func TestQueryGetServiceDetailInvalid(t *testing.T) {
-	var param = did.GetServiceDetailParam{
-		"statement-invalid",
-	}
+	var param pbParam.GetServiceDetailParams
+	param.ServiceId = "statement-invalid"
 	expected := "not found"
 	GetServiceDetailExpectString(t, param, expected)
 }
 
 func TestQueryGetAccessorGroupIDInvalid(t *testing.T) {
-	var param = did.GetAccessorGroupIDParam{
-		"accessor_id_2-Invalid",
-	}
+	var param pbParam.GetAccessorGroupIDParams
+	param.AccessorId = "accessor_id_2-Invalid"
 	expected := "not found"
 	GetAccessorGroupID(t, param, expected)
 }
 
 func TestQueryGetAccessorKeyInvalid(t *testing.T) {
-	var param = did.GetAccessorGroupIDParam{
-		"accessor_id-Invalid",
-	}
+	var param pbParam.GetAccessorKeyParams
+	param.AccessorId = "accessor_id-Invalid"
 	expected := "not found"
 	GetAccessorKey(t, param, expected)
 }
 
 func TestQueryGetNodeInfoInvalid(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = "IdP1-Invalid"
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = "IdP1-Invalid"
 	expected := "not found"
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetIdentityInfoInvalid(t *testing.T) {
-	var param did.GetIdentityInfoParam
+	var param pbParam.GetIdentityInfoParams
 	h := sha256.New()
 	h.Write([]byte(userNamespace + "Invalid user"))
 	userHash := h.Sum(nil)
-	param.NodeID = IdP1
-	param.HashID = hex.EncodeToString(userHash)
+	param.NodeId = IdP1
+	param.HashId = hex.EncodeToString(userHash)
 	expected := "not found"
 	GetIdentityInfo(t, param, expected)
 }
 
 func TestQueryGetDataSignatureInvalid(t *testing.T) {
-	var param did.GetDataSignatureParam
-	param.NodeID = "AS1-Invalid"
-	param.RequestID = requestID1.String()
-	param.ServiceID = serviceID1
+	var param pbParam.GetDataSignatureParams
+	param.NodeId = "AS1-Invalid"
+	param.RequestId = requestID1.String()
+	param.ServiceId = serviceID1
 	expected := "not found"
 	GetDataSignature(t, param, expected)
 }
 
 func TestQueryGetIdentityProofInvaid(t *testing.T) {
-	var param = did.GetIdentityProofParam{
-		"IdP1-Invalid",
-		requestID1.String(),
-	}
+	var param pbParam.GetIdentityProofParams
+	param.IdpId = "IdP1-Invalid"
+	param.RequestId = requestID1.String()
 	expected := "not found"
 	GetIdentityProofExpectString(t, param, expected)
 }
 
 func TestQueryGetServicesByAsIDInvalid(t *testing.T) {
-	var param = did.GetServicesByAsIDParam{
-		"AS1-Invalid",
-	}
+	var param pbParam.GetServicesByAsIDParams
+	param.AsId = "AS1-Invalid"
 	expected := "not found"
 	GetServicesByAsID(t, param, expected)
 }
 
 func TestQueryGetAsNodesByServiceIdBeforeUpdateNodeName(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID4
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID4
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":2.2,"min_aal":2.2}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1803,8 +1780,8 @@ func TestUpdateNodeAS1ByNDID(t *testing.T) {
 }
 
 func TestQueryGetAsNodesByServiceIdAfterUpdateNodeName(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID4
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID4
 	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"UpdatedName_AS1","min_ial":2.2,"min_aal":2.2}]}`
 	GetAsNodesByServiceId(t, param, expected)
 }
@@ -1821,8 +1798,8 @@ func TestUpdateNodeNDID(t *testing.T) {
 }
 
 func TestQueryGetIdpNodesInfo2(t *testing.T) {
-	var param did.GetIdpNodesParam
-	param.HashID = ""
+	var param pbParam.GetIdpNodesParams
+	param.HashId = ""
 	param.MinIal = 3
 	param.MinAal = 3
 	var expected = `{"node":[{"node_id":"` + IdP4 + `","name":"IdP Number 4 from ...","max_ial":3,"max_aal":3,"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu9+CK/vznpXtAUC0QhuJ\ngYKCfMMBiIgVcp2A+e+SsKvv6ESQ72R8K6nQAhH2MGtnj3ScLI0tMwCtgotWCEGi\nyUXKXLVTiqAqtwflCUVuxCDVuvOm3GQCxvwzE34jEgbGZ33G3tV7uKTtifhoJzVY\nD+WkZVslBhaBgQCUewCX4zkCCTYC5VEhkr7K8HGEr6n1eBOO5VORCkrHKYoZK7eu\nNjyWvWYyVN07F8K0RhgIF9Xsa6Tiu1Yf8zuyJ/awR6U4Nw+oTkvRpx64+caBNYgR\n4n8peg9ZJeTAwV49o1ymx34pPjHUgSdpyhZX4i3z9ji+o7KbNkA/O0l+3doMuH1e\nxwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}]},{"node_id":"` + IdP5 + `","name":"IdP Number 5 from ...","max_ial":3,"max_aal":3,"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApbxaA5aKnkpnV7+dMW5x\n7iEINouvjhQ8gl6+8A6ApiVbYIzJCCaexU9mn7jDP634SyjFNSxzhjklEm7qFPaH\nOk1FfX6tk5i5uGWifRQHueXhXjR8HSBkjQAoZ0eqBqTsxsSpASsT4qoBKtsIVN7X\nHdh9Mqz+XAkq4T6vtdaocduarNG6ALZFkX+pAgkCj4hIhRmHjlyYIh1yOZw1KM3T\nHkM9noP2AYEH2MBHCzuu+bifCwurOBq+ZKAdfroCG4rPGfOXuDQK8BHpru1lg0jd\nAmbbqMyGpAsF+WjW4V2rcTMFZOoYFYE5m2ssxC4O9h3f/H2gBtjjWzYv6bRC6ZdP\n2wIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}]}]}`
@@ -1830,20 +1807,18 @@ func TestQueryGetIdpNodesInfo2(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoInvalidNodeID(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = "InvalidNodeID"
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = "InvalidNodeID"
 	expected := string(`{}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetIdpNodesInfo3(t *testing.T) {
-	param := make(map[string]interface{})
-	param["min_ial"] = 3
-	param["min_aal"] = 3
-	nodeIDList := make([]string, 0)
-	nodeIDList = append(nodeIDList, IdP5)
-	param["node_id_list"] = nodeIDList
-	jsonStr, err := json.Marshal(param)
+	var param pbParam.GetIdpNodesParams
+	param.MinIal = 3
+	param.MinAal = 3
+	param.NodeIdList = append(param.NodeIdList, IdP5)
+	jsonStr, err := proto.Marshal(&param)
 	if err != nil {
 		panic(err)
 	}
@@ -1873,8 +1848,8 @@ func TestSetNodeTokenProxy1(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoProxy1BeforeRegisterMsq(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = Proxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = Proxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"Proxy1","role":"Proxy","mq":null}`)
 	GetNodeInfo(t, param, expected)
 }
@@ -1921,8 +1896,8 @@ func TestAddNodeToProxyNodeProxy1Proxy1(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoIdP6BehindProxy1BeforeProxyRegisterMsq(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP6BehindProxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP6BehindProxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"proxy":{"node_id":"` + Proxy1 + `","node_name":"Proxy1","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":null,"config":"KEY_ON_PROXY"}}`)
 	GetNodeInfo(t, param, expected)
 }
@@ -1938,31 +1913,31 @@ func TestRegisterMsqAddressProxy1(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoProxy1(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = Proxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = Proxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"Proxy1","role":"Proxy","mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetNodeInfoIdP6BehindProxy1(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP6BehindProxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP6BehindProxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"proxy":{"node_id":"` + Proxy1 + `","node_name":"Proxy1","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}],"config":"KEY_ON_PROXY"}}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetGetNodesBehindProxyNode1(t *testing.T) {
-	var param did.GetNodesBehindProxyNodeParam
-	param.ProxyNodeID = Proxy1
+	var param pbParam.GetNodesBehindProxyNodeParams
+	param.ProxyNodeId = Proxy1
 	expected := string(`{"nodes":[{"node_id":"` + IdP6BehindProxy1 + `","node_name":"IdP6BehindProxy1","role":"IdP","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","max_ial":3,"max_aal":3,"config":"KEY_ON_PROXY"}]}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
 
 func TestQueryGetIdpNodesInfo4(t *testing.T) {
-	param := make(map[string]interface{})
-	param["min_ial"] = 3
-	param["min_aal"] = 3
-	jsonStr, err := json.Marshal(param)
+	var param pbParam.GetIdpNodesParams
+	param.MinIal = 3
+	param.MinAal = 3
+	jsonStr, err := proto.Marshal(&param)
 	if err != nil {
 		panic(err)
 	}
@@ -2001,15 +1976,15 @@ func TestAddNodeToProxyNodeAS3BehindProxy1(t *testing.T) {
 }
 
 func TestQueryGetNodeInfoAS3BehindProxy1(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = AS3BehindProxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = AS3BehindProxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"AS3BehindProxy1","role":"AS","proxy":{"node_id":"` + Proxy1 + `","node_name":"Proxy1","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}],"config":"KEY_ON_PROXY"}}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetGetNodesBehindProxyNode2(t *testing.T) {
-	var param did.GetNodesBehindProxyNodeParam
-	param.ProxyNodeID = Proxy1
+	var param pbParam.GetNodesBehindProxyNodeParams
+	param.ProxyNodeId = Proxy1
 	expected := string(`{"nodes":[{"node_id":"` + IdP6BehindProxy1 + `","node_name":"IdP6BehindProxy1","role":"IdP","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","max_ial":3,"max_aal":3,"config":"KEY_ON_PROXY"},{"node_id":"` + AS3BehindProxy1 + `","node_name":"AS3BehindProxy1","role":"AS","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","config":"KEY_ON_PROXY"}]}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
@@ -2037,8 +2012,8 @@ func TestASRegisterServiceDestinationserviceID6(t *testing.T) {
 }
 
 func TestQueryGetAsNodesInfoByServiceIdWithProxy(t *testing.T) {
-	var param did.GetAsNodesByServiceIdParam
-	param.ServiceID = serviceID6
+	var param pbParam.GetAsNodesByServiceIdParams
+	param.ServiceId = serviceID6
 	var expected = `{"node":[{"node_id":"` + AS3BehindProxy1 + `","name":"AS3BehindProxy1","min_ial":1.1,"min_aal":1.2,"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","proxy":{"node_id":"` + Proxy1 + `","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}],"config":"KEY_ON_PROXY"}}]}`
 	GetAsNodesInfoByServiceId(t, param, expected)
 }
@@ -2083,21 +2058,21 @@ func TestUpdateNodeProxyNodeProxy2(t *testing.T) {
 }
 
 func TestQueryGetGetNodesBehindProxyNode3(t *testing.T) {
-	var param did.GetNodesBehindProxyNodeParam
-	param.ProxyNodeID = Proxy1
+	var param pbParam.GetNodesBehindProxyNodeParams
+	param.ProxyNodeId = Proxy1
 	expected := string(`{"nodes":[{"node_id":"` + AS3BehindProxy1 + `","node_name":"AS3BehindProxy1","role":"AS","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApT8lXT9CDRZZkvhZLBD6\n6o7igZf6sj/o0XooaTuy2HuCt6yEO8jt7nx0XkEFyx4bH4/tZNsKdok7DU75MjqQ\nrdqGwpogvkZ3uUahwE9ZgOj6h4fq9l1Au8lxvAIp+b2BDRxttbHp9Ls9nK47B3Zu\niD02QknUNiPFvf+BWIoC8oe6AbyctnV+GTsC/H3jY3BD9ox2XKSE4/xaDMgC+SBU\n3pqukT35tgOcvcSAMVJJ06B3uyk19MzK3MVMm8b4sHFQ76UEpDOtQZrmKR1PH0gV\nFt93/0FPOH3m4o+9+1OStP51Un4oH3o80aw5g0EJzDpuv/+Sheec4+0PVTq0K6kj\ndQIDAQAB\n-----END PUBLIC KEY-----\n","config":"KEY_ON_PROXY"}]}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
 func TestQueryGetGetNodesBehindProxyNode4(t *testing.T) {
-	var param did.GetNodesBehindProxyNodeParam
-	param.ProxyNodeID = Proxy2
+	var param pbParam.GetNodesBehindProxyNodeParams
+	param.ProxyNodeId = Proxy2
 	expected := string(`{"nodes":[{"node_id":"` + IdP6BehindProxy1 + `","node_name":"IdP6BehindProxy1","role":"IdP","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","max_ial":3,"max_aal":3,"config":"KEY_ON_PROXY"}]}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
 
 func TestQueryGetNodeInfoIdP6BehindProxy2(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP6BehindProxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP6BehindProxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"proxy":{"node_id":"` + Proxy2 + `","node_name":"Proxy2","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":[{"ip":"192.168.3.99","port":8000}],"config":"KEY_ON_PROXY"}}`)
 	GetNodeInfo(t, param, expected)
 }
@@ -2119,48 +2094,48 @@ func TestRegisterMsqAddressIdP6BehindProxy1(t *testing.T) {
 }
 
 func TestQueryGetGetNodesBehindProxyNode5(t *testing.T) {
-	var param did.GetNodesBehindProxyNodeParam
-	param.ProxyNodeID = Proxy2
+	var param pbParam.GetNodesBehindProxyNodeParams
+	param.ProxyNodeId = Proxy2
 	expected := string(`{"nodes":[]}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
 
 func TestQueryGetNodeInfoIdP6BehindProxy3(t *testing.T) {
-	var param did.GetNodeInfoParam
-	param.NodeID = IdP6BehindProxy1
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP6BehindProxy1
 	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"mq":[{"ip":"192.168.3.99","port":8000}]}`)
 	GetNodeInfo(t, param, expected)
 }
 
 func TestQueryGetNodeIDListAll(t *testing.T) {
-	var param did.GetNodeIDListParam
+	var param pbParam.GetNodeIDListParams
 	expected := string(`{"node_id_list":["` + RP1 + `","` + IdP1 + `","` + AS1 + `","` + IdP4 + `","` + IdP5 + `","` + Proxy1 + `","` + IdP6BehindProxy1 + `","` + AS3BehindProxy1 + `","` + Proxy2 + `"]}`)
 	GetNodeIDList(t, param, expected)
 }
 
 func TestQueryGetNodeIDListRP(t *testing.T) {
-	var param did.GetNodeIDListParam
+	var param pbParam.GetNodeIDListParams
 	param.Role = "RP"
 	expected := string(`{"node_id_list":["` + RP1 + `"]}`)
 	GetNodeIDList(t, param, expected)
 }
 
 func TestQueryGetNodeIDListIdP(t *testing.T) {
-	var param did.GetNodeIDListParam
+	var param pbParam.GetNodeIDListParams
 	param.Role = "IdP"
 	expected := string(`{"node_id_list":["` + IdP1 + `","` + IdP4 + `","` + IdP5 + `","` + IdP6BehindProxy1 + `"]}`)
 	GetNodeIDList(t, param, expected)
 }
 
 func TestQueryGetNodeIDListAS(t *testing.T) {
-	var param did.GetNodeIDListParam
+	var param pbParam.GetNodeIDListParams
 	param.Role = "AS"
 	expected := string(`{"node_id_list":["` + AS1 + `","` + AS3BehindProxy1 + `"]}`)
 	GetNodeIDList(t, param, expected)
 }
 
 func TestDisableAllNode(t *testing.T) {
-	var param did.GetNodeIDListParam
+	var param pbParam.GetNodeIDListParams
 	allNode := GetNodeIDListForDisable(t, param)
 	for _, nodeID := range allNode {
 		var param pbParam.DisableNodeParams

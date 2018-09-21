@@ -260,3 +260,79 @@ message GetNodeMasterPublicKeyParams {
 message GetNodePublicKeyParams {
   string node_id = 1;
 }
+
+message GetNodeIDListParams {
+  string role = 1;
+}
+
+message GetNodesBehindProxyNodeParams {
+  string proxy_node_id = 1;
+}
+
+message GetAsNodesByServiceIdParams {
+  string service_id = 1;
+  repeated string node_id_list = 2;
+}
+
+message GetIdpNodesParams {
+  string hash_id = 1;
+  double min_ial = 2;
+  double min_aal = 3;
+  repeated string node_id_list = 4;
+}
+
+message GetServicesByAsIDParams {
+  string as_id = 1;
+}
+
+message GetIdentityProofParams {
+  string idp_id = 1;
+  string request_id = 2;
+}
+
+message GetDataSignatureParams {
+  string node_id = 1;
+  string service_id = 2;
+  string request_id = 3;
+}
+
+message GetIdentityInfoParams {
+  string hash_id = 1;
+  string node_id = 2;
+}
+
+message GetNodeInfoParams {
+  string node_id = 1;
+}
+
+message CheckExistingAccessorGroupIDParams {
+  string accessor_group_id = 1;
+}
+
+message CheckExistingAccessorIDParams {
+  string accessor_id = 1;
+}
+
+message GetAccessorKeyParams {
+  string accessor_id = 1;
+}
+
+message GetAccessorGroupIDParams {
+  string accessor_id = 1;
+}
+
+message CheckExistingIdentityParams {
+  string hash_id = 1;
+}
+
+message GetServiceDetailParams {
+  string service_id = 1;
+}
+
+message GetRequestParams {
+  string request_id = 1;
+}
+
+message GetMsqAddressParams {
+  string node_id = 1;
+}

@@ -127,9 +127,9 @@ func GetNodeTokenExpectString(t *testing.T, param pbParam.GetNodeTokenParams, ex
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdpNodes(t *testing.T, param did.GetIdpNodesParam, expected []did.MsqDestinationNode) {
+func GetIdpNodes(t *testing.T, param pbParam.GetIdpNodesParams, expected []did.MsqDestinationNode) {
 	fnName := "GetIdpNodes"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -147,9 +147,9 @@ func GetIdpNodes(t *testing.T, param did.GetIdpNodesParam, expected []did.MsqDes
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdpNodesForDisable(t *testing.T, param did.GetIdpNodesParam) (expected []did.MsqDestinationNode) {
+func GetIdpNodesForDisable(t *testing.T, param pbParam.GetIdpNodesParams) (expected []did.MsqDestinationNode) {
 	fnName := "GetIdpNodes"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -164,9 +164,9 @@ func GetIdpNodesForDisable(t *testing.T, param did.GetIdpNodesParam) (expected [
 	return res.Node
 }
 
-func GetIdpNodesExpectString(t *testing.T, param did.GetIdpNodesParam, expected string) {
+func GetIdpNodesExpectString(t *testing.T, param pbParam.GetIdpNodesParams, expected string) {
 	fnName := "GetIdpNodes"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -183,9 +183,9 @@ func GetIdpNodesExpectString(t *testing.T, param did.GetIdpNodesParam, expected 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetMsqAddress(t *testing.T, param did.GetMsqAddressParam, expected []did.MsqAddress) {
+func GetMsqAddress(t *testing.T, param pbParam.GetMsqAddressParams, expected []did.MsqAddress) {
 	fnName := "GetMsqAddress"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -203,9 +203,9 @@ func GetMsqAddress(t *testing.T, param did.GetMsqAddressParam, expected []did.Ms
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetMsqAddressExpectString(t *testing.T, param did.GetMsqAddressParam, expected string) {
+func GetMsqAddressExpectString(t *testing.T, param pbParam.GetMsqAddressParams, expected string) {
 	fnName := "GetMsqAddress"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -227,9 +227,9 @@ func GetMsqAddressExpectString(t *testing.T, param did.GetMsqAddressParam, expec
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServiceDetail(t *testing.T, param did.GetServiceDetailParam, expected did.ServiceDetail) {
+func GetServiceDetail(t *testing.T, param pbParam.GetServiceDetailParams, expected did.ServiceDetail) {
 	fnName := "GetServiceDetail"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -247,9 +247,9 @@ func GetServiceDetail(t *testing.T, param did.GetServiceDetailParam, expected di
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServiceDetailExpectString(t *testing.T, param did.GetServiceDetailParam, expected string) {
+func GetServiceDetailExpectString(t *testing.T, param pbParam.GetServiceDetailParams, expected string) {
 	fnName := "GetServiceDetail"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -271,9 +271,9 @@ func GetServiceDetailExpectString(t *testing.T, param did.GetServiceDetailParam,
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetAsNodesByServiceId(t *testing.T, param did.GetAsNodesByServiceIdParam, expected string) {
+func GetAsNodesByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdParams, expected string) {
 	fnName := "GetAsNodesByServiceId"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -295,9 +295,9 @@ func GetAsNodesByServiceId(t *testing.T, param did.GetAsNodesByServiceIdParam, e
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdentityProof(t *testing.T, param did.GetIdentityProofParam, expected did.GetIdentityProofResult) {
+func GetIdentityProof(t *testing.T, param pbParam.GetIdentityProofParams, expected did.GetIdentityProofResult) {
 	fnName := "GetIdentityProof"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -315,9 +315,9 @@ func GetIdentityProof(t *testing.T, param did.GetIdentityProofParam, expected di
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdentityProofExpectString(t *testing.T, param did.GetIdentityProofParam, expected string) {
+func GetIdentityProofExpectString(t *testing.T, param pbParam.GetIdentityProofParams, expected string) {
 	fnName := "GetIdentityProof"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -387,9 +387,9 @@ func GetUsedTokenReport(t *testing.T, param pbParam.GetUsedTokenReportParams, ex
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetRequestDetail(t *testing.T, param did.GetRequestParam, expected string) {
+func GetRequestDetail(t *testing.T, param pbParam.GetRequestParams, expected string) {
 	fnName := "GetRequestDetail"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -406,9 +406,9 @@ func GetRequestDetail(t *testing.T, param did.GetRequestParam, expected string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetRequest(t *testing.T, param did.GetRequestParam, expected did.GetRequestResult) {
+func GetRequest(t *testing.T, param pbParam.GetRequestParams, expected did.GetRequestResult) {
 	fnName := "GetRequest"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -426,9 +426,9 @@ func GetRequest(t *testing.T, param did.GetRequestParam, expected did.GetRequest
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetRequestExpectString(t *testing.T, param did.GetRequestParam, expected string) {
+func GetRequestExpectString(t *testing.T, param pbParam.GetRequestParams, expected string) {
 	fnName := "GetRequest"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -493,9 +493,9 @@ func GetNamespaceListExpectString(t *testing.T, expected string) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func CheckExistingIdentity(t *testing.T, param did.CheckExistingIdentityParam, expected string) {
+func CheckExistingIdentity(t *testing.T, param pbParam.CheckExistingIdentityParams, expected string) {
 	fnName := "CheckExistingIdentity"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -508,9 +508,9 @@ func CheckExistingIdentity(t *testing.T, param did.CheckExistingIdentityParam, e
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetAccessorGroupID(t *testing.T, param did.GetAccessorGroupIDParam, expected string) {
+func GetAccessorGroupID(t *testing.T, param pbParam.GetAccessorGroupIDParams, expected string) {
 	fnName := "GetAccessorGroupID"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -527,9 +527,9 @@ func GetAccessorGroupID(t *testing.T, param did.GetAccessorGroupIDParam, expecte
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetAccessorKey(t *testing.T, param did.GetAccessorGroupIDParam, expected string) {
+func GetAccessorKey(t *testing.T, param pbParam.GetAccessorKeyParams, expected string) {
 	fnName := "GetAccessorKey"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -577,9 +577,9 @@ func GetServiceListForDisable(t *testing.T) (expected []did.ServiceDetail) {
 	return res
 }
 
-func GetNodeInfo(t *testing.T, param did.GetNodeInfoParam, expected string) {
+func GetNodeInfo(t *testing.T, param pbParam.GetNodeInfoParams, expected string) {
 	fnName := "GetNodeInfo"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -596,9 +596,9 @@ func GetNodeInfo(t *testing.T, param did.GetNodeInfoParam, expected string) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func CheckExistingAccessorID(t *testing.T, param did.CheckExistingAccessorIDParam, expected string) {
+func CheckExistingAccessorID(t *testing.T, param pbParam.CheckExistingAccessorIDParams, expected string) {
 	fnName := "CheckExistingAccessorID"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -611,9 +611,9 @@ func CheckExistingAccessorID(t *testing.T, param did.CheckExistingAccessorIDPara
 	t.Logf("PASS: %s", fnName)
 }
 
-func CheckExistingAccessorGroupID(t *testing.T, param did.CheckExistingAccessorGroupIDParam, expected string) {
+func CheckExistingAccessorGroupID(t *testing.T, param pbParam.CheckExistingAccessorGroupIDParams, expected string) {
 	fnName := "CheckExistingAccessorGroupID"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -626,9 +626,9 @@ func CheckExistingAccessorGroupID(t *testing.T, param did.CheckExistingAccessorG
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdentityInfo(t *testing.T, param did.GetIdentityInfoParam, expected string) {
+func GetIdentityInfo(t *testing.T, param pbParam.GetIdentityInfoParams, expected string) {
 	fnName := "GetIdentityInfo"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -645,9 +645,9 @@ func GetIdentityInfo(t *testing.T, param did.GetIdentityInfoParam, expected stri
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServicesByAsID(t *testing.T, param did.GetServicesByAsIDParam, expected string) {
+func GetServicesByAsID(t *testing.T, param pbParam.GetServicesByAsIDParams, expected string) {
 	fnName := "GetServicesByAsID"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -664,9 +664,9 @@ func GetServicesByAsID(t *testing.T, param did.GetServicesByAsIDParam, expected 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetDataSignature(t *testing.T, param did.GetDataSignatureParam, expected string) {
+func GetDataSignature(t *testing.T, param pbParam.GetDataSignatureParams, expected string) {
 	fnName := "GetDataSignature"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -683,9 +683,9 @@ func GetDataSignature(t *testing.T, param did.GetDataSignatureParam, expected st
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdpNodesInfo(t *testing.T, param did.GetIdpNodesParam, expected string) {
+func GetIdpNodesInfo(t *testing.T, param pbParam.GetIdpNodesParams, expected string) {
 	fnName := "GetIdpNodesInfo"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -698,9 +698,9 @@ func GetIdpNodesInfo(t *testing.T, param did.GetIdpNodesParam, expected string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetAsNodesInfoByServiceId(t *testing.T, param did.GetAsNodesByServiceIdParam, expected string) {
+func GetAsNodesInfoByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdParams, expected string) {
 	fnName := "GetAsNodesInfoByServiceId"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -733,9 +733,9 @@ func GetIdpNodesInfoParamJSON(t *testing.T, paramsByte string, expected string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodesBehindProxyNode(t *testing.T, param did.GetNodesBehindProxyNodeParam, expected string) {
+func GetNodesBehindProxyNode(t *testing.T, param pbParam.GetNodesBehindProxyNodeParams, expected string) {
 	fnName := "GetNodesBehindProxyNode"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -752,9 +752,9 @@ func GetNodesBehindProxyNode(t *testing.T, param did.GetNodesBehindProxyNodePara
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeIDList(t *testing.T, param did.GetNodeIDListParam, expected string) {
+func GetNodeIDList(t *testing.T, param pbParam.GetNodeIDListParams, expected string) {
 	fnName := "GetNodeIDList"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -771,9 +771,9 @@ func GetNodeIDList(t *testing.T, param did.GetNodeIDListParam, expected string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeIDListForDisable(t *testing.T, param did.GetNodeIDListParam) []string {
+func GetNodeIDListForDisable(t *testing.T, param pbParam.GetNodeIDListParams) []string {
 	fnName := "GetNodeIDList"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
