@@ -294,16 +294,14 @@ func TestIdPRegisterMsqDestination(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var users []did.User
-	var user = did.User{
-		hex.EncodeToString(userHash),
-		3,
-		true,
-	}
-	users = append(users, user)
-	var param = did.RegisterMsqDestinationParam{
-		users,
-	}
+	var users []*pbParam.User
+	var user pbParam.User
+	user.HashId = hex.EncodeToString(userHash)
+	user.Ial = 3
+	user.First = true
+	users = append(users, &user)
+	var param pbParam.RegisterMsqDestinationParams
+	param.Users = users
 	RegisterMsqDestination(t, param, idpPrivK, IdP1, "success")
 }
 
@@ -1145,16 +1143,14 @@ func TestIdP4RegisterMsqDestination0(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID2))
 	userHash := h.Sum(nil)
-	var users []did.User
-	var user = did.User{
-		hex.EncodeToString(userHash),
-		3,
-		true,
-	}
-	users = append(users, user)
-	var param = did.RegisterMsqDestinationParam{
-		users,
-	}
+	var users []*pbParam.User
+	var user pbParam.User
+	user.HashId = hex.EncodeToString(userHash)
+	user.Ial = 3
+	user.First = true
+	users = append(users, &user)
+	var param pbParam.RegisterMsqDestinationParams
+	param.Users = users
 	RegisterMsqDestination(t, param, idpPrivK5, IdP4, "success")
 }
 
@@ -1162,16 +1158,14 @@ func TestIdP4RegisterMsqDestination11(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID2))
 	userHash := h.Sum(nil)
-	var users []did.User
-	var user = did.User{
-		hex.EncodeToString(userHash),
-		3,
-		true,
-	}
-	users = append(users, user)
-	var param = did.RegisterMsqDestinationParam{
-		users,
-	}
+	var users []*pbParam.User
+	var user pbParam.User
+	user.HashId = hex.EncodeToString(userHash)
+	user.Ial = 3
+	user.First = true
+	users = append(users, &user)
+	var param pbParam.RegisterMsqDestinationParams
+	param.Users = users
 	RegisterMsqDestination(t, param, idpPrivK5, IdP4, "This node is not first IdP")
 }
 
@@ -1188,16 +1182,14 @@ func TestIdP4RegisterMsqDestination12(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID2))
 	userHash := h.Sum(nil)
-	var users []did.User
-	var user = did.User{
-		hex.EncodeToString(userHash),
-		3,
-		true,
-	}
-	users = append(users, user)
-	var param = did.RegisterMsqDestinationParam{
-		users,
-	}
+	var users []*pbParam.User
+	var user pbParam.User
+	user.HashId = hex.EncodeToString(userHash)
+	user.Ial = 3
+	user.First = true
+	users = append(users, &user)
+	var param pbParam.RegisterMsqDestinationParams
+	param.Users = users
 	RegisterMsqDestination(t, param, idpPrivK5, IdP4, "success")
 }
 
@@ -1205,16 +1197,14 @@ func TestIdP4RegisterMsqDestination2(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var users []did.User
-	var user = did.User{
-		hex.EncodeToString(userHash),
-		3,
-		false,
-	}
-	users = append(users, user)
-	var param = did.RegisterMsqDestinationParam{
-		users,
-	}
+	var users []*pbParam.User
+	var user pbParam.User
+	user.HashId = hex.EncodeToString(userHash)
+	user.Ial = 3
+	user.First = true
+	users = append(users, &user)
+	var param pbParam.RegisterMsqDestinationParams
+	param.Users = users
 	RegisterMsqDestination(t, param, idpPrivK5, IdP4, "success")
 }
 

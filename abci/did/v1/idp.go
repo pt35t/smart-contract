@@ -175,8 +175,8 @@ func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.R
 
 func registerMsqDestination(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("RegisterMsqDestination, Parameter: %s", param)
-	var funcParam RegisterMsqDestinationParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.RegisterMsqDestinationParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
@@ -213,7 +213,7 @@ func registerMsqDestination(param []byte, app *DIDApplication, nodeID string) ty
 
 	// If validate passed then add Msq Destination
 	for _, user := range funcParam.Users {
-		key := "MsqDestination" + "|" + user.HashID
+		key := "MsqDestination" + "|" + user.HashId
 		_, chkExists := app.state.db.Get(prefixKey([]byte(key)))
 
 		if chkExists != nil {

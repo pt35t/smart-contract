@@ -43,15 +43,15 @@ type GetNodeMasterPublicKeyResult struct {
 	MasterPublicKey string `json:"master_public_key"`
 }
 
-type User struct {
-	HashID string  `json:"hash_id"`
-	Ial    float64 `json:"ial"`
-	First  bool    `json:"first"`
-}
+// type User struct {
+// 	HashID string  `json:"hash_id"`
+// 	Ial    float64 `json:"ial"`
+// 	First  bool    `json:"first"`
+// }
 
-type RegisterMsqDestinationParam struct {
-	Users []User `json:"users"`
-}
+// type RegisterMsqDestinationParam struct {
+// 	Users []User `json:"users"`
+// }
 
 type Node struct {
 	Ial          float64 `json:"ial"`

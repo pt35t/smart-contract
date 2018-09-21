@@ -167,3 +167,13 @@ message CreateIdpResponseParams {
   string identity_proof = 6;
   string private_proof_hash = 7;
 }
+
+message User {
+  string hash_id = 1;
+  double ial = 2;
+  bool first = 3;
+}
+
+message RegisterMsqDestinationParams {
+  repeated User users = 1;
+}

@@ -27,20 +27,18 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	did "github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
-func RegisterMsqDestination(t *testing.T, param did.RegisterMsqDestinationParam, privKeyFile string, nodeID string, expected string) {
+func RegisterMsqDestination(t *testing.T, param pbParam.RegisterMsqDestinationParams, privKeyFile string, nodeID string, expected string) {
 	idpKey := getPrivateKeyFromString(privKeyFile)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
