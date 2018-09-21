@@ -229,7 +229,7 @@ func checkIsOwnerRequest(param []byte, nodeID string, app *DIDApplication) types
 	return ReturnCheckTx(code.NotOwnerOfRequest, "This node is not owner of request")
 }
 
-func verifySignature(param []byte, nonce string, signature []byte, publicKey string) (result bool, err error) {
+func verifySignature(param []byte, nonce []byte, signature []byte, publicKey string) (result bool, err error) {
 	publicKey = strings.Replace(publicKey, "\t", "", -1)
 	block, _ := pem.Decode([]byte(publicKey))
 	senderPublicKeyInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
@@ -382,7 +382,7 @@ var IsMasterKeyMethod = map[string]bool{
 }
 
 // CheckTxRouter is Pointer to function
-func CheckTxRouter(method string, param []byte, nonce string, signature []byte, nodeID string, app *DIDApplication) types.ResponseCheckTx {
+func CheckTxRouter(method string, param []byte, nonce []byte, signature []byte, nodeID string, app *DIDApplication) types.ResponseCheckTx {
 
 	var publicKey string
 	if method == "InitNDID" {
