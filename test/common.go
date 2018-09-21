@@ -45,7 +45,8 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 	idpKey := getPrivateKeyFromString(priveKFile)
 	idpNodeID := []byte(nodeID)
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -70,7 +71,8 @@ func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile s
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -95,7 +97,8 @@ func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, 
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -119,7 +122,8 @@ func UpdateNode(t *testing.T, param pbParam.UpdateNodeParams, masterPriveKFile s
 	}
 	byteNodeID := []byte(nodeID)
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)

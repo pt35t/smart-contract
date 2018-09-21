@@ -50,13 +50,14 @@ func InitNDID(t *testing.T) {
 	initNDIDparam.PublicKey = string(ndidpublicKeyBytes)
 	initNDIDparam.MasterPublicKey = string(ndidpublicKeyBytes)
 
-	initNDIDparamJSON, err := proto.Marshal(&initNDIDparam)
+	paramJSON, err := proto.Marshal(&initNDIDparam)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(initNDIDparamJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -65,7 +66,7 @@ func InitNDID(t *testing.T) {
 	fnName := "InitNDID"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, ndidKey, newhash, hashed)
 	startTime := time.Now()
-	result, _ := callTendermint([]byte(fnName), initNDIDparamJSON, []byte(nonce), signature, []byte(initNDIDparam.NodeId))
+	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, []byte(initNDIDparam.NodeId))
 	resultObj, _ := result.(ResponseTx)
 	if resultObj.Result.CheckTx.Log == "NDID node is already existed" {
 		t.SkipNow()
@@ -90,7 +91,8 @@ func RegisterNode(t *testing.T, param pbParam.RegisterNodeParams) {
 	ndidNodeID := []byte("NDID")
 
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -117,7 +119,8 @@ func SetTimeOutBlockRegisterMsqDestination(t *testing.T) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -143,7 +146,8 @@ func AddNodeToken(t *testing.T, param pbParam.AddNodeTokenParams) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -168,7 +172,8 @@ func ReduceNodeToken(t *testing.T, param pbParam.ReduceNodeTokenParams) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -193,7 +198,8 @@ func SetNodeToken(t *testing.T, param pbParam.SetNodeTokenParams) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -218,7 +224,8 @@ func AddService(t *testing.T, param did.AddServiceParam) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -243,7 +250,8 @@ func DisableService(t *testing.T, param did.DisableServiceParam) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -269,7 +277,8 @@ func EnableService(t *testing.T, param did.DisableServiceParam) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -294,7 +303,8 @@ func RegisterServiceDestinationByNDID(t *testing.T, param did.RegisterServiceDes
 		log.Fatal(err.Error())
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -319,7 +329,8 @@ func UpdateService(t *testing.T, param did.UpdateServiceParam) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -344,7 +355,8 @@ func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := []byte("NDID")
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -364,19 +376,20 @@ func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParams) {
 func AddNamespace(t *testing.T, param did.Namespace) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	funcparamJSON, err := json.Marshal(param)
+	paramJSON, err := json.Marshal(param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(funcparamJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	fnName := "AddNamespace"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, ndidKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), funcparamJSON, []byte(nonce), signature, []byte(nodeID))
+	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, []byte(nodeID))
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -389,19 +402,20 @@ func AddNamespace(t *testing.T, param did.Namespace) {
 func DisableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	funcparamJSON, err := json.Marshal(param)
+	paramJSON, err := json.Marshal(param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(funcparamJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	fnName := "DisableNamespace"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, ndidKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), funcparamJSON, []byte(nonce), signature, []byte(nodeID))
+	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, []byte(nodeID))
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -414,19 +428,20 @@ func DisableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 func EnableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	nodeID := "NDID"
-	funcparamJSON, err := json.Marshal(param)
+	paramJSON, err := json.Marshal(param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(funcparamJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
 	hashed := pssh.Sum(nil)
 	fnName := "EnableNamespace"
 	signature, err := rsa.SignPKCS1v15(rand.Reader, ndidKey, newhash, hashed)
-	result, _ := callTendermint([]byte(fnName), funcparamJSON, []byte(nonce), signature, []byte(nodeID))
+	result, _ := callTendermint([]byte(fnName), paramJSON, []byte(nonce), signature, []byte(nodeID))
 	resultObj, _ := result.(ResponseTx)
 	expected := "success"
 	if actual := resultObj.Result.DeliverTx.Log; actual != expected {
@@ -444,7 +459,8 @@ func SetValidator(t *testing.T, param pbParam.SetValidatorParams) {
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -469,7 +485,8 @@ func UpdateNodeByNDID(t *testing.T, param did.UpdateNodeByNDIDParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := []byte("NDID")
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -494,7 +511,8 @@ func DisableNode(t *testing.T, param did.DisableNodeParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := []byte("NDID")
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -519,7 +537,8 @@ func EnableNode(t *testing.T, param did.DisableNodeParam) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := []byte("NDID")
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -544,7 +563,8 @@ func DisableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDesti
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -569,7 +589,8 @@ func EnableServiceDestinationByNDID(t *testing.T, param did.DisableServiceDestin
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -596,7 +617,8 @@ func AddNodeToProxyNode(t *testing.T, param did.AddNodeToProxyNodeParam, expecte
 	ndidNodeID := []byte("NDID")
 
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -623,7 +645,8 @@ func UpdateNodeProxyNode(t *testing.T, param did.UpdateNodeProxyNodeParam, expec
 	ndidNodeID := []byte("NDID")
 
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -650,7 +673,8 @@ func RemoveNodeFromProxyNode(t *testing.T, param did.RemoveNodeFromProxyNode, ex
 	ndidNodeID := []byte("NDID")
 
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)

@@ -44,7 +44,8 @@ func RegisterServiceDestination(t *testing.T, param pbParam.RegisterServiceDesti
 		log.Fatal(err.Error())
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -68,7 +69,8 @@ func UpdateServiceDestination(t *testing.T, param pbParam.UpdateServiceDestinati
 		log.Fatal(err.Error())
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -93,7 +95,8 @@ func SignData(t *testing.T, param pbParam.SignDataParams, expected string, nodeI
 		fmt.Println("error:", err)
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -117,7 +120,8 @@ func DisableServiceDestination(t *testing.T, param pbParam.DisableServiceDestina
 		log.Fatal(err.Error())
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
@@ -142,7 +146,8 @@ func EnableServiceDestination(t *testing.T, param pbParam.DisableServiceDestinat
 		log.Fatal(err.Error())
 	}
 	nonce := base64.StdEncoding.EncodeToString([]byte(common.RandStr(12)))
-	PSSmessage := append(paramJSON, []byte(nonce)...)
+	tempPSSmessage := append(paramJSON, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)

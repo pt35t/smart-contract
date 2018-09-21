@@ -28,6 +28,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 	"strings"
@@ -236,7 +237,8 @@ func verifySignature(param []byte, nonce []byte, signature []byte, publicKey str
 	if err != nil {
 		return false, err
 	}
-	PSSmessage := append(param, []byte(nonce)...)
+	tempPSSmessage := append(param, []byte(nonce)...)
+	PSSmessage := []byte(base64.StdEncoding.EncodeToString(tempPSSmessage))
 	newhash := crypto.SHA256
 	pssh := newhash.New()
 	pssh.Write(PSSmessage)
