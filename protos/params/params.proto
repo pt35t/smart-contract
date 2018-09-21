@@ -62,11 +62,6 @@ message CreateRequestParams {
   int64 request_timeout = 5;
   repeated DataRequestInParams data_request_list = 6;
   string request_message_hash = 7;
-  repeated ResponseInParams response_list = 8;
-  bool closed = 9;
-  bool timed_out = 10;
-  bool can_add_accessor = 11;
-  string owner = 12;
   int64 mode = 13;
 }
 
@@ -77,19 +72,6 @@ message DataRequestInParams {
   string request_Params_hash = 4;
   repeated string answered_as_id_list = 5;
   repeated string received_data_from_list = 6;
-}
-
-message ResponseInParams {
-  double ial = 1;
-  double aal = 2;
-  string status = 3;
-  string signature = 4;
-  string identity_proof = 5;
-  string private_proof_hash = 6;
-  string idp_id = 7;
-  string valid_proof = 8;
-  string valid_ial = 9;
-  string valid_signature = 10;
 }
 
 message CloseRequestParams {
