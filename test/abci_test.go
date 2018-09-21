@@ -2346,7 +2346,7 @@ func TestRemoveNodeFromProxyNode1(t *testing.T) {
 	RemoveNodeFromProxyNode(t, param, "success")
 }
 
-func TestRegisterMsqAddressIdP6BehindProxy1(t *testing.T) {
+func TestRegisterMsqAddressIdP6BehindProxy1_1(t *testing.T) {
 	var mq pbParam.MsqAddress
 	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
@@ -2370,6 +2370,26 @@ func TestQueryGetNodeInfoIdP6BehindProxy3(t *testing.T) {
 	GetNodeInfo(t, param, expected)
 }
 
+func TestRegisterMsqAddressIdP6BehindProxy1_2(t *testing.T) {
+	var mq1 pbParam.MsqAddress
+	mq1.Ip = "192.168.3.99"
+	mq1.Port = 8000
+	var mq2 pbParam.MsqAddress
+	mq2.Ip = "192.168.3.100"
+	mq2.Port = 8000
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = IdP6BehindProxy1
+	param.Addresses = append(param.Addresses, &mq1)
+	param.Addresses = append(param.Addresses, &mq2)
+	RegisterMsqAddress(t, param, idpPrivK, Proxy1)
+}
+
+func TestQueryGetNodeInfoIdP6BehindProxy3_2(t *testing.T) {
+	var param pbParam.GetNodeInfoParams
+	param.NodeId = IdP6BehindProxy1
+	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"mq":[{"ip":"192.168.3.99","port":8000},{"ip":"192.168.3.100","port":8000}]}`)
+	GetNodeInfo(t, param, expected)
+}
 func TestQueryGetNodeIDListAll(t *testing.T) {
 	var param pbParam.GetNodeIDListParams
 	expected := string(`{"node_id_list":["` + RP1 + `","` + IdP1 + `","` + AS1 + `","` + IdP4 + `","` + IdP5 + `","` + Proxy1 + `","` + IdP6BehindProxy1 + `","` + AS3BehindProxy1 + `","` + Proxy2 + `"]}`)
