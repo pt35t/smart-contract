@@ -206,36 +206,26 @@ func checkIsRPorIdP(param []byte, nodeID string, app *DIDApplication) types.Resp
 }
 
 func checkIsOwnerRequest(param []byte, nodeID string, app *DIDApplication) types.ResponseCheckTx {
-	var funcParam RequestIDParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.SetDataReceivedParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnCheckTx(code.UnmarshalError, err.Error())
 	}
-
-	// Check request is exist
-	requestKey := "Request" + "|" + funcParam.RequestID
-	_, requestValue := app.state.db.Get(prefixKey([]byte(requestKey)))
-
-	if requestValue == nil {
-		return types.ResponseCheckTx{Code: code.RequestIDNotFound, Log: "Request ID not found"}
-	}
-
-	key := "SpendGas" + "|" + nodeID
+	key := "Request" + "|" + funcParam.RequestId
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 
-	var reports data.ReportList
-	err = proto.Unmarshal([]byte(value), &reports)
+	if value == nil {
+		return types.ResponseCheckTx{Code: code.RequestIDNotFound, Log: "Request ID not found"}
+	}
+	var request data.Request
+	err = proto.Unmarshal([]byte(value), &request)
 	if err != nil {
 		return ReturnCheckTx(code.UnmarshalError, err.Error())
 	}
 
-	for _, node := range reports.Reports {
-		if node.Method == "CreateRequest" &&
-			node.Data == funcParam.RequestID {
-			return ReturnCheckTx(code.OK, "")
-		}
+	if request.Owner == nodeID {
+		return ReturnCheckTx(code.OK, "")
 	}
-
 	return ReturnCheckTx(code.NotOwnerOfRequest, "This node is not owner of request")
 }
 

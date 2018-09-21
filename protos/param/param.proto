@@ -91,3 +91,32 @@ message ResponseInParam {
   string valid_ial = 9;
   string valid_signature = 10;
 }
+
+message CloseRequestParam {
+  string request_id = 1;
+  repeated ResponseValid response_valid_list = 2;
+}
+
+message TimeOutRequestParam {
+  string request_id = 1;
+  repeated ResponseValid response_valid_list = 2;
+}
+
+message ResponseValid {
+  string idp_id = 1;
+  oneof valid_proof {
+    bool valid_proof_bool = 2;
+  }
+  oneof valid_ial {
+    bool valid_ial_bool = 3;
+  }
+  oneof valid_signature {
+    bool valid_signature_bool = 4;
+  }
+}
+
+message SetDataReceivedParam {
+  string request_id = 1;
+  string service_id = 2;
+  string as_id = 3;
+}

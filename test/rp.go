@@ -27,16 +27,16 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"testing"
 
-	did "github.com/ndidplatform/smart-contract/abci/did/v1"
+	"github.com/gogo/protobuf/proto"
+	pbParam "github.com/ndidplatform/smart-contract/protos/param"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
-func SetDataReceived(t *testing.T, param did.SetDataReceivedParam, expected string, nodeID string) {
-	paramJSON, err := json.Marshal(param)
+func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParam, expected string, nodeID string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -59,8 +59,8 @@ func SetDataReceived(t *testing.T, param did.SetDataReceivedParam, expected stri
 	t.Logf("PASS: %s", fnName)
 }
 
-func CloseRequest(t *testing.T, param did.CloseRequestParam, nodeID string) {
-	paramJSON, err := json.Marshal(param)
+func CloseRequest(t *testing.T, param pbParam.CloseRequestParam, nodeID string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -84,8 +84,8 @@ func CloseRequest(t *testing.T, param did.CloseRequestParam, nodeID string) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func TimeOutRequest(t *testing.T, param did.TimeOutRequestParam, nodeID string) {
-	paramJSON, err := json.Marshal(param)
+func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParam, nodeID string) {
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

@@ -23,8 +23,6 @@
 package did
 
 import (
-	"encoding/json"
-
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
@@ -113,13 +111,13 @@ func createRequest(param []byte, app *DIDApplication, nodeID string) types.Respo
 
 func closeRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CloseRequest, Parameter: %s", param)
-	var funcParam CloseRequestParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.CloseRequestParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	key := "Request" + "|" + funcParam.RequestID
+	key := "Request" + "|" + funcParam.RequestId
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 
 	if value == nil {
@@ -147,23 +145,23 @@ func closeRequest(param []byte, app *DIDApplication, nodeID string) types.Respon
 
 	for _, valid := range funcParam.ResponseValidList {
 		for index := range request.ResponseList {
-			if valid.IdpID == request.ResponseList[index].IdpId {
+			if valid.IdpId == request.ResponseList[index].IdpId {
 				if valid.ValidProof != nil {
-					if *valid.ValidProof {
+					if valid.GetValidProofBool() {
 						request.ResponseList[index].ValidProof = "true"
 					} else {
 						request.ResponseList[index].ValidProof = "false"
 					}
 				}
 				if valid.ValidIal != nil {
-					if *valid.ValidIal {
+					if valid.GetValidIalBool() {
 						request.ResponseList[index].ValidIal = "true"
 					} else {
 						request.ResponseList[index].ValidIal = "false"
 					}
 				}
 				if valid.ValidSignature != nil {
-					if *valid.ValidSignature {
+					if valid.GetValidSignatureBool() {
 						request.ResponseList[index].ValidSignature = "true"
 					} else {
 						request.ResponseList[index].ValidSignature = "false"
@@ -179,18 +177,18 @@ func closeRequest(param []byte, app *DIDApplication, nodeID string) types.Respon
 		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
 	}
 	app.SetStateDB([]byte(key), []byte(value))
-	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
+	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestId)
 }
 
 func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("TimeOutRequest, Parameter: %s", param)
-	var funcParam TimeOutRequestParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.TimeOutRequestParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	key := "Request" + "|" + funcParam.RequestID
+	key := "Request" + "|" + funcParam.RequestId
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 
 	if value == nil {
@@ -218,23 +216,23 @@ func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.Resp
 
 	for _, valid := range funcParam.ResponseValidList {
 		for index := range request.ResponseList {
-			if valid.IdpID == request.ResponseList[index].IdpId {
+			if valid.IdpId == request.ResponseList[index].IdpId {
 				if valid.ValidProof != nil {
-					if *valid.ValidProof {
+					if valid.GetValidProofBool() {
 						request.ResponseList[index].ValidProof = "true"
 					} else {
 						request.ResponseList[index].ValidProof = "false"
 					}
 				}
 				if valid.ValidIal != nil {
-					if *valid.ValidIal {
+					if valid.GetValidIalBool() {
 						request.ResponseList[index].ValidIal = "true"
 					} else {
 						request.ResponseList[index].ValidIal = "false"
 					}
 				}
 				if valid.ValidSignature != nil {
-					if *valid.ValidSignature {
+					if valid.GetValidSignatureBool() {
 						request.ResponseList[index].ValidSignature = "true"
 					} else {
 						request.ResponseList[index].ValidSignature = "false"
@@ -251,18 +249,18 @@ func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.Resp
 	}
 
 	app.SetStateDB([]byte(key), []byte(value))
-	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
+	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestId)
 }
 
 func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetDataReceived, Parameter: %s", param)
-	var funcParam SetDataReceivedParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.SetDataReceivedParam
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	key := "Request" + "|" + funcParam.RequestID
+	key := "Request" + "|" + funcParam.RequestId
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
 
 	if value == nil {
@@ -278,9 +276,9 @@ func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.Res
 	// Check as_id is exist in as_id_list
 	exist := false
 	for _, dataRequest := range request.DataRequestList {
-		if dataRequest.ServiceId == funcParam.ServiceID {
+		if dataRequest.ServiceId == funcParam.ServiceId {
 			for _, as := range dataRequest.AnsweredAsIdList {
-				if as == funcParam.AsID {
+				if as == funcParam.AsId {
 					exist = true
 					break
 				}
@@ -294,9 +292,9 @@ func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.Res
 	// Check Duplicate AS ID
 	duplicate := false
 	for _, dataRequest := range request.DataRequestList {
-		if dataRequest.ServiceId == funcParam.ServiceID {
+		if dataRequest.ServiceId == funcParam.ServiceId {
 			for _, as := range dataRequest.ReceivedDataFromList {
-				if as == funcParam.AsID {
+				if as == funcParam.AsId {
 					duplicate = true
 					break
 				}
@@ -309,8 +307,8 @@ func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.Res
 
 	// Update received_data_from_list in request
 	for index, dataRequest := range request.DataRequestList {
-		if dataRequest.ServiceId == funcParam.ServiceID {
-			request.DataRequestList[index].ReceivedDataFromList = append(dataRequest.ReceivedDataFromList, funcParam.AsID)
+		if dataRequest.ServiceId == funcParam.ServiceId {
+			request.DataRequestList[index].ReceivedDataFromList = append(dataRequest.ReceivedDataFromList, funcParam.AsId)
 		}
 	}
 
@@ -334,5 +332,5 @@ func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.Res
 		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
 	}
 	app.SetStateDB([]byte(key), []byte(value))
-	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
+	return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestId)
 }

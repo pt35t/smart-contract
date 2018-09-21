@@ -393,11 +393,11 @@ type GetAccessorKeyResult struct {
 // 	Power     int64  `json:"power"`
 // }
 
-type SetDataReceivedParam struct {
-	RequestID string `json:"request_id"`
-	ServiceID string `json:"service_id"`
-	AsID      string `json:"as_id"`
-}
+// type SetDataReceivedParam struct {
+// 	RequestID string `json:"request_id"`
+// 	ServiceID string `json:"service_id"`
+// 	AsID      string `json:"as_id"`
+// }
 
 type ServiceDetail struct {
 	ServiceID   string `json:"service_id"`

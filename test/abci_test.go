@@ -536,20 +536,18 @@ func TestASSignData2(t *testing.T) {
 }
 
 func TestRPSetDataReceived(t *testing.T) {
-	var param = did.SetDataReceivedParam{
-		requestID1.String(),
-		serviceID1,
-		AS1,
-	}
+	var param pbParam.SetDataReceivedParam
+	param.RequestId = requestID1.String()
+	param.ServiceId = serviceID1
+	param.AsId = AS1
 	SetDataReceived(t, param, "success", RP1)
 }
 
 func TestRPSetDataReceived2(t *testing.T) {
-	var param = did.SetDataReceivedParam{
-		requestID1.String(),
-		serviceID1,
-		AS1,
-	}
+	var param pbParam.SetDataReceivedParam
+	param.RequestId = requestID1.String()
+	param.ServiceId = serviceID1
+	param.AsId = AS1
 	SetDataReceived(t, param, "Duplicate AS ID in data request", RP1)
 }
 
@@ -635,18 +633,22 @@ func TestQueryGetRequestDetail1(t *testing.T) {
 }
 
 func TestRPCloseRequest(t *testing.T) {
-	var res []did.ResponseValid
-	var res1 did.ResponseValid
-	res1.IdpID = IdP1
-	tValue := true
-	res1.ValidIal = &tValue
-	res1.ValidProof = &tValue
-	res1.ValidSignature = &tValue
-	res = append(res, res1)
-	var param = did.CloseRequestParam{
-		requestID1.String(),
-		res,
-	}
+	var res []*pbParam.ResponseValid
+	var res1 pbParam.ResponseValid
+	res1.IdpId = IdP1
+	var boolIal pbParam.ResponseValid_ValidIalBool
+	boolIal.ValidIalBool = true
+	res1.ValidIal = &boolIal
+	var boolProof pbParam.ResponseValid_ValidProofBool
+	boolProof.ValidProofBool = true
+	res1.ValidProof = &boolProof
+	var boolSignature pbParam.ResponseValid_ValidSignatureBool
+	boolSignature.ValidSignatureBool = true
+	res1.ValidSignature = &boolSignature
+	res = append(res, &res1)
+	var param pbParam.CloseRequestParam
+	param.RequestId = requestID1.String()
+	param.ResponseValidList = res
 	CloseRequest(t, param, RP1)
 }
 
@@ -724,18 +726,22 @@ func TestIdPCreateIdpResponse2(t *testing.T) {
 }
 
 func TestRPTimeOutRequest(t *testing.T) {
-	var res []did.ResponseValid
-	var res1 did.ResponseValid
-	res1.IdpID = IdP1
-	f := false
-	res1.ValidIal = &f
-	res1.ValidProof = &f
-	res1.ValidSignature = &f
-	res = append(res, res1)
-	var param = did.TimeOutRequestParam{
-		requestID3.String(),
-		res,
-	}
+	var res []*pbParam.ResponseValid
+	var res1 pbParam.ResponseValid
+	res1.IdpId = IdP1
+	var boolIal pbParam.ResponseValid_ValidIalBool
+	boolIal.ValidIalBool = false
+	res1.ValidIal = &boolIal
+	var boolProof pbParam.ResponseValid_ValidProofBool
+	boolProof.ValidProofBool = false
+	res1.ValidProof = &boolProof
+	var boolSignature pbParam.ResponseValid_ValidSignatureBool
+	boolSignature.ValidSignatureBool = false
+	res1.ValidSignature = &boolSignature
+	res = append(res, &res1)
+	var param pbParam.TimeOutRequestParam
+	param.RequestId = requestID3.String()
+	param.ResponseValidList = res
 	TimeOutRequest(t, param, RP1)
 }
 
