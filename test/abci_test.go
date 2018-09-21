@@ -484,8 +484,8 @@ func TestQueryGetNodeTokenRPAfterCreatRequest(t *testing.T) {
 }
 
 func TestIdPDeclareIdentityProof(t *testing.T) {
-	var param did.DeclareIdentityProofParam
-	param.RequestID = requestID1.String()
+	var param pbParam.DeclareIdentityProofParams
+	param.RequestId = requestID1.String()
 	param.IdentityProof = "Magic"
 	DeclareIdentityProof(t, param, idpPrivK, IdP1)
 }
@@ -502,15 +502,14 @@ func TestQueryGetIdentityProof(t *testing.T) {
 }
 
 func TestIdPCreateIdpResponse(t *testing.T) {
-	var param = did.CreateIdpResponseParam{
-		requestID1.String(),
-		3,
-		3,
-		"accept",
-		"signature",
-		"Magic",
-		"Magic",
-	}
+	var param pbParam.CreateIdpResponseParams
+	param.RequestId = requestID1.String()
+	param.Ial = 3
+	param.Aal = 3
+	param.Status = "accept"
+	param.Signature = "signature"
+	param.IdentityProof = "Magic"
+	param.PrivateProofHash = "Magic"
 	CreateIdpResponse(t, param, idpPrivK, IdP1)
 }
 
@@ -561,21 +560,20 @@ func TestIdPCreateRequestSpecial(t *testing.T) {
 }
 
 func TestIdPDeclareIdentityProof2(t *testing.T) {
-	var param did.DeclareIdentityProofParam
-	param.RequestID = requestID2.String()
+	var param pbParam.DeclareIdentityProofParams
+	param.RequestId = requestID2.String()
 	param.IdentityProof = "Magic"
 	DeclareIdentityProof(t, param, idpPrivK, IdP1)
 }
 func TestIdPCreateIdpResponseForSpecialRequest(t *testing.T) {
-	var param = did.CreateIdpResponseParam{
-		requestID2.String(),
-		3,
-		3,
-		"accept",
-		"signature",
-		"Magic",
-		"Magic",
-	}
+	var param pbParam.CreateIdpResponseParams
+	param.RequestId = requestID2.String()
+	param.Ial = 3
+	param.Aal = 3
+	param.Status = "accept"
+	param.Signature = "signature"
+	param.IdentityProof = "Magic"
+	param.PrivateProofHash = "Magic"
 	CreateIdpResponse(t, param, idpPrivK, IdP1)
 }
 
@@ -698,22 +696,21 @@ func TestCreateRequest(t *testing.T) {
 }
 
 func TestIdPDeclareIdentityProof3(t *testing.T) {
-	var param did.DeclareIdentityProofParam
-	param.RequestID = requestID3.String()
+	var param pbParam.DeclareIdentityProofParams
+	param.RequestId = requestID3.String()
 	param.IdentityProof = "Magic"
 	DeclareIdentityProof(t, param, idpPrivK, IdP1)
 }
 
 func TestIdPCreateIdpResponse2(t *testing.T) {
-	var param = did.CreateIdpResponseParam{
-		requestID3.String(),
-		3,
-		3,
-		"accept",
-		"signature",
-		"Magic",
-		"Magic",
-	}
+	var param pbParam.CreateIdpResponseParams
+	param.RequestId = requestID3.String()
+	param.Ial = 3
+	param.Aal = 3
+	param.Status = "accept"
+	param.Signature = "signature"
+	param.IdentityProof = "Magic"
+	param.PrivateProofHash = "Magic"
 	CreateIdpResponse(t, param, idpPrivK, IdP1)
 }
 
@@ -822,10 +819,8 @@ func TestIdP1ClearRegisterMsqDestinationTimeout(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-
-	var param = did.ClearRegisterMsqDestinationTimeoutParam{
-		hex.EncodeToString(userHash),
-	}
+	var param pbParam.ClearRegisterMsqDestinationTimeoutParams
+	param.HashId = hex.EncodeToString(userHash)
 	ClearRegisterMsqDestinationTimeout(t, param, idpPrivK, IdP1)
 }
 
@@ -987,8 +982,8 @@ func TestIdPUpdateIdentity(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
 	userHash := h.Sum(nil)
-	var param did.UpdateIdentityParam
-	param.HashID = hex.EncodeToString(userHash)
+	var param pbParam.UpdateIdentityParams
+	param.HashId = hex.EncodeToString(userHash)
 	param.Ial = 2.2
 	UpdateIdentity(t, param, IdP1)
 }
@@ -1184,9 +1179,8 @@ func TestIdP4ClearRegisterMsqDestinationTimeout(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID2))
 	userHash := h.Sum(nil)
-	var param = did.ClearRegisterMsqDestinationTimeoutParam{
-		hex.EncodeToString(userHash),
-	}
+	var param pbParam.ClearRegisterMsqDestinationTimeoutParams
+	param.HashId = hex.EncodeToString(userHash)
 	ClearRegisterMsqDestinationTimeout(t, param, idpPrivK5, IdP4)
 }
 
@@ -1624,22 +1618,21 @@ func TestRPCreateRequestAferEnableNode(t *testing.T) {
 }
 
 func TestIdPDeclareIdentityProofForNewRequest(t *testing.T) {
-	var param did.DeclareIdentityProofParam
-	param.RequestID = requestID4.String()
+	var param pbParam.DeclareIdentityProofParams
+	param.RequestId = requestID4.String()
 	param.IdentityProof = "Magic"
 	DeclareIdentityProof(t, param, idpPrivK2, IdP1)
 }
 
 func TestIdPCreateIdpResponseNewRequest(t *testing.T) {
-	var param = did.CreateIdpResponseParam{
-		requestID4.String(),
-		2,
-		2,
-		"accept",
-		"signature",
-		"Magic",
-		"Magic",
-	}
+	var param pbParam.CreateIdpResponseParams
+	param.RequestId = requestID4.String()
+	param.Ial = 2
+	param.Aal = 2
+	param.Status = "accept"
+	param.Signature = "signature"
+	param.IdentityProof = "Magic"
+	param.PrivateProofHash = "Magic"
 	CreateIdpResponse(t, param, idpPrivK2, IdP1)
 }
 

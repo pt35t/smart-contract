@@ -141,10 +141,10 @@ func (app *DIDApplication) DeliverTx(tx []byte) (res types.ResponseDeliverTx) {
 	}
 
 	method := txObj.Method
-	param := txObj.Param
+	param := txObj.Params
 	nonce := txObj.Nonce
 	signature := txObj.Signature
-	nodeID := txObj.NodeID
+	nodeID := txObj.NodeId
 
 	app.logger.Infof("DeliverTx: %s, NodeID: %s", method, nodeID)
 
@@ -174,10 +174,10 @@ func (app *DIDApplication) CheckTx(tx []byte) (res types.ResponseCheckTx) {
 	}
 
 	method := txObj.Method
-	param := txObj.Param
+	param := txObj.Params
 	nonce := txObj.Nonce
 	signature := txObj.Signature
-	nodeID := txObj.NodeID
+	nodeID := txObj.NodeId
 
 	app.logger.Infof("CheckTx: %s, NodeID: %s", method, nodeID)
 

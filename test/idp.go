@@ -61,10 +61,10 @@ func RegisterMsqDestination(t *testing.T, param did.RegisterMsqDestinationParam,
 	t.Logf("PASS: %s", fnName)
 }
 
-func DeclareIdentityProof(t *testing.T, param did.DeclareIdentityProofParam, privKeyFile string, nodeID string) {
+func DeclareIdentityProof(t *testing.T, param pbParam.DeclareIdentityProofParams, privKeyFile string, nodeID string) {
 	idpKey := getPrivateKeyFromString(privKeyFile)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -86,10 +86,10 @@ func DeclareIdentityProof(t *testing.T, param did.DeclareIdentityProofParam, pri
 	t.Logf("PASS: %s", fnName)
 }
 
-func CreateIdpResponse(t *testing.T, param did.CreateIdpResponseParam, privKeyFile string, nodeID string) {
+func CreateIdpResponse(t *testing.T, param pbParam.CreateIdpResponseParams, privKeyFile string, nodeID string) {
 	idpKey := getPrivateKeyFromString(privKeyFile)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -161,10 +161,10 @@ func AddAccessorMethod(t *testing.T, param pbParam.AccessorMethodParams, nodeID 
 	t.Logf("PASS: %s", fnName)
 }
 
-func ClearRegisterMsqDestinationTimeout(t *testing.T, param did.ClearRegisterMsqDestinationTimeoutParam, privKeyFile string, nodeID string) {
+func ClearRegisterMsqDestinationTimeout(t *testing.T, param pbParam.ClearRegisterMsqDestinationTimeoutParams, privKeyFile string, nodeID string) {
 	idpKey := getPrivateKeyFromString(privKeyFile)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -186,10 +186,10 @@ func ClearRegisterMsqDestinationTimeout(t *testing.T, param did.ClearRegisterMsq
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateIdentity(t *testing.T, param did.UpdateIdentityParam, nodeID string) {
+func UpdateIdentity(t *testing.T, param pbParam.UpdateIdentityParams, nodeID string) {
 	idpKey := getPrivateKeyFromString(idpPrivK2)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

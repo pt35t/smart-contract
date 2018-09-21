@@ -80,10 +80,10 @@ func callTendermint(fnName []byte, param []byte, nonce []byte, signature []byte,
 
 	var tx protoTm.Tx
 	tx.Method = string(fnName)
-	tx.Param = param
+	tx.Params = param
 	tx.Nonce = nonce
 	tx.Signature = signature
-	tx.NodeID = string(nodeID)
+	tx.NodeId = string(nodeID)
 
 	txByte, err := proto.Marshal(&tx)
 	if err != nil {

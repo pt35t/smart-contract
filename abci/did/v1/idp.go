@@ -288,13 +288,13 @@ func registerMsqDestination(param []byte, app *DIDApplication, nodeID string) ty
 
 func createIdpResponse(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateIdpResponse, Parameter: %s", param)
-	var funcParam CreateIdpResponseParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.CreateIdpResponseParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	key := "Request" + "|" + funcParam.RequestID
+	key := "Request" + "|" + funcParam.RequestId
 	var response data.Response
 	response.Ial = funcParam.Ial
 	response.Aal = funcParam.Aal
@@ -368,7 +368,7 @@ func createIdpResponse(param []byte, app *DIDApplication, nodeID string) types.R
 
 	// Check identity proof if mode == 3
 	if request.Mode == 3 {
-		identityProofKey := "IdentityProof" + "|" + funcParam.RequestID + "|" + nodeID
+		identityProofKey := "IdentityProof" + "|" + funcParam.RequestId + "|" + nodeID
 		_, identityProofValue := app.state.db.Get(prefixKey([]byte(identityProofKey)))
 		proofPassed := false
 		if identityProofValue != nil {
@@ -388,15 +388,15 @@ func createIdpResponse(param []byte, app *DIDApplication, nodeID string) types.R
 			return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
 		}
 		app.SetStateDB([]byte(key), []byte(value))
-		return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestID)
+		return ReturnDeliverTxLog(code.OK, "success", funcParam.RequestId)
 	}
 	return ReturnDeliverTxLog(code.DuplicateResponse, "Duplicate Response", "")
 }
 
 func updateIdentity(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("UpdateIdentity, Parameter: %s", param)
-	var funcParam UpdateIdentityParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.UpdateIdentityParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
@@ -416,7 +416,7 @@ func updateIdentity(param []byte, app *DIDApplication, nodeID string) types.Resp
 		return ReturnDeliverTxLog(code.IALError, "New IAL is greater than max IAL", "")
 	}
 
-	msqDesKey := "MsqDestination" + "|" + funcParam.HashID
+	msqDesKey := "MsqDestination" + "|" + funcParam.HashId
 	_, msqDesValue := app.state.db.Get(prefixKey([]byte(msqDesKey)))
 	if msqDesValue != nil {
 		var msqDes data.MsqDesList
@@ -445,14 +445,14 @@ func updateIdentity(param []byte, app *DIDApplication, nodeID string) types.Resp
 
 func declareIdentityProof(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("DeclareIdentityProof, Parameter: %s", param)
-	var funcParam DeclareIdentityProofParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.DeclareIdentityProofParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
 	// Check the request
-	requestKey := "Request" + "|" + funcParam.RequestID
+	requestKey := "Request" + "|" + funcParam.RequestId
 	_, requestValue := app.state.db.Get(prefixKey([]byte(requestKey)))
 
 	if requestValue == nil {
@@ -479,7 +479,7 @@ func declareIdentityProof(param []byte, app *DIDApplication, nodeID string) type
 		return ReturnDeliverTxLog(code.RequestIsTimedOut, "Can't declare identity proof for the request that's timed out", "")
 	}
 
-	identityProofKey := "IdentityProof" + "|" + funcParam.RequestID + "|" + nodeID
+	identityProofKey := "IdentityProof" + "|" + funcParam.RequestId + "|" + nodeID
 	_, identityProofValue := app.state.db.Get(prefixKey([]byte(identityProofKey)))
 	if identityProofValue == nil {
 		identityProofValue := funcParam.IdentityProof
@@ -491,13 +491,13 @@ func declareIdentityProof(param []byte, app *DIDApplication, nodeID string) type
 
 func clearRegisterMsqDestinationTimeout(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("ClearRegisterMsqDestinationTimeout, Parameter: %s", param)
-	var funcParam ClearRegisterMsqDestinationTimeoutParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.ClearRegisterMsqDestinationTimeoutParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	msqDesKey := "MsqDestination" + "|" + funcParam.HashID
+	msqDesKey := "MsqDestination" + "|" + funcParam.HashId
 	_, msqDesValue := app.state.db.Get(prefixKey([]byte(msqDesKey)))
 
 	if msqDesValue != nil {

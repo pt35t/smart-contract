@@ -161,3 +161,27 @@ message AccessorMethodParams {
   string accessor_group_id = 4;
   string request_id = 5;
 }
+
+message ClearRegisterMsqDestinationTimeoutParams {
+  string hash_id = 1;
+}
+
+message DeclareIdentityProofParams {
+  string identity_proof = 1;
+  string request_id = 2;
+}
+
+message UpdateIdentityParams {
+  string hash_id = 1;
+  double ial = 2;
+}
+
+message CreateIdpResponseParams {
+  string request_id = 1;
+  double ial = 2;
+  double aal = 3;
+  string status = 4;
+  string signature = 5;
+  string identity_proof = 6;
+  string private_proof_hash = 7;
+}

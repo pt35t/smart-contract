@@ -131,15 +131,15 @@ type Response struct {
 	ValidSignature   *bool   `json:"valid_signature"`
 }
 
-type CreateIdpResponseParam struct {
-	RequestID        string  `json:"request_id"`
-	Ial              float64 `json:"ial"`
-	Aal              float64 `json:"aal"`
-	Status           string  `json:"status"`
-	Signature        string  `json:"signature"`
-	IdentityProof    string  `json:"identity_proof"`
-	PrivateProofHash string  `json:"private_proof_hash"`
-}
+// type CreateIdpResponseParam struct {
+// 	RequestID        string  `json:"request_id"`
+// 	Ial              float64 `json:"ial"`
+// 	Aal              float64 `json:"aal"`
+// 	Status           string  `json:"status"`
+// 	Signature        string  `json:"signature"`
+// 	IdentityProof    string  `json:"identity_proof"`
+// 	PrivateProofHash string  `json:"private_proof_hash"`
+// }
 
 type GetRequestParam struct {
 	RequestID string `json:"request_id"`
@@ -455,10 +455,10 @@ type UpdateNodeByNDIDParam struct {
 	NodeName string  `json:"node_name"`
 }
 
-type UpdateIdentityParam struct {
-	HashID string  `json:"hash_id"`
-	Ial    float64 `json:"ial"`
-}
+// type UpdateIdentityParam struct {
+// 	HashID string  `json:"hash_id"`
+// 	Ial    float64 `json:"ial"`
+// }
 
 type CloseRequestParam struct {
 	RequestID         string          `json:"request_id"`
@@ -487,10 +487,10 @@ type GetDataSignatureResult struct {
 	Signature string `json:"signature"`
 }
 
-type DeclareIdentityProofParam struct {
-	IdentityProof string `json:"identity_proof"`
-	RequestID     string `json:"request_id"`
-}
+// type DeclareIdentityProofParam struct {
+// 	IdentityProof string `json:"identity_proof"`
+// 	RequestID     string `json:"request_id"`
+// }
 
 type GetIdentityProofParam struct {
 	IdpID     string `json:"idp_id"`
@@ -558,9 +558,9 @@ type ApproveService struct {
 // 	ServiceID string `json:"service_id"`
 // }
 
-type ClearRegisterMsqDestinationTimeoutParam struct {
-	HashID string `json:"hash_id"`
-}
+// type ClearRegisterMsqDestinationTimeoutParam struct {
+// 	HashID string `json:"hash_id"`
+// }
 
 type TimeOutBlockRegisterMsqDestination struct {
 	TimeOutBlock int64 `json:"time_out_block"`
