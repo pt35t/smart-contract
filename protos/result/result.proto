@@ -36,3 +36,14 @@ message MsqDestinationNode {
 message GetIdpNodesResult {
   repeated MsqDestinationNode node = 1;
 }
+
+message ASNodeInGetAsNodesByServiceIdResult {
+  string node_id = 1;
+  string node_name = 2;
+  double min_ial = 3;
+  double min_aal = 4;
+}
+
+message GetAsNodesByServiceIdResult {
+  repeated ASNodeInGetAsNodesByServiceIdResult node = 1;
+}

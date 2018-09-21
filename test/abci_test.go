@@ -416,7 +416,13 @@ func TestASUpdateServiceDestination(t *testing.T) {
 func TestQueryGetAsNodesByServiceId(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 1.4
+	row1.MinAal = 1.5
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1304,7 +1310,19 @@ func TestAS2RegisterServiceDestination(t *testing.T) {
 func TestQueryGetAsNodesByServiceId2(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5},{"node_id":"` + AS2 + `","node_name":"` + AS2 + `","min_ial":2.8,"min_aal":2.9}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 1.4
+	row1.MinAal = 1.5
+	var row2 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row2.NodeId = AS2
+	row2.NodeName = AS2
+	row2.MinIal = 2.8
+	row2.MinAal = 2.9
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
+	expected.Node = append(expected.Node, &row2)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1323,7 +1341,13 @@ func TestDisableNode2(t *testing.T) {
 func TestQueryGetAsNodesByServiceId3(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 1.4
+	row1.MinAal = 1.5
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1332,10 +1356,11 @@ func TestNDIDDisableService2(t *testing.T) {
 	param.ServiceId = serviceID1
 	DisableService(t, param)
 }
+
 func TestQueryGetAsNodesByServiceId4(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[]}`
+	var expected pbResult.GetAsNodesByServiceIdResult
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1436,7 +1461,7 @@ func TestNDIDDisableServiceDestinationByNDID(t *testing.T) {
 func TestQueryGetAsNodesByServiceID(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID4
-	var expected = `{"node":[]}`
+	var expected pbResult.GetAsNodesByServiceIdResult
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1512,7 +1537,13 @@ func TestNDIDEnableServiceDestinationByNDID(t *testing.T) {
 func TestQueryGetAsNodesByServiceIDAfterEnable(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID4
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":2.2,"min_aal":2.2}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 2.2
+	row1.MinAal = 2.2
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1543,8 +1574,15 @@ func TestNDIDEnableService(t *testing.T) {
 func TestQueryGetAsNodesByServiceId6(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 1.4
+	row1.MinAal = 1.5
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
+
 }
 
 func TestQueryGetNodeNotFound(t *testing.T) {
@@ -1580,7 +1618,7 @@ func TestASDisableServiceDestination(t *testing.T) {
 func TestQueryGetAsNodesByServiceId7(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[]}`
+	var expected pbResult.GetAsNodesByServiceIdResult
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1593,7 +1631,13 @@ func TestASEnableServiceDestination(t *testing.T) {
 func TestQueryGetAsNodesByServiceId8(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID1
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":1.4,"min_aal":1.5}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 1.4
+	row1.MinAal = 1.5
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1759,7 +1803,7 @@ func TestQueryGetRequestDetailInvalid(t *testing.T) {
 func TestQueryGetAsNodesByServiceIdInvalid(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = "statement-invalid"
-	expected := "not found"
+	var expected pbResult.GetAsNodesByServiceIdResult
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1850,7 +1894,13 @@ func TestQueryGetServicesByAsIDInvalid(t *testing.T) {
 func TestQueryGetAsNodesByServiceIdBeforeUpdateNodeName(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID4
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"AS1","min_ial":2.2,"min_aal":2.2}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "AS1"
+	row1.MinIal = 2.2
+	row1.MinAal = 2.2
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 
@@ -1864,7 +1914,13 @@ func TestUpdateNodeAS1ByNDID(t *testing.T) {
 func TestQueryGetAsNodesByServiceIdAfterUpdateNodeName(t *testing.T) {
 	var param pbParam.GetAsNodesByServiceIdParams
 	param.ServiceId = serviceID4
-	var expected = `{"node":[{"node_id":"` + AS1 + `","node_name":"UpdatedName_AS1","min_ial":2.2,"min_aal":2.2}]}`
+	var row1 pbResult.ASNodeInGetAsNodesByServiceIdResult
+	row1.NodeId = AS1
+	row1.NodeName = "UpdatedName_AS1"
+	row1.MinIal = 2.2
+	row1.MinAal = 2.2
+	var expected pbResult.GetAsNodesByServiceIdResult
+	expected.Node = append(expected.Node, &row1)
 	GetAsNodesByServiceId(t, param, expected)
 }
 

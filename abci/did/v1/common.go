@@ -262,9 +262,9 @@ func getAsNodesByServiceId(param []byte, app *DIDApplication, height int64) type
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 
 	if value == nil {
-		var result GetAsNodesByServiceIdResult
-		result.Node = make([]ASNode, 0)
-		value, err := json.Marshal(result)
+		var result pbResult.GetAsNodesByServiceIdResult
+		result.Node = make([]*pbResult.ASNodeInGetAsNodesByServiceIdResult, 0)
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -281,18 +281,18 @@ func getAsNodesByServiceId(param []byte, app *DIDApplication, height int64) type
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		if service.Active == false {
-			var result GetAsNodesByServiceIdResult
-			result.Node = make([]ASNode, 0)
-			value, err := json.Marshal(result)
+			var result pbResult.GetAsNodesByServiceIdResult
+			result.Node = make([]*pbResult.ASNodeInGetAsNodesByServiceIdResult, 0)
+			value, err := proto.Marshal(&result)
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 			}
 			return ReturnQuery(value, "service is not active", app.state.db.Version64(), app)
 		}
 	} else {
-		var result GetAsNodesByServiceIdResult
-		result.Node = make([]ASNode, 0)
-		value, err := json.Marshal(result)
+		var result pbResult.GetAsNodesByServiceIdResult
+		result.Node = make([]*pbResult.ASNodeInGetAsNodesByServiceIdResult, 0)
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -305,8 +305,8 @@ func getAsNodesByServiceId(param []byte, app *DIDApplication, height int64) type
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetAsNodesByServiceIdWithNameResult
-	result.Node = make([]ASNodeResult, 0)
+	var result pbResult.GetAsNodesByServiceIdResult
+	result.Node = make([]*pbResult.ASNodeInGetAsNodesByServiceIdResult, 0)
 	for index := range storedData.Node {
 
 		// filter service destination is Active
@@ -344,15 +344,15 @@ func getAsNodesByServiceId(param []byte, app *DIDApplication, height int64) type
 		if !nodeDetail.Active {
 			continue
 		}
-		var newRow = ASNodeResult{
-			storedData.Node[index].NodeId,
-			nodeDetail.NodeName,
-			storedData.Node[index].MinIal,
-			storedData.Node[index].MinAal,
-		}
-		result.Node = append(result.Node, newRow)
+
+		var newRow pbResult.ASNodeInGetAsNodesByServiceIdResult
+		newRow.NodeId = storedData.Node[index].NodeId
+		newRow.NodeName = nodeDetail.NodeName
+		newRow.MinIal = storedData.Node[index].MinIal
+		newRow.MinAal = storedData.Node[index].MinAal
+		result.Node = append(result.Node, &newRow)
 	}
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1418,8 +1418,8 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		if service.Active == false {
-			var result GetAsNodesByServiceIdResult
-			result.Node = make([]ASNode, 0)
+			var result GetAsNodesInfoByServiceIdResult
+			result.Node = make([]interface{}, 0)
 			value, err := json.Marshal(result)
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
@@ -1427,8 +1427,8 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 			return ReturnQuery(value, "service is not active", app.state.db.Version64(), app)
 		}
 	} else {
-		var result GetAsNodesByServiceIdResult
-		result.Node = make([]ASNode, 0)
+		var result GetAsNodesInfoByServiceIdResult
+		result.Node = make([]interface{}, 0)
 		value, err := json.Marshal(result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)

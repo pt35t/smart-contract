@@ -129,29 +129,29 @@ type GetRequestDetailResult struct {
 	RequesterNodeID string        `json:"requester_node_id"`
 }
 
-type ASNode struct {
-	ID        string  `json:"node_id"`
-	Name      string  `json:"node_name"`
-	MinIal    float64 `json:"min_ial"`
-	MinAal    float64 `json:"min_aal"`
-	ServiceID string  `json:"service_id"`
-	Active    bool    `json:"active"`
-}
+// type ASNode struct {
+// 	ID        string  `json:"node_id"`
+// 	Name      string  `json:"node_name"`
+// 	MinIal    float64 `json:"min_ial"`
+// 	MinAal    float64 `json:"min_aal"`
+// 	ServiceID string  `json:"service_id"`
+// 	Active    bool    `json:"active"`
+// }
 
-type GetAsNodesByServiceIdResult struct {
-	Node []ASNode `json:"node"`
-}
+// type GetAsNodesByServiceIdResult struct {
+// 	Node []ASNode `json:"node"`
+// }
 
-type ASNodeResult struct {
-	ID     string  `json:"node_id"`
-	Name   string  `json:"node_name"`
-	MinIal float64 `json:"min_ial"`
-	MinAal float64 `json:"min_aal"`
-}
+// type ASNodeResult struct {
+// 	ID     string  `json:"node_id"`
+// 	Name   string  `json:"node_name"`
+// 	MinIal float64 `json:"min_ial"`
+// 	MinAal float64 `json:"min_aal"`
+// }
 
-type GetAsNodesByServiceIdWithNameResult struct {
-	Node []ASNodeResult `json:"node"`
-}
+// type GetAsNodesByServiceIdWithNameResult struct {
+// 	Node []ASNodeResult `json:"node"`
+// }
 
 type InitNDIDParam struct {
 	NodeID          string `json:"node_id"`

@@ -272,7 +272,7 @@ func GetServiceDetailExpectString(t *testing.T, param pbParam.GetServiceDetailPa
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetAsNodesByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdParams, expected string) {
+func GetAsNodesByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdParams, expected pbResult.GetAsNodesByServiceIdResult) {
 	fnName := "GetAsNodesByServiceId"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -281,16 +281,12 @@ func GetAsNodesByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdPara
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetAsNodesByServiceIdResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetAsNodesByServiceIdResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	if resultObj.Result.Response.Log == expected {
-		t.Logf("PASS: %s", fnName)
-		return
-	}
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	if actual := res; !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -701,7 +697,7 @@ func GetAsNodesInfoByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceId
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetAsNodesByServiceIdResult
+	var res did.GetAsNodesInfoByServiceIdResult
 	err = json.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
