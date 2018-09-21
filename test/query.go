@@ -31,7 +31,6 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	did "github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 )
@@ -194,8 +193,8 @@ func GetMsqAddressExpectString(t *testing.T, param pbParam.GetMsqAddressParams, 
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res []did.MsqAddress
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetMsqAddressResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -209,7 +208,7 @@ func GetMsqAddressExpectString(t *testing.T, param pbParam.GetMsqAddressParams, 
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServiceDetail(t *testing.T, param pbParam.GetServiceDetailParams, expected did.ServiceDetail) {
+func GetServiceDetail(t *testing.T, param pbParam.GetServiceDetailParams, expected pbResult.GetServiceDetailResult) {
 	fnName := "GetServiceDetail"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -218,8 +217,8 @@ func GetServiceDetail(t *testing.T, param pbParam.GetServiceDetailParams, expect
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.ServiceDetail
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetServiceDetailResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -238,8 +237,8 @@ func GetServiceDetailExpectString(t *testing.T, param pbParam.GetServiceDetailPa
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.ServiceDetail
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetServiceDetailResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -273,7 +272,7 @@ func GetAsNodesByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceIdPara
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetIdentityProof(t *testing.T, param pbParam.GetIdentityProofParams, expected did.GetIdentityProofResult) {
+func GetIdentityProof(t *testing.T, param pbParam.GetIdentityProofParams, expected pbResult.GetIdentityProofResult) {
 	fnName := "GetIdentityProof"
 	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
@@ -282,8 +281,8 @@ func GetIdentityProof(t *testing.T, param pbParam.GetIdentityProofParams, expect
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetIdentityProofResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetIdentityProofResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -302,8 +301,8 @@ func GetIdentityProofExpectString(t *testing.T, param pbParam.GetIdentityProofPa
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetIdentityProofResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetIdentityProofResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -397,38 +396,14 @@ func GetRequest(t *testing.T, param pbParam.GetRequestParams, expected pbResult.
 	t.Logf("PASS: %s", fnName)
 }
 
-// func GetRequestExpectString(t *testing.T, param pbParam.GetRequestParams, expected string) {
-// 	fnName := "GetRequest"
-// 	paramsByte, err := proto.Marshal(&param)
-// 	if err != nil {
-// 		fmt.Println("error:", err)
-// 	}
-// 	result, _ := queryTendermint([]byte(fnName), paramsByte)
-// 	resultObj, _ := result.(ResponseQuery)
-// 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-// 	var res pbResult.GetRequestResult
-// 	err = json.Unmarshal(resultString, &res)
-// 	if err != nil {
-// 		log.Fatal(err.Error())
-// 	}
-// 	if resultObj.Result.Response.Log == expected {
-// 		t.Logf("PASS: %s", fnName)
-// 		return
-// 	}
-// 	if actual := res; !reflect.DeepEqual(actual, expected) {
-// 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
-// 	}
-// 	t.Logf("PASS: %s", fnName)
-// }
-
-func GetNamespaceList(t *testing.T, expected []did.Namespace) {
+func GetNamespaceList(t *testing.T, expected pbResult.GetNamespaceListResult) {
 	fnName := "GetNamespaceList"
 	paramsByte := []byte("")
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res []did.Namespace
-	err := json.Unmarshal(resultString, &res)
+	var res pbResult.GetNamespaceListResult
+	err := proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -438,30 +413,18 @@ func GetNamespaceList(t *testing.T, expected []did.Namespace) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNamespaceListForDisable(t *testing.T) (expected []did.Namespace) {
+func GetNamespaceListForDisable(t *testing.T) (expected []*pbResult.NamespaceInResult) {
 	fnName := "GetNamespaceList"
 	paramsByte := []byte("")
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res []did.Namespace
-	err := json.Unmarshal(resultString, &res)
+	var res pbResult.GetNamespaceListResult
+	err := proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	return res
-}
-
-func GetNamespaceListExpectString(t *testing.T, expected string) {
-	fnName := "GetNamespaceList"
-	paramsByte := []byte("")
-	result, _ := queryTendermint([]byte(fnName), paramsByte)
-	resultObj, _ := result.(ResponseQuery)
-	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); actual != expected {
-		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
-	}
-	t.Logf("PASS: %s", fnName)
+	return res.Namespaces
 }
 
 func CheckExistingIdentity(t *testing.T, param pbParam.CheckExistingIdentityParams, expected string) {
@@ -473,7 +436,10 @@ func CheckExistingIdentity(t *testing.T, param pbParam.CheckExistingIdentityPara
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	var res pbResult.CheckExistingIdentityResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -488,11 +454,14 @@ func GetAccessorGroupID(t *testing.T, param pbParam.GetAccessorGroupIDParams, ex
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
+	var res pbResult.GetAccessorGroupIDResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
 	if resultObj.Result.Response.Log == expected {
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -511,20 +480,23 @@ func GetAccessorKey(t *testing.T, param pbParam.GetAccessorKeyParams, expected s
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	var res pbResult.GetAccessorKeyResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServiceList(t *testing.T, expected []did.ServiceDetail) {
+func GetServiceList(t *testing.T, expected pbResult.GetServiceListResult) {
 	fnName := "GetServiceList"
 	paramsByte := []byte("")
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res []did.ServiceDetail
-	err := json.Unmarshal(resultString, &res)
+	var res pbResult.GetServiceListResult
+	err := proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -534,18 +506,18 @@ func GetServiceList(t *testing.T, expected []did.ServiceDetail) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetServiceListForDisable(t *testing.T) (expected []did.ServiceDetail) {
+func GetServiceListForDisable(t *testing.T) (expected []*pbResult.ServiceDetailInResult) {
 	fnName := "GetServiceList"
 	paramsByte := []byte("")
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res []did.ServiceDetail
-	err := json.Unmarshal(resultString, &res)
+	var res pbResult.GetServiceListResult
+	err := proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	return res
+	return res.Services
 }
 
 func GetNodeInfo(t *testing.T, param pbParam.GetNodeInfoParams, expected string) {
@@ -561,7 +533,10 @@ func GetNodeInfo(t *testing.T, param pbParam.GetNodeInfoParams, expected string)
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); actual != expected {
+	var res pbResult.GetNodeInfoResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -576,7 +551,10 @@ func CheckExistingAccessorID(t *testing.T, param pbParam.CheckExistingAccessorID
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); actual != expected {
+	var res pbResult.CheckExistingAccessorIDResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -591,7 +569,10 @@ func CheckExistingAccessorGroupID(t *testing.T, param pbParam.CheckExistingAcces
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); actual != expected {
+	var res pbResult.CheckExistingAccessorIDResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -610,7 +591,10 @@ func GetIdentityInfo(t *testing.T, param pbParam.GetIdentityInfoParams, expected
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); actual != expected {
+	var res pbResult.GetIdentityInfoResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -629,7 +613,10 @@ func GetServicesByAsID(t *testing.T, param pbParam.GetServicesByAsIDParams, expe
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	var res pbResult.GetServicesByAsIDResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -648,7 +635,10 @@ func GetDataSignature(t *testing.T, param pbParam.GetDataSignatureParams, expect
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); actual != expected {
+	var res pbResult.GetDataSignatureResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %#v\nActual: %#v", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -663,7 +653,10 @@ func GetIdpNodesInfo(t *testing.T, param pbParam.GetIdpNodesParams, expected str
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	var res pbResult.GetIdpNodesInfoResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -678,8 +671,8 @@ func GetAsNodesInfoByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceId
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetAsNodesInfoByServiceIdResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetAsNodesInfoByServiceIdResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -687,7 +680,8 @@ func GetAsNodesInfoByServiceId(t *testing.T, param pbParam.GetAsNodesByServiceId
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -698,7 +692,10 @@ func GetIdpNodesInfoParamJSON(t *testing.T, paramsByte string, expected string) 
 	result, _ := queryTendermint([]byte(fnName), []byte(paramsByte))
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	if actual := string(resultString); !reflect.DeepEqual(actual, expected) {
+	var res pbResult.GetIdpNodesInfoResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -717,7 +714,10 @@ func GetNodesBehindProxyNode(t *testing.T, param pbParam.GetNodesBehindProxyNode
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); actual != expected {
+	var res pbResult.GetNodesBehindProxyNodeResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -736,7 +736,10 @@ func GetNodeIDList(t *testing.T, param pbParam.GetNodeIDListParams, expected str
 		t.Logf("PASS: %s", fnName)
 		return
 	}
-	if actual := string(resultString); actual != expected {
+	var res pbResult.GetNodeIDListResult
+	proto.Unmarshal(resultString, &res)
+	resJSON, _ := json.Marshal(res)
+	if actual := string(resJSON); actual != expected {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
 	t.Logf("PASS: %s", fnName)
@@ -751,10 +754,10 @@ func GetNodeIDListForDisable(t *testing.T, param pbParam.GetNodeIDListParams) []
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
-	var res did.GetNodeIDListResult
-	err = json.Unmarshal(resultString, &res)
+	var res pbResult.GetNodeIDListResult
+	err = proto.Unmarshal(resultString, &res)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	return res.NodeIDList
+	return res.NodeIdList
 }

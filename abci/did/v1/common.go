@@ -23,7 +23,6 @@
 package did
 
 import (
-	"encoding/json"
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
@@ -375,8 +374,7 @@ func getMsqAddress(param []byte, app *DIDApplication, height int64) types.Respon
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 	if value == nil {
-		value = []byte("[]")
-		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
 	var result pbResult.GetMsqAddressResult
 	result.Mq = make([]*pbResult.MsqAddressInResult, 0)
@@ -562,12 +560,12 @@ func getNamespaceList(param []byte, app *DIDApplication, height int64) types.Res
 	key := "AllNamespace"
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	if value == nil {
-		value = []byte("[]")
-		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
 
-	result := make([]*data.Namespace, 0)
+	// result := make([]*data.Namespace, 0)
 	// filter flag==true
+	var result pbResult.GetNamespaceListResult
 	var namespaces data.NamespaceList
 	err := proto.Unmarshal([]byte(value), &namespaces)
 	if err != nil {
@@ -575,10 +573,14 @@ func getNamespaceList(param []byte, app *DIDApplication, height int64) types.Res
 	}
 	for _, namespace := range namespaces.Namespaces {
 		if namespace.Active {
-			result = append(result, namespace)
+			var newRow pbResult.NamespaceInResult
+			newRow.Namespace = namespace.Namespace
+			newRow.Description = namespace.Description
+			newRow.Active = namespace.Active
+			result.Namespaces = append(result.Namespaces, &newRow)
 		}
 	}
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -595,19 +597,18 @@ func getServiceDetail(param []byte, app *DIDApplication, height int64) types.Res
 	key := "Service" + "|" + funcParam.ServiceId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	if value == nil {
-		value = []byte("{}")
-		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
+		return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 	}
 	var service data.ServiceDetail
 	err = proto.Unmarshal(value, &service)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	res := make(map[string]interface{})
-	res["service_id"] = service.ServiceId
-	res["service_name"] = service.ServiceName
-	res["active"] = service.Active
-	returnValue, err := json.Marshal(res)
+	var res pbResult.GetServiceDetailResult
+	res.ServiceId = service.ServiceId
+	res.ServiceName = service.ServiceName
+	res.Active = service.Active
+	returnValue, err := proto.Marshal(&res)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -660,7 +661,7 @@ func checkExistingIdentity(param []byte, app *DIDApplication, height int64) type
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result CheckExistingIdentityResult
+	var result pbResult.CheckExistingIdentityResult
 	result.Exist = false
 
 	key := "MsqDestination" + "|" + funcParam.HashId
@@ -685,7 +686,7 @@ func checkExistingIdentity(param []byte, app *DIDApplication, height int64) type
 		}
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -700,8 +701,8 @@ func getAccessorGroupID(param []byte, app *DIDApplication, height int64) types.R
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetAccessorGroupIDResult
-	result.AccessorGroupID = ""
+	var result pbResult.GetAccessorGroupIDResult
+	result.AccessorGroupId = ""
 
 	key := "Accessor" + "|" + funcParam.AccessorId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
@@ -710,11 +711,11 @@ func getAccessorGroupID(param []byte, app *DIDApplication, height int64) types.R
 		var accessor data.Accessor
 		err = proto.Unmarshal([]byte(value), &accessor)
 		if err == nil {
-			result.AccessorGroupID = accessor.AccessorGroupId
+			result.AccessorGroupId = accessor.AccessorGroupId
 		}
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 
 	// If value == nil set log = "not found"
 	if value == nil {
@@ -735,7 +736,7 @@ func getAccessorKey(param []byte, app *DIDApplication, height int64) types.Respo
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetAccessorKeyResult
+	var result pbResult.GetAccessorKeyResult
 	result.AccessorPublicKey = ""
 
 	key := "Accessor" + "|" + funcParam.AccessorId
@@ -750,7 +751,7 @@ func getAccessorKey(param []byte, app *DIDApplication, height int64) types.Respo
 		}
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 
 	// If value == nil set log = "not found"
 	if value == nil {
@@ -768,15 +769,15 @@ func getServiceList(param []byte, app *DIDApplication, height int64) types.Respo
 	key := "AllService"
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	if value == nil {
-		result := make([]ServiceDetail, 0)
-		value, err := json.Marshal(result)
+		var result pbResult.GetServiceListResult
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		return ReturnQuery(value, "not found", app.state.db.Version64(), app)
 	}
 
-	result := make([]*data.ServiceDetail, 0)
+	var result pbResult.GetServiceListResult
 	// filter flag==true
 	var services data.ServiceDetailList
 	err := proto.Unmarshal([]byte(value), &services)
@@ -785,10 +786,14 @@ func getServiceList(param []byte, app *DIDApplication, height int64) types.Respo
 	}
 	for _, service := range services.Services {
 		if service.Active {
-			result = append(result, service)
+			var newRow pbResult.ServiceDetailInResult
+			newRow.ServiceId = service.ServiceId
+			newRow.ServiceName = service.ServiceName
+			newRow.Active = service.Active
+			result.Services = append(result.Services, &newRow)
 		}
 	}
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -817,7 +822,7 @@ func checkExistingAccessorID(param []byte, app *DIDApplication, height int64) ty
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result CheckExistingResult
+	var result pbResult.CheckExistingAccessorIDResult
 	result.Exist = false
 
 	accessorKey := "Accessor" + "|" + funcParam.AccessorId
@@ -830,7 +835,7 @@ func checkExistingAccessorID(param []byte, app *DIDApplication, height int64) ty
 		}
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -845,7 +850,7 @@ func checkExistingAccessorGroupID(param []byte, app *DIDApplication, height int6
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result CheckExistingResult
+	var result pbResult.CheckExistingAccessorIDResult
 	result.Exist = false
 
 	accessorGroupKey := "AccessorGroup" + "|" + funcParam.AccessorGroupId
@@ -854,7 +859,7 @@ func checkExistingAccessorGroupID(param []byte, app *DIDApplication, height int6
 		result.Exist = true
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -905,58 +910,62 @@ func getNodeInfo(param []byte, app *DIDApplication, height int64) types.Response
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		if nodeDetail.Role == "IdP" {
-			var result GetNodeInfoResultIdPandASBehindProxy
+			var result pbResult.GetNodeInfoResult
 			result.PublicKey = nodeDetail.PublicKey
 			result.MasterPublicKey = nodeDetail.MasterPublicKey
 			result.NodeName = nodeDetail.NodeName
 			result.Role = nodeDetail.Role
 			result.MaxIal = nodeDetail.MaxIal
 			result.MaxAal = nodeDetail.MaxAal
-			result.Proxy.NodeID = string(proxyNodeID)
-			result.Proxy.NodeName = proxyNode.NodeName
-			result.Proxy.PublicKey = proxyNode.PublicKey
-			result.Proxy.MasterPublicKey = proxyNode.MasterPublicKey
+			var proxyObj pbResult.ProxyInGetNodeInfoResult
+			proxyObj.NodeId = string(proxyNodeID)
+			proxyObj.NodeName = proxyNode.NodeName
+			proxyObj.PublicKey = proxyNode.PublicKey
+			proxyObj.MasterPublicKey = proxyNode.MasterPublicKey
+			proxyObj.Config = proxy.Config
 			if proxyNode.Mq != nil {
 				for _, mq := range proxyNode.Mq {
-					var msq MsqAddress
-					msq.IP = mq.Ip
+					var msq pbResult.MsqAddressInResult
+					msq.Ip = mq.Ip
 					msq.Port = mq.Port
-					result.Proxy.Mq = append(result.Proxy.Mq, msq)
+					proxyObj.Mq = append(proxyObj.Mq, &msq)
 				}
 			}
-			result.Proxy.Config = proxy.Config
-			value, err := json.Marshal(result)
+			result.Proxy = &proxyObj
+			value, err := proto.Marshal(&result)
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 			}
 			return ReturnQuery(value, "success", app.state.db.Version64(), app)
 		}
-		var result GetNodeInfoResultRPandASBehindProxy
+		var result pbResult.GetNodeInfoResult
 		result.PublicKey = nodeDetail.PublicKey
 		result.MasterPublicKey = nodeDetail.MasterPublicKey
 		result.NodeName = nodeDetail.NodeName
 		result.Role = nodeDetail.Role
-		result.Proxy.NodeID = string(proxyNodeID)
-		result.Proxy.NodeName = proxyNode.NodeName
-		result.Proxy.PublicKey = proxyNode.PublicKey
-		result.Proxy.MasterPublicKey = proxyNode.MasterPublicKey
+		var proxyObj pbResult.ProxyInGetNodeInfoResult
+		proxyObj.NodeId = string(proxyNodeID)
+		proxyObj.NodeName = proxyNode.NodeName
+		proxyObj.PublicKey = proxyNode.PublicKey
+		proxyObj.MasterPublicKey = proxyNode.MasterPublicKey
+		proxyObj.Config = proxy.Config
 		if proxyNode.Mq != nil {
 			for _, mq := range proxyNode.Mq {
-				var msq MsqAddress
-				msq.IP = mq.Ip
+				var msq pbResult.MsqAddressInResult
+				msq.Ip = mq.Ip
 				msq.Port = mq.Port
-				result.Proxy.Mq = append(result.Proxy.Mq, msq)
+				proxyObj.Mq = append(proxyObj.Mq, &msq)
 			}
 		}
-		result.Proxy.Config = proxy.Config
-		value, err := json.Marshal(result)
+		result.Proxy = &proxyObj
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		return ReturnQuery(value, "success", app.state.db.Version64(), app)
 	} else {
 		if nodeDetail.Role == "IdP" {
-			var result GetNodeInfoIdPResult
+			var result pbResult.GetNodeInfoResult
 			result.PublicKey = nodeDetail.PublicKey
 			result.MasterPublicKey = nodeDetail.MasterPublicKey
 			result.NodeName = nodeDetail.NodeName
@@ -965,32 +974,32 @@ func getNodeInfo(param []byte, app *DIDApplication, height int64) types.Response
 			result.MaxAal = nodeDetail.MaxAal
 			if nodeDetail.Mq != nil {
 				for _, mq := range nodeDetail.Mq {
-					var msq MsqAddress
-					msq.IP = mq.Ip
+					var msq pbResult.MsqAddressInResult
+					msq.Ip = mq.Ip
 					msq.Port = mq.Port
-					result.Mq = append(result.Mq, msq)
+					result.Mq = append(result.Mq, &msq)
 				}
 			}
-			value, err := json.Marshal(result)
+			value, err := proto.Marshal(&result)
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 			}
 			return ReturnQuery(value, "success", app.state.db.Version64(), app)
 		}
-		var result GetNodeInfoResult
+		var result pbResult.GetNodeInfoResult
 		result.PublicKey = nodeDetail.PublicKey
 		result.MasterPublicKey = nodeDetail.MasterPublicKey
 		result.NodeName = nodeDetail.NodeName
 		result.Role = nodeDetail.Role
 		if nodeDetail.Mq != nil {
 			for _, mq := range nodeDetail.Mq {
-				var msq MsqAddress
-				msq.IP = mq.Ip
+				var msq pbResult.MsqAddressInResult
+				msq.Ip = mq.Ip
 				msq.Port = mq.Port
-				result.Mq = append(result.Mq, msq)
+				result.Mq = append(result.Mq, &msq)
 			}
 		}
-		value, err := json.Marshal(result)
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -1006,7 +1015,7 @@ func getIdentityInfo(param []byte, app *DIDApplication, height int64) types.Resp
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetIdentityInfoResult
+	var result pbResult.GetIdentityInfoResult
 
 	key := "MsqDestination" + "|" + funcParam.HashId
 	_, chkExists := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
@@ -1026,7 +1035,7 @@ func getIdentityInfo(param []byte, app *DIDApplication, height int64) types.Resp
 		}
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1048,13 +1057,13 @@ func getDataSignature(param []byte, app *DIDApplication, height int64) types.Res
 	signDataKey := "SignData" + "|" + funcParam.NodeId + "|" + funcParam.ServiceId + "|" + funcParam.RequestId
 	_, signDataValue := app.state.db.GetVersioned(prefixKey([]byte(signDataKey)), height)
 
-	var result GetDataSignatureResult
+	var result pbResult.GetDataSignatureResult
 
 	if signDataValue != nil {
 		result.Signature = string(signDataValue)
 	}
 
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if signDataValue != nil {
 		return ReturnQuery(returnValue, "success", app.state.db.Version64(), app)
 	}
@@ -1070,15 +1079,15 @@ func getIdentityProof(param []byte, app *DIDApplication, height int64) types.Res
 	}
 	identityProofKey := "IdentityProof" + "|" + funcParam.RequestId + "|" + funcParam.IdpId
 	_, identityProofValue := app.state.db.GetVersioned(prefixKey([]byte(identityProofKey)), height)
-	var result GetIdentityProofResult
+	var result pbResult.GetIdentityProofResult
 	if identityProofValue != nil {
 		result.IdentityProof = string(identityProofValue)
 	}
-	returnValue, err := json.Marshal(result)
+	returnValue, err := proto.Marshal(&result)
 	if identityProofValue != nil {
 		return ReturnQuery(returnValue, "success", app.state.db.Version64(), app)
 	}
-	return ReturnQuery([]byte("{}"), "not found", app.state.db.Version64(), app)
+	return ReturnQuery(nil, "not found", app.state.db.Version64(), app)
 }
 
 func getServicesByAsID(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
@@ -1089,8 +1098,8 @@ func getServicesByAsID(param []byte, app *DIDApplication, height int64) types.Re
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetServicesByAsIDResult
-	result.Services = make([]Service, 0)
+	var result pbResult.GetServicesByAsIDResult
+	result.Services = make([]*pbResult.ServiceInResult, 0)
 
 	provideServiceKey := "ProvideService" + "|" + funcParam.AsId
 	_, provideServiceValue := app.state.db.Get(prefixKey([]byte(provideServiceKey)))
@@ -1133,17 +1142,17 @@ func getServicesByAsID(param []byte, app *DIDApplication, height int64) types.Re
 					services.Services[index].Suspended = !approveService.Active
 				}
 			}
-			var newRow Service
+			var newRow pbResult.ServiceInResult
 			newRow.Active = services.Services[index].Active
 			newRow.MinAal = services.Services[index].MinAal
 			newRow.MinIal = services.Services[index].MinIal
-			newRow.ServiceID = services.Services[index].ServiceId
+			newRow.ServiceId = services.Services[index].ServiceId
 			newRow.Suspended = services.Services[index].Suspended
-			result.Services = append(result.Services, newRow)
+			result.Services = append(result.Services, &newRow)
 		}
 	}
 
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1162,8 +1171,8 @@ func getIdpNodesInfo(param []byte, app *DIDApplication, height int64) types.Resp
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	var result GetIdpNodesInfoResult
-	result.Node = make([]interface{}, 0)
+	var result pbResult.GetIdpNodesInfoResult
+	result.Node = make([]*pbResult.IdpNode, 0)
 
 	// Make mapping
 	mapNodeIDList := map[string]bool{}
@@ -1233,41 +1242,42 @@ func getIdpNodesInfo(param []byte, app *DIDApplication, height int64) types.Resp
 					if err != nil {
 						return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 					}
-					var msqDesNode IdpNodeBehindProxy
-					msqDesNode.NodeID = idp
+					var msqDesNode pbResult.IdpNode
+					msqDesNode.NodeId = idp
 					msqDesNode.Name = nodeDetail.NodeName
 					msqDesNode.MaxIal = nodeDetail.MaxIal
 					msqDesNode.MaxAal = nodeDetail.MaxAal
 					msqDesNode.PublicKey = nodeDetail.PublicKey
-					msqDesNode.Proxy.NodeID = string(proxyNodeID)
-					msqDesNode.Proxy.PublicKey = proxyNode.PublicKey
+					var idpProxy pbResult.ProxyInResult
+					idpProxy.NodeId = string(proxyNodeID)
+					idpProxy.PublicKey = proxyNode.PublicKey
+					idpProxy.Config = proxy.Config
 					if proxyNode.Mq != nil {
 						for _, mq := range proxyNode.Mq {
-							var msq MsqAddress
-							msq.IP = mq.Ip
+							var msq pbResult.MsqAddressInResult
+							msq.Ip = mq.Ip
 							msq.Port = mq.Port
-							msqDesNode.Proxy.Mq = append(msqDesNode.Proxy.Mq, msq)
+							idpProxy.Mq = append(idpProxy.Mq, &msq)
 						}
 					}
-					msqDesNode.Proxy.Config = proxy.Config
-					result.Node = append(result.Node, msqDesNode)
+					msqDesNode.Proxy = &idpProxy
+					result.Node = append(result.Node, &msqDesNode)
 				} else {
-					var msq []MsqAddress
+					var msq []*pbResult.MsqAddressInResult
 					for _, mq := range nodeDetail.Mq {
-						var msqAddress MsqAddress
-						msqAddress.IP = mq.Ip
+						var msqAddress pbResult.MsqAddressInResult
+						msqAddress.Ip = mq.Ip
 						msqAddress.Port = mq.Port
-						msq = append(msq, msqAddress)
+						msq = append(msq, &msqAddress)
 					}
-					var msqDesNode = IdpNode{
-						idp,
-						nodeDetail.NodeName,
-						nodeDetail.MaxIal,
-						nodeDetail.MaxAal,
-						nodeDetail.PublicKey,
-						msq,
-					}
-					result.Node = append(result.Node, msqDesNode)
+					var msqDesNode pbResult.IdpNode
+					msqDesNode.NodeId = idp
+					msqDesNode.Name = nodeDetail.NodeName
+					msqDesNode.MaxIal = nodeDetail.MaxIal
+					msqDesNode.MaxAal = nodeDetail.MaxAal
+					msqDesNode.PublicKey = nodeDetail.PublicKey
+					msqDesNode.Mq = msq
+					result.Node = append(result.Node, &msqDesNode)
 				}
 
 			}
@@ -1344,47 +1354,48 @@ func getIdpNodesInfo(param []byte, app *DIDApplication, height int64) types.Resp
 					if err != nil {
 						return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 					}
-					var msqDesNode IdpNodeBehindProxy
-					msqDesNode.NodeID = node.NodeId
+					var msqDesNode pbResult.IdpNode
+					msqDesNode.NodeId = node.NodeId
 					msqDesNode.Name = nodeDetail.NodeName
 					msqDesNode.MaxIal = nodeDetail.MaxIal
 					msqDesNode.MaxAal = nodeDetail.MaxAal
 					msqDesNode.PublicKey = nodeDetail.PublicKey
-					msqDesNode.Proxy.NodeID = string(proxyNodeID)
-					msqDesNode.Proxy.PublicKey = proxyNode.PublicKey
+					var idpProxy pbResult.ProxyInResult
+					idpProxy.NodeId = string(proxyNodeID)
+					idpProxy.PublicKey = proxyNode.PublicKey
+					idpProxy.Config = proxy.Config
 					if proxyNode.Mq != nil {
 						for _, mq := range proxyNode.Mq {
-							var msq MsqAddress
-							msq.IP = mq.Ip
+							var msq pbResult.MsqAddressInResult
+							msq.Ip = mq.Ip
 							msq.Port = mq.Port
-							msqDesNode.Proxy.Mq = append(msqDesNode.Proxy.Mq, msq)
+							idpProxy.Mq = append(idpProxy.Mq, &msq)
 						}
 					}
-					msqDesNode.Proxy.Config = proxy.Config
-					result.Node = append(result.Node, msqDesNode)
+					msqDesNode.Proxy = &idpProxy
+					result.Node = append(result.Node, &msqDesNode)
 				} else {
-					var msq []MsqAddress
+					var msq []*pbResult.MsqAddressInResult
 					for _, mq := range nodeDetail.Mq {
-						var msqAddress MsqAddress
-						msqAddress.IP = mq.Ip
+						var msqAddress pbResult.MsqAddressInResult
+						msqAddress.Ip = mq.Ip
 						msqAddress.Port = mq.Port
-						msq = append(msq, msqAddress)
+						msq = append(msq, &msqAddress)
 					}
-					var msqDesNode = IdpNode{
-						node.NodeId,
-						nodeDetail.NodeName,
-						nodeDetail.MaxIal,
-						nodeDetail.MaxAal,
-						nodeDetail.PublicKey,
-						msq,
-					}
-					result.Node = append(result.Node, msqDesNode)
+					var msqDesNode pbResult.IdpNode
+					msqDesNode.NodeId = node.NodeId
+					msqDesNode.Name = nodeDetail.NodeName
+					msqDesNode.MaxIal = nodeDetail.MaxIal
+					msqDesNode.MaxAal = nodeDetail.MaxAal
+					msqDesNode.PublicKey = nodeDetail.PublicKey
+					msqDesNode.Mq = msq
+					result.Node = append(result.Node, &msqDesNode)
 				}
 			}
 		}
 	}
 
-	value, err := json.Marshal(result)
+	value, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1405,9 +1416,9 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 
 	if value == nil {
-		var result GetAsNodesInfoByServiceIdResult
-		result.Node = make([]interface{}, 0)
-		value, err := json.Marshal(result)
+		var result pbResult.GetAsNodesInfoByServiceIdResult
+		result.Node = make([]*pbResult.ASWithMqNode, 0)
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -1424,18 +1435,18 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
 		if service.Active == false {
-			var result GetAsNodesInfoByServiceIdResult
-			result.Node = make([]interface{}, 0)
-			value, err := json.Marshal(result)
+			var result pbResult.GetAsNodesInfoByServiceIdResult
+			result.Node = make([]*pbResult.ASWithMqNode, 0)
+			value, err := proto.Marshal(&result)
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 			}
 			return ReturnQuery(value, "service is not active", app.state.db.Version64(), app)
 		}
 	} else {
-		var result GetAsNodesInfoByServiceIdResult
-		result.Node = make([]interface{}, 0)
-		value, err := json.Marshal(result)
+		var result pbResult.GetAsNodesInfoByServiceIdResult
+		result.Node = make([]*pbResult.ASWithMqNode, 0)
+		value, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -1454,8 +1465,8 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 		mapNodeIDList[nodeID] = true
 	}
 
-	var result GetAsNodesInfoByServiceIdResult
-	result.Node = make([]interface{}, 0)
+	var result pbResult.GetAsNodesInfoByServiceIdResult
+	result.Node = make([]*pbResult.ASWithMqNode, 0)
 	for index := range storedData.Node {
 
 		// filter from node_id_list
@@ -1524,44 +1535,45 @@ func getAsNodesInfoByServiceId(param []byte, app *DIDApplication, height int64) 
 			if err != nil {
 				return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 			}
-			var as ASWithMqNodeBehindProxy
-			as.NodeID = storedData.Node[index].NodeId
+			var as pbResult.ASWithMqNode
+			as.NodeId = storedData.Node[index].NodeId
 			as.Name = nodeDetail.NodeName
 			as.MinIal = storedData.Node[index].MinIal
 			as.MinAal = storedData.Node[index].MinAal
 			as.PublicKey = nodeDetail.PublicKey
-			as.Proxy.NodeID = string(proxyNodeID)
-			as.Proxy.PublicKey = proxyNode.PublicKey
+			var proxyAS pbResult.ProxyInResult
+			proxyAS.NodeId = string(proxyNodeID)
+			proxyAS.PublicKey = proxyNode.PublicKey
+			proxyAS.Config = proxy.Config
 			if proxyNode.Mq != nil {
 				for _, mq := range proxyNode.Mq {
-					var msq MsqAddress
-					msq.IP = mq.Ip
+					var msq pbResult.MsqAddressInResult
+					msq.Ip = mq.Ip
 					msq.Port = mq.Port
-					as.Proxy.Mq = append(as.Proxy.Mq, msq)
+					proxyAS.Mq = append(proxyAS.Mq, &msq)
 				}
 			}
-			as.Proxy.Config = proxy.Config
-			result.Node = append(result.Node, as)
+			as.Proxy = &proxyAS
+			result.Node = append(result.Node, &as)
 		} else {
-			var msqAddress []MsqAddress
+			var msqAddress []*pbResult.MsqAddressInResult
 			for _, mq := range nodeDetail.Mq {
-				var msq MsqAddress
-				msq.IP = mq.Ip
+				var msq pbResult.MsqAddressInResult
+				msq.Ip = mq.Ip
 				msq.Port = mq.Port
-				msqAddress = append(msqAddress, msq)
+				msqAddress = append(msqAddress, &msq)
 			}
-			var newRow = ASWithMqNode{
-				storedData.Node[index].NodeId,
-				nodeDetail.NodeName,
-				storedData.Node[index].MinIal,
-				storedData.Node[index].MinAal,
-				nodeDetail.PublicKey,
-				msqAddress,
-			}
-			result.Node = append(result.Node, newRow)
+			var as pbResult.ASWithMqNode
+			as.NodeId = storedData.Node[index].NodeId
+			as.Name = nodeDetail.NodeName
+			as.MinIal = storedData.Node[index].MinIal
+			as.MinAal = storedData.Node[index].MinAal
+			as.PublicKey = nodeDetail.PublicKey
+			as.Mq = msqAddress
+			result.Node = append(result.Node, &as)
 		}
 	}
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1575,12 +1587,12 @@ func getNodesBehindProxyNode(param []byte, app *DIDApplication, height int64) ty
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	var result GetNodesBehindProxyNodeResult
-	result.Nodes = make([]interface{}, 0)
+	var result pbResult.GetNodesBehindProxyNodeResult
+	result.Nodes = make([]*pbResult.NodeBehindProxy, 0)
 	behindProxyNodeKey := "BehindProxyNode" + "|" + funcParam.ProxyNodeId
 	_, behindProxyNodeValue := app.state.db.Get(prefixKey([]byte(behindProxyNodeKey)))
 	if behindProxyNodeValue == nil {
-		resultJSON, err := json.Marshal(result)
+		resultJSON, err := proto.Marshal(&result)
 		if err != nil {
 			return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 		}
@@ -1617,8 +1629,8 @@ func getNodesBehindProxyNode(param []byte, app *DIDApplication, height int64) ty
 		}
 
 		if nodeDetail.Role == "IdP" {
-			var row IdPBehindProxy
-			row.NodeID = node
+			var row pbResult.NodeBehindProxy
+			row.NodeId = node
 			row.NodeName = nodeDetail.NodeName
 			row.Role = nodeDetail.Role
 			row.PublicKey = nodeDetail.PublicKey
@@ -1626,20 +1638,20 @@ func getNodesBehindProxyNode(param []byte, app *DIDApplication, height int64) ty
 			row.MaxIal = nodeDetail.MaxIal
 			row.MaxAal = nodeDetail.MaxAal
 			row.Config = proxy.Config
-			result.Nodes = append(result.Nodes, row)
+			result.Nodes = append(result.Nodes, &row)
 		} else {
-			var row ASorRPBehindProxy
-			row.NodeID = node
+			var row pbResult.NodeBehindProxy
+			row.NodeId = node
 			row.NodeName = nodeDetail.NodeName
 			row.Role = nodeDetail.Role
 			row.PublicKey = nodeDetail.PublicKey
 			row.MasterPublicKey = nodeDetail.MasterPublicKey
 			row.Config = proxy.Config
-			result.Nodes = append(result.Nodes, row)
+			result.Nodes = append(result.Nodes, &row)
 		}
 
 	}
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
@@ -1657,8 +1669,8 @@ func getNodeIDList(param []byte, app *DIDApplication, height int64) types.Respon
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
 
-	var result GetNodeIDListResult
-	result.NodeIDList = make([]string, 0)
+	var result pbResult.GetNodeIDListResult
+	result.NodeIdList = make([]string, 0)
 
 	if strings.ToLower(funcParam.Role) == "rp" {
 		var rpsList data.RPList
@@ -1679,7 +1691,7 @@ func getNodeIDList(param []byte, app *DIDApplication, height int64) types.Respon
 						continue
 					}
 					if nodeDetail.Active {
-						result.NodeIDList = append(result.NodeIDList, nodeID)
+						result.NodeIdList = append(result.NodeIdList, nodeID)
 					}
 				}
 			}
@@ -1703,7 +1715,7 @@ func getNodeIDList(param []byte, app *DIDApplication, height int64) types.Respon
 						continue
 					}
 					if nodeDetail.Active {
-						result.NodeIDList = append(result.NodeIDList, nodeID)
+						result.NodeIdList = append(result.NodeIdList, nodeID)
 					}
 				}
 			}
@@ -1727,7 +1739,7 @@ func getNodeIDList(param []byte, app *DIDApplication, height int64) types.Respon
 						continue
 					}
 					if nodeDetail.Active {
-						result.NodeIDList = append(result.NodeIDList, nodeID)
+						result.NodeIdList = append(result.NodeIdList, nodeID)
 					}
 				}
 			}
@@ -1751,18 +1763,18 @@ func getNodeIDList(param []byte, app *DIDApplication, height int64) types.Respon
 						continue
 					}
 					if nodeDetail.Active {
-						result.NodeIDList = append(result.NodeIDList, nodeID)
+						result.NodeIdList = append(result.NodeIdList, nodeID)
 					}
 				}
 			}
 		}
 	}
 
-	resultJSON, err := json.Marshal(result)
+	resultJSON, err := proto.Marshal(&result)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	if len(result.NodeIDList) == 0 {
+	if len(result.NodeIdList) == 0 {
 		return ReturnQuery(resultJSON, "not found", app.state.db.Version64(), app)
 	}
 	return ReturnQuery(resultJSON, "success", app.state.db.Version64(), app)

@@ -32,7 +32,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	pbResult "github.com/ndidplatform/smart-contract/protos/result"
 )
@@ -397,11 +396,10 @@ func TestNDIDUpdateService(t *testing.T) {
 func TestQueryGetServiceDetail(t *testing.T) {
 	var param pbParam.GetServiceDetailParams
 	param.ServiceId = serviceID1
-	var expected = did.ServiceDetail{
-		serviceID1,
-		"Bank statement (ย้อนหลัง 3 เดือน)",
-		true,
-	}
+	var expected pbResult.GetServiceDetailResult
+	expected.ServiceId = serviceID1
+	expected.ServiceName = "Bank statement (ย้อนหลัง 3 เดือน)"
+	expected.Active = true
 	GetServiceDetail(t, param, expected)
 }
 
@@ -481,9 +479,8 @@ func TestQueryGetIdentityProof(t *testing.T) {
 	var param pbParam.GetIdentityProofParams
 	param.IdpId = IdP1
 	param.RequestId = requestID1.String()
-	var expected = did.GetIdentityProofResult{
-		"Magic",
-	}
+	var expected pbResult.GetIdentityProofResult
+	expected.IdentityProof = "Magic"
 	GetIdentityProof(t, param, expected)
 }
 
@@ -944,13 +941,12 @@ func TestDisableNamespace(t *testing.T) {
 }
 
 func TestQueryGetNamespaceList(t *testing.T) {
-	var expected = []did.Namespace{
-		did.Namespace{
-			namespaceID1,
-			"Citizen ID",
-			true,
-		},
-	}
+	var row1 pbResult.NamespaceInResult
+	row1.Namespace = namespaceID1
+	row1.Description = "Citizen ID"
+	row1.Active = true
+	var expected pbResult.GetNamespaceListResult
+	expected.Namespaces = append(expected.Namespaces, &row1)
 	GetNamespaceList(t, expected)
 }
 
@@ -1076,22 +1072,21 @@ func TestSetValidator(t *testing.T) {
 func TestDisableOldService(t *testing.T) {
 	services := GetServiceListForDisable(t)
 	for _, service := range services {
-		if service.ServiceID != serviceID1 {
+		if service.ServiceId != serviceID1 {
 			var param pbParam.DisableServiceParams
-			param.ServiceId = service.ServiceID
+			param.ServiceId = service.ServiceId
 			DisableService(t, param)
 		}
 	}
 }
 
 func TestQueryGetServiceList(t *testing.T) {
-	var expected = []did.ServiceDetail{
-		did.ServiceDetail{
-			serviceID1,
-			"Bank statement (ย้อนหลัง 3 เดือน)",
-			true,
-		},
-	}
+	var row1 pbResult.ServiceDetailInResult
+	row1.ServiceId = serviceID1
+	row1.ServiceName = "Bank statement (ย้อนหลัง 3 เดือน)"
+	row1.Active = true
+	var expected pbResult.GetServiceListResult
+	expected.Services = append(expected.Services, &row1)
 	GetServiceList(t, expected)
 }
 
@@ -1561,7 +1556,7 @@ func TestASUpdateServiceDestination2(t *testing.T) {
 func TestQueryGetServicesByAsID(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID3 + `","min_ial":1.1,"min_aal":1.1,"active":true,"suspended":false},{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID3 + `","min_ial":1.1,"min_aal":1.1,"active":true},{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
 	GetServicesByAsID(t, param, expected)
 }
 
@@ -1588,7 +1583,7 @@ func TestQueryGetAsNodesByServiceID(t *testing.T) {
 func TestQueryGetServicesByAsID2(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
 	GetServicesByAsID(t, param, expected)
 }
 
@@ -1670,7 +1665,7 @@ func TestQueryGetAsNodesByServiceIDAfterEnable(t *testing.T) {
 func TestQueryGetServicesByAsID3(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
 	GetServicesByAsID(t, param, expected)
 }
 
@@ -1681,8 +1676,18 @@ func TestEnableNamespace(t *testing.T) {
 }
 
 func TestQueryGetNamespaceList2(t *testing.T) {
-	expected := `[{"namespace":"` + namespaceID1 + `","description":"Citizen ID","active":true},{"namespace":"` + namespaceID2 + `","description":"Tel number","active":true}]`
-	GetNamespaceListExpectString(t, expected)
+	var row1 pbResult.NamespaceInResult
+	row1.Namespace = namespaceID1
+	row1.Description = "Citizen ID"
+	row1.Active = true
+	var row2 pbResult.NamespaceInResult
+	row2.Namespace = namespaceID2
+	row2.Description = "Tel number"
+	row2.Active = true
+	var expected pbResult.GetNamespaceListResult
+	expected.Namespaces = append(expected.Namespaces, &row1)
+	expected.Namespaces = append(expected.Namespaces, &row2)
+	GetNamespaceList(t, expected)
 }
 
 func TestNDIDEnableService(t *testing.T) {
@@ -2108,7 +2113,7 @@ func TestSetNodeTokenProxy1(t *testing.T) {
 func TestQueryGetNodeInfoProxy1BeforeRegisterMsq(t *testing.T) {
 	var param pbParam.GetNodeInfoParams
 	param.NodeId = Proxy1
-	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"Proxy1","role":"Proxy","mq":null}`)
+	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"Proxy1","role":"Proxy"}`)
 	GetNodeInfo(t, param, expected)
 }
 
@@ -2156,7 +2161,7 @@ func TestAddNodeToProxyNodeProxy1Proxy1(t *testing.T) {
 func TestQueryGetNodeInfoIdP6BehindProxy1BeforeProxyRegisterMsq(t *testing.T) {
 	var param pbParam.GetNodeInfoParams
 	param.NodeId = IdP6BehindProxy1
-	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"proxy":{"node_id":"` + Proxy1 + `","node_name":"Proxy1","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","mq":null,"config":"KEY_ON_PROXY"}}`)
+	expected := string(`{"public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","node_name":"IdP6BehindProxy1","role":"IdP","max_ial":3,"max_aal":3,"proxy":{"node_id":"` + Proxy1 + `","node_name":"Proxy1","public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","master_public_key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwx9oT44DmDRiQJ1K0b9Q\nolEsrQ51hBUDq3oCKTffBikYenSUQNimVCsVBfNpKhZqpW56hH0mtgLbI7QgZGj9\ncNBMzSLMolltw0EerF0Ckz0Svvie1/oFJ1a0Cf4bdKKW6wRzL+aFVvelmNlLoSZX\noCpxUPQq7SMLoYEK1c+e3l3H0bfh6TAVt7APOQEFhXy9MRt83oVSAGW36gdNEksm\nz1WIT/C1XcHHVwCIJGSdZw5F6Y2gBjtiLsiFtpKfxQAPwBvDi7uS0PUdN7YQ/G69\nb0FgoE6qivDTqYfr80Y345Qe/qPGDvfne7oA8DIbRV+Kd5s4tFn/cC0Wd+jvrZJ7\njwIDAQAB\n-----END PUBLIC KEY-----\n","config":"KEY_ON_PROXY"}}`)
 	GetNodeInfo(t, param, expected)
 }
 
@@ -2354,7 +2359,7 @@ func TestRegisterMsqAddressIdP6BehindProxy1(t *testing.T) {
 func TestQueryGetGetNodesBehindProxyNode5(t *testing.T) {
 	var param pbParam.GetNodesBehindProxyNodeParams
 	param.ProxyNodeId = Proxy2
-	expected := string(`{"nodes":[]}`)
+	expected := string(`{}`)
 	GetNodesBehindProxyNode(t, param, expected)
 }
 
