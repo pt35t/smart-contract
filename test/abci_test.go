@@ -1522,20 +1522,20 @@ func TestDisableNodeRP(t *testing.T) {
 }
 
 func TestRPCreateRequestAferDisableNode(t *testing.T) {
-	var datas []did.DataRequest
-	var data1 did.DataRequest
-	data1.ServiceID = serviceID1
-	data1.Count = 1
-	data1.RequestParamsHash = "hash"
-	datas = append(datas, data1)
-	var param did.Request
-	param.RequestID = requestID4.String()
+	var datas []*pbParam.DataRequestInParams
+	var data1 pbParam.DataRequestInParams
+	data1.ServiceId = serviceID1
+	data1.MinAs = 1
+	data1.Request_ParamsHash = "hash"
+	datas = append(datas, &data1)
+	var param pbParam.CreateRequestParams
+	param.RequestId = requestID4.String()
 	param.MinIdp = 1
-	param.MinIal = 3
-	param.MinAal = 3
-	param.Timeout = 259200
+	param.MinIal = 1
+	param.MinAal = 1
+	param.RequestTimeout = 259200
 	param.DataRequestList = datas
-	param.MessageHash = "hash('Please allow...')"
+	param.RequestMessageHash = "hash('Please allow...')"
 	param.Mode = 3
 	CreateRequestExpectLog(t, param, rpPrivK, RP1, "Node is not active")
 }

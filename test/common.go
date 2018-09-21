@@ -27,12 +27,10 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	did "github.com/ndidplatform/smart-contract/abci/did/v1"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
@@ -91,10 +89,10 @@ func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile s
 	t.Logf("PASS: %s", fnName)
 }
 
-func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, nodeID string, expected string) {
+func CreateRequestExpectLog(t *testing.T, param pbParam.CreateRequestParams, priveKFile string, nodeID string, expected string) {
 	privKey := getPrivateKeyFromString(priveKFile)
 	byteNodeID := []byte(nodeID)
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
