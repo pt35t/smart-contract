@@ -27,17 +27,17 @@ type NodePublicKey struct {
 	PublicKey string `json:"public_key"`
 }
 
-type GetNodePublicKeyParam struct {
-	NodeID string `json:"node_id"`
-}
+// type GetNodePublicKeyParam struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type GetNodePublicKeyResult struct {
 	PublicKey string `json:"public_key"`
 }
 
-type GetNodeMasterPublicKeyParam struct {
-	NodeID string `json:"node_id"`
-}
+// type GetNodeMasterPublicKeyParam struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type GetNodeMasterPublicKeyResult struct {
 	MasterPublicKey string `json:"master_public_key"`
@@ -224,10 +224,10 @@ type MaxIalAal struct {
 	MaxAal float64 `json:"max_aal"`
 }
 
-type RegisterMsqAddressParam struct {
-	NodeID    string       `json:"node_id"`
-	Addresses []MsqAddress `json:"addresses"`
-}
+// type RegisterMsqAddressParam struct {
+// 	NodeID    string       `json:"node_id"`
+// 	Addresses []MsqAddress `json:"addresses"`
+// }
 
 type GetMsqAddressParam struct {
 	NodeID string `json:"node_id"`

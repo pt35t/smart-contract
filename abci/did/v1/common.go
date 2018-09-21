@@ -35,12 +35,12 @@ import (
 
 func registerMsqAddress(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("RegisterMsqAddress, Parameter: %s", param)
-	var funcParam RegisterMsqAddressParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.RegisterMsqAddressParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
-	nodeDetailKey := "NodeID" + "|" + funcParam.NodeID
+	nodeDetailKey := "NodeID" + "|" + funcParam.NodeId
 	_, value := app.state.db.Get(prefixKey([]byte(nodeDetailKey)))
 	var nodeDetail data.NodeDetail
 	err = proto.Unmarshal(value, &nodeDetail)
@@ -50,7 +50,7 @@ func registerMsqAddress(param []byte, app *DIDApplication, nodeID string) types.
 	var msqAddress []*data.MQ
 	for _, address := range funcParam.Addresses {
 		var msq data.MQ
-		msq.Ip = address.IP
+		msq.Ip = address.Ip
 		msq.Port = address.Port
 		msqAddress = append(msqAddress, &msq)
 	}
@@ -65,12 +65,12 @@ func registerMsqAddress(param []byte, app *DIDApplication, nodeID string) types.
 
 func getNodeMasterPublicKey(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetNodeMasterPublicKey, Parameter: %s", param)
-	var funcParam GetNodeMasterPublicKeyParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.GetNodeMasterPublicKeyParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	key := "NodeID" + "|" + funcParam.NodeID
+	key := "NodeID" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	var res GetNodeMasterPublicKeyResult
 	if value == nil {
@@ -96,12 +96,12 @@ func getNodeMasterPublicKey(param []byte, app *DIDApplication, height int64) typ
 
 func getNodePublicKey(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetNodePublicKey, Parameter: %s", param)
-	var funcParam GetNodePublicKeyParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.GetNodePublicKeyParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	key := "NodeID" + "|" + funcParam.NodeID
+	key := "NodeID" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	var res GetNodePublicKeyResult
 	if value == nil {

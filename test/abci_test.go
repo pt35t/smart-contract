@@ -158,9 +158,8 @@ func TestNDIDSetTimeOutBlockRegisterMsqDestination(t *testing.T) {
 }
 
 func TestQueryGetNodePublicKeyRP(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		RP1,
-	}
+	var param pbParam.GetNodePublicKeyParams
+	param.NodeId = RP1
 	rpKey := getPrivateKeyFromString(rpPrivK)
 	rpPublicKeyBytes, err := generatePublicKey(&rpKey.PublicKey)
 	if err != nil {
@@ -170,9 +169,8 @@ func TestQueryGetNodePublicKeyRP(t *testing.T) {
 }
 
 func TestQueryGetNodeMasterPublicKeyRP(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		RP1,
-	}
+	var param pbParam.GetNodeMasterPublicKeyParams
+	param.NodeId = RP1
 	rpKey := getPrivateKeyFromString(allMasterKey)
 	rpPublicKeyBytes, err := generatePublicKey(&rpKey.PublicKey)
 	if err != nil {
@@ -182,9 +180,8 @@ func TestQueryGetNodeMasterPublicKeyRP(t *testing.T) {
 }
 
 func TestQueryGetNodePublicKeyIdP(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		IdP1,
-	}
+	var param pbParam.GetNodePublicKeyParams
+	param.NodeId = IdP1
 	idpKey := getPrivateKeyFromString(idpPrivK)
 	idpPublicKeyBytes, err := generatePublicKey(&idpKey.PublicKey)
 	if err != nil {
@@ -194,9 +191,8 @@ func TestQueryGetNodePublicKeyIdP(t *testing.T) {
 }
 
 func TestQueryGetNodePublicKeyAS(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		AS1,
-	}
+	var param pbParam.GetNodePublicKeyParams
+	param.NodeId = AS1
 	asKey := getPrivateKeyFromString(asPrivK)
 	asPublicKeyBytes, err := generatePublicKey(&asKey.PublicKey)
 	if err != nil {
@@ -320,13 +316,12 @@ func TestDisableOldIdPNode1(t *testing.T) {
 	}
 }
 func TestIdPRegisterMsqAddress(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = IdP1
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = IdP1
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK, IdP1)
 }
 
@@ -431,13 +426,12 @@ func TestQueryGetAsNodesByServiceId(t *testing.T) {
 }
 
 func TestAS1RegisterMsqAddress(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.102"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.102"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = AS1
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = AS1
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, asPrivK, AS1)
 }
 
@@ -1098,24 +1092,22 @@ func TestIdPUpdateNode5(t *testing.T) {
 }
 
 func TestIdP4RegisterMsqAddress(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = IdP4
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = IdP4
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK5, IdP4)
 }
 
 func TestIdP5RegisterMsqAddress(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = IdP5
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = IdP5
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK4, IdP5)
 }
 
@@ -1496,13 +1488,12 @@ func TestQueryGetNodeNotFound(t *testing.T) {
 }
 
 func TestRP1RegisterMsqAddress(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = RP1
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = RP1
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, rpPrivK, RP1)
 }
 
@@ -1659,17 +1650,15 @@ func TestASSignDataForNewRequest2(t *testing.T) {
 
 // Test invalid value
 func TestQueryGetNodePublicKeyInvalid(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		"RP10000",
-	}
+	var param pbParam.GetNodePublicKeyParams
+	param.NodeId = "RP10000"
 	expected := "not found"
 	GetNodePublicKey(t, param, expected)
 }
 
 func TestQueryGetNodeMasterPublicKeyInvalid(t *testing.T) {
-	var param = did.GetNodePublicKeyParam{
-		"RP10000",
-	}
+	var param pbParam.GetNodeMasterPublicKeyParams
+	param.NodeId = "RP10000"
 	expected := "not found"
 	GetNodeMasterPublicKey(t, param, expected)
 }
@@ -1939,13 +1928,12 @@ func TestQueryGetNodeInfoIdP6BehindProxy1BeforeProxyRegisterMsq(t *testing.T) {
 }
 
 func TestRegisterMsqAddressProxy1(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = Proxy1
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = Proxy1
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK, Proxy1)
 }
 
@@ -2077,13 +2065,12 @@ func TestSetNodeTokenProxy2(t *testing.T) {
 }
 
 func TestRegisterMsqAddressProxy2(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = Proxy2
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = Proxy2
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK, Proxy1)
 }
 
@@ -2122,13 +2109,12 @@ func TestRemoveNodeFromProxyNode1(t *testing.T) {
 }
 
 func TestRegisterMsqAddressIdP6BehindProxy1(t *testing.T) {
-	var mq did.MsqAddress
-	mq.IP = "192.168.3.99"
+	var mq pbParam.MsqAddress
+	mq.Ip = "192.168.3.99"
 	mq.Port = 8000
-	var param did.RegisterMsqAddressParam
-	param.NodeID = IdP6BehindProxy1
-	param.Addresses = make([]did.MsqAddress, 0)
-	param.Addresses = append(param.Addresses, mq)
+	var param pbParam.RegisterMsqAddressParams
+	param.NodeId = IdP6BehindProxy1
+	param.Addresses = append(param.Addresses, &mq)
 	RegisterMsqAddress(t, param, idpPrivK, Proxy1)
 }
 

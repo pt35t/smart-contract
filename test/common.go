@@ -37,8 +37,8 @@ import (
 	"github.com/tendermint/tendermint/libs/common"
 )
 
-func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKFile string, nodeID string) {
-	paramsByte, err := json.Marshal(param)
+func RegisterMsqAddress(t *testing.T, param pbParam.RegisterMsqAddressParams, priveKFile string, nodeID string) {
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

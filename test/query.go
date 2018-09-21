@@ -35,9 +35,9 @@ import (
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 )
 
-func GetNodePublicKey(t *testing.T, param did.GetNodePublicKeyParam, expected string) {
+func GetNodePublicKey(t *testing.T, param pbParam.GetNodePublicKeyParams, expected string) {
 	fnName := "GetNodePublicKey"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -59,9 +59,9 @@ func GetNodePublicKey(t *testing.T, param did.GetNodePublicKeyParam, expected st
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetNodeMasterPublicKey(t *testing.T, param did.GetNodePublicKeyParam, expected string) {
+func GetNodeMasterPublicKey(t *testing.T, param pbParam.GetNodeMasterPublicKeyParams, expected string) {
 	fnName := "GetNodeMasterPublicKey"
-	paramsByte, err := json.Marshal(param)
+	paramsByte, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
