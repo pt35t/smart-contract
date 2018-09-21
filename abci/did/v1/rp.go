@@ -26,13 +26,13 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
 func createRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateRequest, Parameter: %s", param)
-	var funcParam pbParam.CreateRequestParam
+	var funcParam pbParam.CreateRequestParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -55,7 +55,7 @@ func createRequest(param []byte, app *DIDApplication, nodeID string) types.Respo
 	for index := range funcParam.DataRequestList {
 		var newRow data.DataRequest
 		newRow.ServiceId = funcParam.DataRequestList[index].ServiceId
-		newRow.RequestParamsHash = funcParam.DataRequestList[index].RequestParamsHash
+		newRow.RequestParamsHash = funcParam.DataRequestList[index].Request_ParamsHash
 		newRow.MinAs = int64(funcParam.DataRequestList[index].MinAs)
 		newRow.AsIdList = funcParam.DataRequestList[index].AsIdList
 		if funcParam.DataRequestList[index].AsIdList == nil {
@@ -111,7 +111,7 @@ func createRequest(param []byte, app *DIDApplication, nodeID string) types.Respo
 
 func closeRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CloseRequest, Parameter: %s", param)
-	var funcParam pbParam.CloseRequestParam
+	var funcParam pbParam.CloseRequestParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -182,7 +182,7 @@ func closeRequest(param []byte, app *DIDApplication, nodeID string) types.Respon
 
 func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("TimeOutRequest, Parameter: %s", param)
-	var funcParam pbParam.TimeOutRequestParam
+	var funcParam pbParam.TimeOutRequestParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -254,7 +254,7 @@ func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.Resp
 
 func setDataReceived(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetDataReceived, Parameter: %s", param)
-	var funcParam pbParam.SetDataReceivedParam
+	var funcParam pbParam.SetDataReceivedParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")

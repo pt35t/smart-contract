@@ -29,7 +29,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -69,7 +69,7 @@ func setToken(nodeID string, amount float64, app *DIDApplication) error {
 
 func setPriceFunc(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetPriceFunc, Parameter: %s", param)
-	var funcParam pbParam.SetPriceFuncParam
+	var funcParam pbParam.SetPriceFuncParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -80,7 +80,7 @@ func setPriceFunc(param []byte, app *DIDApplication, nodeID string) types.Respon
 
 func getPriceFunc(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetPriceFunc, Parameter: %s", param)
-	var funcParam pbParam.GetPriceFuncParam
+	var funcParam pbParam.GetPriceFuncParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
@@ -156,7 +156,7 @@ func getToken(nodeID string, app *DIDApplication) (float64, error) {
 
 func setNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetNodeToken, Parameter: %s", param)
-	var funcParam pbParam.SetNodeTokenParam
+	var funcParam pbParam.SetNodeTokenParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -178,7 +178,7 @@ func setNodeToken(param []byte, app *DIDApplication, nodeID string) types.Respon
 
 func addNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("AddNodeToken, Parameter: %s", param)
-	var funcParam pbParam.AddNodeTokenParam
+	var funcParam pbParam.AddNodeTokenParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -200,7 +200,7 @@ func addNodeToken(param []byte, app *DIDApplication, nodeID string) types.Respon
 
 func reduceNodeToken(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("ReduceNodeToken, Parameter: %s", param)
-	var funcParam pbParam.ReduceNodeTokenParam
+	var funcParam pbParam.ReduceNodeTokenParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -222,7 +222,7 @@ func reduceNodeToken(param []byte, app *DIDApplication, nodeID string) types.Res
 
 func getNodeToken(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetNodeToken, Parameter: %s", param)
-	var funcParam pbParam.GetNodeTokenParam
+	var funcParam pbParam.GetNodeTokenParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnQuery([]byte("{}"), err.Error(), app.state.db.Version64(), app)

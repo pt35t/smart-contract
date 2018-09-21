@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-message InitNDIDParam  {
+message InitNDIDParams  {
   string node_id = 1;
   string public_key = 2;
   string master_public_key = 3;
 }
 
-message RegisterNodeParam  {
+message RegisterNodeParams  {
   string node_id = 1;
   string public_key = 2;
   string master_public_key = 3;
@@ -16,53 +16,53 @@ message RegisterNodeParam  {
   double max_aal = 7;
 }
 
-message UpdateNodeParam {
+message UpdateNodeParams {
   string public_key = 1;
   string master_public_key = 2;
 }
 
-message SetValidatorParam  {
+message SetValidatorParams  {
   string public_key = 1;
   int64 power = 2;
 }
 
-message SetPriceFuncParam  {
+message SetPriceFuncParams  {
   string func = 1;
   double price = 2;
 }
 
-message GetPriceFuncParam  {
+message GetPriceFuncParams  {
   string func = 1;
 }
 
-message SetNodeTokenParam  {
+message SetNodeTokenParams  {
   string node_id = 1;
   double amount = 2;
 }
 
-message AddNodeTokenParam  {
+message AddNodeTokenParams  {
   string node_id = 1;
   double amount = 2;
 }
 
-message ReduceNodeTokenParam  {
+message ReduceNodeTokenParams  {
   string node_id = 1;
   double amount = 2;
 }
 
-message GetNodeTokenParam  {
+message GetNodeTokenParams  {
   string node_id = 1;
 }
 
-message CreateRequestParam {
+message CreateRequestParams {
   string request_id = 1;
   int64 min_idp = 2;
   double min_aal = 3;
   double min_ial = 4;
   int64 request_timeout = 5;
-  repeated DataRequestInParam data_request_list = 6;
+  repeated DataRequestInParams data_request_list = 6;
   string request_message_hash = 7;
-  repeated ResponseInParam response_list = 8;
+  repeated ResponseInParams response_list = 8;
   bool closed = 9;
   bool timed_out = 10;
   bool can_add_accessor = 11;
@@ -70,16 +70,16 @@ message CreateRequestParam {
   int64 mode = 13;
 }
 
-message DataRequestInParam {
+message DataRequestInParams {
   string service_id = 1;
   repeated string as_id_list = 2;
   int64 min_as = 3;
-  string request_params_hash = 4;
+  string request_Params_hash = 4;
   repeated string answered_as_id_list = 5;
   repeated string received_data_from_list = 6;
 }
 
-message ResponseInParam {
+message ResponseInParams {
   double ial = 1;
   double aal = 2;
   string status = 3;
@@ -92,12 +92,12 @@ message ResponseInParam {
   string valid_signature = 10;
 }
 
-message CloseRequestParam {
+message CloseRequestParams {
   string request_id = 1;
   repeated ResponseValid response_valid_list = 2;
 }
 
-message TimeOutRequestParam {
+message TimeOutRequestParams {
   string request_id = 1;
   repeated ResponseValid response_valid_list = 2;
 }
@@ -115,7 +115,7 @@ message ResponseValid {
   }
 }
 
-message SetDataReceivedParam {
+message SetDataReceivedParams {
   string request_id = 1;
   string service_id = 2;
   string as_id = 3;

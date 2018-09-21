@@ -35,7 +35,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
@@ -45,7 +45,7 @@ func InitNDID(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var initNDIDparam pbParam.InitNDIDParam
+	var initNDIDparam pbParam.InitNDIDParams
 	initNDIDparam.NodeId = "NDID"
 	initNDIDparam.PublicKey = string(ndidpublicKeyBytes)
 	initNDIDparam.MasterPublicKey = string(ndidpublicKeyBytes)
@@ -80,7 +80,7 @@ func InitNDID(t *testing.T) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func RegisterNode(t *testing.T, param pbParam.RegisterNodeParam) {
+func RegisterNode(t *testing.T, param pbParam.RegisterNodeParams) {
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -135,7 +135,7 @@ func SetTimeOutBlockRegisterMsqDestination(t *testing.T) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddNodeToken(t *testing.T, param pbParam.AddNodeTokenParam) {
+func AddNodeToken(t *testing.T, param pbParam.AddNodeTokenParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
 	paramJSON, err := proto.Marshal(&param)
@@ -160,7 +160,7 @@ func AddNodeToken(t *testing.T, param pbParam.AddNodeTokenParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func ReduceNodeToken(t *testing.T, param pbParam.ReduceNodeTokenParam) {
+func ReduceNodeToken(t *testing.T, param pbParam.ReduceNodeTokenParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
 	paramJSON, err := proto.Marshal(&param)
@@ -185,7 +185,7 @@ func ReduceNodeToken(t *testing.T, param pbParam.ReduceNodeTokenParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetNodeToken(t *testing.T, param pbParam.SetNodeTokenParam) {
+func SetNodeToken(t *testing.T, param pbParam.SetNodeTokenParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
 	paramJSON, err := proto.Marshal(&param)
@@ -336,7 +336,7 @@ func UpdateService(t *testing.T, param did.UpdateServiceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParam) {
+func SetPriceFunc(t *testing.T, param pbParam.SetPriceFuncParams) {
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -436,7 +436,7 @@ func EnableNamespace(t *testing.T, param did.DisableNamespaceParam) {
 	t.Logf("PASS: %s", fnName)
 }
 
-func SetValidator(t *testing.T, param pbParam.SetValidatorParam) {
+func SetValidator(t *testing.T, param pbParam.SetValidatorParams) {
 	ndidKey := getPrivateKeyFromString(ndidPrivK)
 	ndidNodeID := "NDID"
 	paramJSON, err := proto.Marshal(&param)

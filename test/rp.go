@@ -31,11 +31,11 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
-func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParam, expected string, nodeID string) {
+func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParams, expected string, nodeID string) {
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -59,7 +59,7 @@ func SetDataReceived(t *testing.T, param pbParam.SetDataReceivedParam, expected 
 	t.Logf("PASS: %s", fnName)
 }
 
-func CloseRequest(t *testing.T, param pbParam.CloseRequestParam, nodeID string) {
+func CloseRequest(t *testing.T, param pbParam.CloseRequestParams, nodeID string) {
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -84,7 +84,7 @@ func CloseRequest(t *testing.T, param pbParam.CloseRequestParam, nodeID string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParam, nodeID string) {
+func TimeOutRequest(t *testing.T, param pbParam.TimeOutRequestParams, nodeID string) {
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)

@@ -29,7 +29,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -62,7 +62,7 @@ var isNDIDMethod = map[string]bool{
 
 func initNDID(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("InitNDID")
-	var funcParam pbParam.InitNDIDParam
+	var funcParam pbParam.InitNDIDParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
@@ -86,7 +86,7 @@ func initNDID(param []byte, app *DIDApplication, nodeID string) types.ResponseDe
 
 func registerNode(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("RegisterNode")
-	var funcParam pbParam.RegisterNodeParam
+	var funcParam pbParam.RegisterNodeParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")

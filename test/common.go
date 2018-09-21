@@ -33,7 +33,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	did "github.com/ndidplatform/smart-contract/abci/did/v1"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
@@ -62,7 +62,7 @@ func RegisterMsqAddress(t *testing.T, param did.RegisterMsqAddressParam, priveKF
 	t.Logf("PASS: %s", fnName)
 }
 
-func CreateRequest(t *testing.T, param pbParam.CreateRequestParam, priveKFile string, nodeID string) {
+func CreateRequest(t *testing.T, param pbParam.CreateRequestParams, priveKFile string, nodeID string) {
 	privKey := getPrivateKeyFromString(priveKFile)
 	byteNodeID := []byte(nodeID)
 	paramJSON, err := proto.Marshal(&param)
@@ -111,7 +111,7 @@ func CreateRequestExpectLog(t *testing.T, param did.Request, priveKFile string, 
 	t.Logf("PASS: %s", fnName)
 }
 
-func UpdateNode(t *testing.T, param pbParam.UpdateNodeParam, masterPriveKFile string, nodeID string) {
+func UpdateNode(t *testing.T, param pbParam.UpdateNodeParams, masterPriveKFile string, nodeID string) {
 	masterKey := getPrivateKeyFromString(masterPriveKFile)
 	paramJSON, err := proto.Marshal(&param)
 	if err != nil {

@@ -30,7 +30,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -89,7 +89,7 @@ func (app *DIDApplication) updateValidator(v types.Validator) types.ResponseDeli
 
 func setValidator(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("SetValidator, Parameter: %s", param)
-	var funcParam pbParam.SetValidatorParam
+	var funcParam pbParam.SetValidatorParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")

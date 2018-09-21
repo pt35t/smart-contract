@@ -33,7 +33,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ndidplatform/smart-contract/abci/did/v1"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 )
 
 var RP1 = RandStringRunes(20)
@@ -76,7 +76,7 @@ func TestInitNDID(t *testing.T) {
 }
 
 func TestInitData(t *testing.T) {
-	var param pbParam.SetPriceFuncParam
+	var param pbParam.SetPriceFuncParams
 	param.Func = "CreateRequest"
 	param.Price = 1
 	SetPriceFunc(t, param)
@@ -95,7 +95,7 @@ func TestRegisterNodeRP(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = RP1
 	param.PublicKey = string(rpPublicKeyBytes)
 	param.MasterPublicKey = string(rpPublicKeyBytes2)
@@ -118,7 +118,7 @@ func TestRegisterNodeIDP(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = IdP1
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
@@ -143,7 +143,7 @@ func TestRegisterNodeAS(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeName = "AS1"
 	param.NodeId = AS1
 	param.PublicKey = string(asPublicKeyBytes)
@@ -206,28 +206,28 @@ func TestQueryGetNodePublicKeyAS(t *testing.T) {
 }
 
 func TestAddNodeTokenRP(t *testing.T) {
-	var param pbParam.AddNodeTokenParam
+	var param pbParam.AddNodeTokenParams
 	param.NodeId = RP1
 	param.Amount = 111.11
 	AddNodeToken(t, param)
 }
 
 func TestAddNodeTokenIdP(t *testing.T) {
-	var param pbParam.AddNodeTokenParam
+	var param pbParam.AddNodeTokenParams
 	param.NodeId = IdP1
 	param.Amount = 222.22
 	AddNodeToken(t, param)
 }
 
 func TestAddNodeTokenAS(t *testing.T) {
-	var param pbParam.AddNodeTokenParam
+	var param pbParam.AddNodeTokenParams
 	param.NodeId = AS1
 	param.Amount = 333.33
 	AddNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRP(t *testing.T) {
-	var param pbParam.GetNodeTokenParam
+	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		111.11,
@@ -236,14 +236,14 @@ func TestQueryGetNodeTokenRP(t *testing.T) {
 }
 
 func TestReduceNodeTokenRP(t *testing.T) {
-	var param pbParam.ReduceNodeTokenParam
+	var param pbParam.ReduceNodeTokenParams
 	param.NodeId = RP1
 	param.Amount = 61.11
 	ReduceNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRPAfterReduce(t *testing.T) {
-	var param pbParam.GetNodeTokenParam
+	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		50.0,
@@ -252,14 +252,14 @@ func TestQueryGetNodeTokenRPAfterReduce(t *testing.T) {
 }
 
 func TestSetNodeTokenRP(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = RP1
 	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
 func TestQueryGetNodeTokenRPAfterSetToken(t *testing.T) {
-	var param pbParam.GetNodeTokenParam
+	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		100.0,
@@ -459,13 +459,13 @@ func TestQueryGetAsNodesInfoByServiceId(t *testing.T) {
 }
 
 func TestRPCreateRequest(t *testing.T) {
-	var datas []*pbParam.DataRequestInParam
-	var data1 pbParam.DataRequestInParam
+	var datas []*pbParam.DataRequestInParams
+	var data1 pbParam.DataRequestInParams
 	data1.ServiceId = serviceID1
 	data1.MinAs = 1
-	data1.RequestParamsHash = "hash"
+	data1.Request_ParamsHash = "hash"
 	datas = append(datas, &data1)
-	var param pbParam.CreateRequestParam
+	var param pbParam.CreateRequestParams
 	param.RequestId = requestID1.String()
 	param.MinIdp = 1
 	param.MinIal = 3
@@ -478,7 +478,7 @@ func TestRPCreateRequest(t *testing.T) {
 }
 
 func TestQueryGetNodeTokenRPAfterCreatRequest(t *testing.T) {
-	var param pbParam.GetNodeTokenParam
+	var param pbParam.GetNodeTokenParams
 	param.NodeId = RP1
 	var expected = did.GetNodeTokenResult{
 		99.0,
@@ -536,7 +536,7 @@ func TestASSignData2(t *testing.T) {
 }
 
 func TestRPSetDataReceived(t *testing.T) {
-	var param pbParam.SetDataReceivedParam
+	var param pbParam.SetDataReceivedParams
 	param.RequestId = requestID1.String()
 	param.ServiceId = serviceID1
 	param.AsId = AS1
@@ -544,7 +544,7 @@ func TestRPSetDataReceived(t *testing.T) {
 }
 
 func TestRPSetDataReceived2(t *testing.T) {
-	var param pbParam.SetDataReceivedParam
+	var param pbParam.SetDataReceivedParams
 	param.RequestId = requestID1.String()
 	param.ServiceId = serviceID1
 	param.AsId = AS1
@@ -552,8 +552,8 @@ func TestRPSetDataReceived2(t *testing.T) {
 }
 
 func TestIdPCreateRequestSpecial(t *testing.T) {
-	var datas []*pbParam.DataRequestInParam
-	var param pbParam.CreateRequestParam
+	var datas []*pbParam.DataRequestInParams
+	var param pbParam.CreateRequestParams
 	param.RequestId = requestID2.String()
 	param.MinIdp = 1
 	param.MinIal = 3
@@ -585,14 +585,14 @@ func TestIdPCreateIdpResponseForSpecialRequest(t *testing.T) {
 }
 
 func TestNDIDSetPrice(t *testing.T) {
-	var param pbParam.SetPriceFuncParam
+	var param pbParam.SetPriceFuncParams
 	param.Func = "CreateRequest"
 	param.Price = 9.99
 	SetPriceFunc(t, param)
 }
 
 func TestNDIDGetPrice(t *testing.T) {
-	var param pbParam.GetPriceFuncParam
+	var param pbParam.GetPriceFuncParams
 	param.Func = "CreateRequest"
 	var expected = did.GetPriceFuncResult{
 		9.99,
@@ -646,7 +646,7 @@ func TestRPCloseRequest(t *testing.T) {
 	boolSignature.ValidSignatureBool = true
 	res1.ValidSignature = &boolSignature
 	res = append(res, &res1)
-	var param pbParam.CloseRequestParam
+	var param pbParam.CloseRequestParams
 	param.RequestId = requestID1.String()
 	param.ResponseValidList = res
 	CloseRequest(t, param, RP1)
@@ -674,26 +674,26 @@ func TestQueryGetRequestDetail2(t *testing.T) {
 }
 
 func TestCreateRequest(t *testing.T) {
-	var datas []*pbParam.DataRequestInParam
-	var data1 pbParam.DataRequestInParam
+	var datas []*pbParam.DataRequestInParams
+	var data1 pbParam.DataRequestInParams
 	data1.ServiceId = serviceID1
 	data1.AsIdList = []string{
 		AS1,
 		AS2,
 	}
 	data1.MinAs = 2
-	data1.RequestParamsHash = "hash"
-	var data2 pbParam.DataRequestInParam
+	data1.Request_ParamsHash = "hash"
+	var data2 pbParam.DataRequestInParams
 	data2.ServiceId = "credit"
 	data2.AsIdList = []string{
 		AS1,
 		AS2,
 	}
 	data2.MinAs = 2
-	data2.RequestParamsHash = "hash"
+	data2.Request_ParamsHash = "hash"
 	datas = append(datas, &data1)
 	datas = append(datas, &data2)
-	var param pbParam.CreateRequestParam
+	var param pbParam.CreateRequestParams
 	param.RequestId = requestID3.String()
 	param.MinIdp = 1
 	param.MinIal = 3
@@ -739,7 +739,7 @@ func TestRPTimeOutRequest(t *testing.T) {
 	boolSignature.ValidSignatureBool = false
 	res1.ValidSignature = &boolSignature
 	res = append(res, &res1)
-	var param pbParam.TimeOutRequestParam
+	var param pbParam.TimeOutRequestParams
 	param.RequestId = requestID3.String()
 	param.ResponseValidList = res
 	TimeOutRequest(t, param, RP1)
@@ -886,7 +886,7 @@ func TestRegisterNodeIDP2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = IdP2
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.Role = "IdP"
@@ -922,13 +922,13 @@ func TestIdPUpdateNode(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.UpdateNodeParam
+	var param pbParam.UpdateNodeParams
 	param.PublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP1)
 }
 
 func TestSetValidator(t *testing.T) {
-	var param pbParam.SetValidatorParam
+	var param pbParam.SetValidatorParams
 	param.PublicKey = getValidatorPubkey()
 	param.Power = 100
 	SetValidator(t, param)
@@ -1049,7 +1049,7 @@ func TestRegisterNodeIDP4(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = IdP4
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
@@ -1071,7 +1071,7 @@ func TestRegisterNodeIDP5(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = IdP5
 	param.PublicKey = string(idpPublicKeyBytes)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
@@ -1083,14 +1083,14 @@ func TestRegisterNodeIDP5(t *testing.T) {
 }
 
 func TestSetNodeTokenIDP4(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = IdP4
 	param.Amount = 100.0
 	SetNodeToken(t, param)
 }
 
 func TestSetNodeTokenIDP5(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = IdP5
 	param.Amount = 100.0
 	SetNodeToken(t, param)
@@ -1102,7 +1102,7 @@ func TestIdPUpdateNode4(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.UpdateNodeParam
+	var param pbParam.UpdateNodeParams
 	param.PublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP4)
 }
@@ -1114,7 +1114,7 @@ func TestIdPUpdateNode5(t *testing.T) {
 		log.Fatal(err.Error())
 	}
 
-	var param pbParam.UpdateNodeParam
+	var param pbParam.UpdateNodeParams
 	param.PublicKey = string(idpPublicKeyBytes2)
 	param.MasterPublicKey = string(idpPublicKeyBytes2)
 	UpdateNode(t, param, allMasterKey, IdP5)
@@ -1257,7 +1257,7 @@ func TestRegisterNodeAS2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeName = AS2
 	param.NodeId = AS2
 	param.PublicKey = string(asPublicKeyBytes)
@@ -1267,7 +1267,7 @@ func TestRegisterNodeAS2(t *testing.T) {
 }
 
 func TestSetNodeTokenAS2(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = AS2
 	param.Amount = 100.0
 	SetNodeToken(t, param)
@@ -1622,13 +1622,13 @@ func TestEnableNodeRP1(t *testing.T) {
 }
 
 func TestRPCreateRequestAferEnableNode(t *testing.T) {
-	var datas []*pbParam.DataRequestInParam
-	var data1 pbParam.DataRequestInParam
+	var datas []*pbParam.DataRequestInParams
+	var data1 pbParam.DataRequestInParams
 	data1.ServiceId = serviceID1
 	data1.MinAs = 1
-	data1.RequestParamsHash = "hash"
+	data1.Request_ParamsHash = "hash"
 	datas = append(datas, &data1)
-	var param pbParam.CreateRequestParam
+	var param pbParam.CreateRequestParams
 	param.RequestId = requestID4.String()
 	param.MinIdp = 1
 	param.MinIal = 1
@@ -1777,7 +1777,7 @@ func TestQueryGetMsqAddressInvalid(t *testing.T) {
 }
 
 func TestQueryGetNodeTokenInvalid(t *testing.T) {
-	var param pbParam.GetNodeTokenParam
+	var param pbParam.GetNodeTokenParams
 	param.NodeId = "RP1-Invalid"
 	expected := "not found"
 	GetNodeTokenExpectString(t, param, expected)
@@ -1886,7 +1886,7 @@ func TestUpdateNodeNDID(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.UpdateNodeParam
+	var param pbParam.UpdateNodeParams
 	param.PublicKey = string(ndidpublicKeyBytes)
 	UpdateNode(t, param, ndidPrivK, "NDID")
 }
@@ -1928,7 +1928,7 @@ func TestRegisterProxyNode(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = Proxy1
 	param.NodeName = "Proxy1"
 	param.PublicKey = string(idpPublicKeyBytes)
@@ -1937,7 +1937,7 @@ func TestRegisterProxyNode(t *testing.T) {
 	RegisterNode(t, param)
 }
 func TestSetNodeTokenProxy1(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = Proxy1
 	param.Amount = 100.0
 	SetNodeToken(t, param)
@@ -1956,7 +1956,7 @@ func TestRegisterIdP6BehindProxy1(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = IdP6BehindProxy1
 	param.NodeName = "IdP6BehindProxy1"
 	param.PublicKey = string(idpPublicKeyBytes)
@@ -2051,7 +2051,7 @@ func TestRegisterAS3BehindProxy1(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = AS3BehindProxy1
 	param.NodeName = "AS3BehindProxy1"
 	param.PublicKey = string(asPublicKeyBytes)
@@ -2061,7 +2061,7 @@ func TestRegisterAS3BehindProxy1(t *testing.T) {
 }
 
 func TestSetNodeTokenAS3BehindProxy1(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = AS3BehindProxy1
 	param.Amount = 100.0
 	SetNodeToken(t, param)
@@ -2128,7 +2128,7 @@ func TestRegisterProxyNodeProxy2(t *testing.T) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	var param pbParam.RegisterNodeParam
+	var param pbParam.RegisterNodeParams
 	param.NodeId = Proxy2
 	param.NodeName = "Proxy2"
 	param.PublicKey = string(idpPublicKeyBytes)
@@ -2137,7 +2137,7 @@ func TestRegisterProxyNodeProxy2(t *testing.T) {
 	RegisterNode(t, param)
 }
 func TestSetNodeTokenProxy2(t *testing.T) {
-	var param pbParam.SetNodeTokenParam
+	var param pbParam.SetNodeTokenParams
 	param.NodeId = Proxy2
 	param.Amount = 100.0
 	SetNodeToken(t, param)

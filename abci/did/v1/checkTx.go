@@ -36,7 +36,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
-	pbParam "github.com/ndidplatform/smart-contract/protos/param"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -206,7 +206,7 @@ func checkIsRPorIdP(param []byte, nodeID string, app *DIDApplication) types.Resp
 }
 
 func checkIsOwnerRequest(param []byte, nodeID string, app *DIDApplication) types.ResponseCheckTx {
-	var funcParam pbParam.SetDataReceivedParam
+	var funcParam pbParam.SetDataReceivedParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnCheckTx(code.UnmarshalError, err.Error())
@@ -259,7 +259,7 @@ func ReturnCheckTx(code uint32, log string) types.ResponseCheckTx {
 }
 
 func getPublicKeyInitNDID(param []byte) string {
-	var funcParam pbParam.InitNDIDParam
+	var funcParam pbParam.InitNDIDParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ""
@@ -333,7 +333,7 @@ func checkPubKey(key string) (returnCode uint32, log string) {
 }
 
 func checkNodePubKeys(param []byte) (returnCode uint32, log string) {
-	var funcParam pbParam.InitNDIDParam
+	var funcParam pbParam.InitNDIDParams
 	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return code.UnmarshalError, err.Error()
