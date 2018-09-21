@@ -142,3 +142,22 @@ message UpdateServiceDestinationParams {
 message DisableServiceDestinationParams {
 	string service_id = 1;
 }
+
+message GetUsedTokenReportParams {
+  string node_id = 1;
+}
+
+message CreateIdentityParams {
+  string accessor_id = 1;
+  string accessor_type = 2;
+  string accessor_public_key = 3;
+  string accessor_group_id = 4;
+}
+
+message AccessorMethodParams {
+  string accessor_id = 1;
+  string accessor_type = 2;
+  string accessor_public_key = 3;
+  string accessor_group_id = 4;
+  string request_id = 5;
+}

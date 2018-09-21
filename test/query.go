@@ -360,9 +360,9 @@ func GetPriceFunc(t *testing.T, param pbParam.GetPriceFuncParams, expected did.G
 	t.Logf("PASS: %s", fnName)
 }
 
-func GetUsedTokenReport(t *testing.T, param did.GetUsedTokenReportParam, expectedString string) {
+func GetUsedTokenReport(t *testing.T, param pbParam.GetUsedTokenReportParams, expectedString string) {
 	fnName := "GetUsedTokenReport"
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

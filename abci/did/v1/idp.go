@@ -28,22 +28,23 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
 func createIdentity(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("CreateIdentity, Parameter: %s", param)
-	var funcParam CreateIdentityParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.CreateIdentityParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
-	accessorKey := "Accessor" + "|" + funcParam.AccessorID
+	accessorKey := "Accessor" + "|" + funcParam.AccessorId
 	var accessor data.Accessor
 	accessor.AccessorType = funcParam.AccessorType
 	accessor.AccessorPublicKey = funcParam.AccessorPublicKey
-	accessor.AccessorGroupId = funcParam.AccessorGroupID
+	accessor.AccessorGroupId = funcParam.AccessorGroupId
 	accessor.Active = true
 	accessor.Owner = nodeID
 
@@ -52,8 +53,8 @@ func createIdentity(param []byte, app *DIDApplication, nodeID string) types.Resp
 		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
 	}
 
-	accessorGroupKey := "AccessorGroup" + "|" + funcParam.AccessorGroupID
-	accessorGroup := funcParam.AccessorGroupID
+	accessorGroupKey := "AccessorGroup" + "|" + funcParam.AccessorGroupId
+	accessorGroup := funcParam.AccessorGroupId
 
 	// Check duplicate accessor_id
 	_, chkAccessorKeyExists := app.state.db.Get(prefixKey([]byte(accessorKey)))
@@ -91,21 +92,21 @@ func setCanAddAccessorToFalse(requestID string, app *DIDApplication) {
 
 func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.ResponseDeliverTx {
 	app.logger.Infof("AddAccessorMethod, Parameter: %s", param)
-	var funcParam AccessorMethod
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.AccessorMethodParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
 	// AccessorGroupID: must already exist
-	accessorGroupKey := "AccessorGroup" + "|" + funcParam.AccessorGroupID
+	accessorGroupKey := "AccessorGroup" + "|" + funcParam.AccessorGroupId
 	_, chkAccessorGroupKeyExists := app.state.db.Get(prefixKey([]byte(accessorGroupKey)))
 	if chkAccessorGroupKeyExists == nil {
 		return ReturnDeliverTxLog(code.AccessorGroupIDNotFound, "Accessor Group ID not found", "")
 	}
 
 	// AccessorID: must not duplicate
-	accessorKey := "Accessor" + "|" + funcParam.AccessorID
+	accessorKey := "Accessor" + "|" + funcParam.AccessorId
 	_, chkAccessorKeyExists := app.state.db.Get(prefixKey([]byte(accessorKey)))
 	if chkAccessorKeyExists != nil {
 		return ReturnDeliverTxLog(code.DuplicateAccessorID, "Duplicate Accessor ID", "")
@@ -113,7 +114,7 @@ func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.R
 
 	// Request must be completed, can be used only once, special type
 	var getRequestparam GetRequestParam
-	getRequestparam.RequestID = funcParam.RequestID
+	getRequestparam.RequestID = funcParam.RequestId
 	getRequestparamJSON, err := json.Marshal(getRequestparam)
 	if err != nil {
 		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
@@ -150,16 +151,16 @@ func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.R
 		return ReturnDeliverTxLog(code.InvalidMinIdp, "Onboard request min_idp must be at least 1", "")
 	}
 	// check special type of Request && set can used only once
-	canAddAccessor := getCanAddAccessor(funcParam.RequestID, app)
+	canAddAccessor := getCanAddAccessor(funcParam.RequestId, app)
 	if canAddAccessor != true {
 		return ReturnDeliverTxLog(code.RequestIsNotSpecial, "Request is not special", "")
 	}
-	setCanAddAccessorToFalse(funcParam.RequestID, app)
+	setCanAddAccessorToFalse(funcParam.RequestId, app)
 
 	var accessor data.Accessor
 	accessor.AccessorType = funcParam.AccessorType
 	accessor.AccessorPublicKey = funcParam.AccessorPublicKey
-	accessor.AccessorGroupId = funcParam.AccessorGroupID
+	accessor.AccessorGroupId = funcParam.AccessorGroupId
 	accessor.Active = true
 	accessor.Owner = nodeID
 

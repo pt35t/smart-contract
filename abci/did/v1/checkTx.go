@@ -28,7 +28,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"crypto/x509"
-	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"strings"
@@ -357,10 +356,8 @@ func checkNodePubKeys(param []byte) (returnCode uint32, log string) {
 }
 
 func checkAccessorPubKey(param []byte) (returnCode uint32, log string) {
-	var key struct {
-		AccessorPublicKey string `json:"accessor_public_key"`
-	}
-	err := json.Unmarshal([]byte(param), &key)
+	var key pbParam.AccessorMethodParams
+	err := proto.Unmarshal([]byte(param), &key)
 	if err != nil {
 		return code.UnmarshalError, err.Error()
 	}

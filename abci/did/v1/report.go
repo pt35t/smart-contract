@@ -27,6 +27,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	pbData "github.com/ndidplatform/smart-contract/protos/data"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -63,12 +64,12 @@ func writeBurnTokenReport(nodeID string, method string, price float64, data stri
 
 func getUsedTokenReport(param []byte, app *DIDApplication, height int64) types.ResponseQuery {
 	app.logger.Infof("GetUsedTokenReport, Parameter: %s", param)
-	var funcParam GetUsedTokenReportParam
-	err := json.Unmarshal([]byte(param), &funcParam)
+	var funcParam pbParam.GetUsedTokenReportParams
+	err := proto.Unmarshal([]byte(param), &funcParam)
 	if err != nil {
 		return ReturnQuery(nil, err.Error(), app.state.db.Version64(), app)
 	}
-	key := "SpendGas" + "|" + funcParam.NodeID
+	key := "SpendGas" + "|" + funcParam.NodeId
 	_, value := app.state.db.GetVersioned(prefixKey([]byte(key)), height)
 	if value == nil {
 		value = []byte("[]")

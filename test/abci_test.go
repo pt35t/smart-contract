@@ -597,24 +597,21 @@ func TestNDIDGetPrice(t *testing.T) {
 
 func TestReportGetUsedTokenRP(t *testing.T) {
 	expectedString := `[{"method":"CreateRequest","price":1,"data":"` + requestID1.String() + `"},{"method":"SetDataReceived","price":1,"data":"` + requestID1.String() + `"}]`
-	var param = did.GetUsedTokenReportParam{
-		RP1,
-	}
+	var param pbParam.GetUsedTokenReportParams
+	param.NodeId = RP1
 	GetUsedTokenReport(t, param, expectedString)
 }
 
 func TestReportGetUsedTokenIdP(t *testing.T) {
 	expectedString := `[{"method":"RegisterMsqDestination","price":1,"data":""},{"method":"RegisterMsqAddress","price":1,"data":""},{"method":"DeclareIdentityProof","price":1,"data":""},{"method":"CreateIdpResponse","price":1,"data":"` + requestID1.String() + `"},{"method":"CreateRequest","price":1,"data":"` + requestID2.String() + `"},{"method":"DeclareIdentityProof","price":1,"data":""},{"method":"CreateIdpResponse","price":1,"data":"` + requestID2.String() + `"}]`
-	var param = did.GetUsedTokenReportParam{
-		IdP1,
-	}
+	var param pbParam.GetUsedTokenReportParams
+	param.NodeId = IdP1
 	GetUsedTokenReport(t, param, expectedString)
 }
 
 func TestReportGetUsedTokenAS(t *testing.T) {
-	var param = did.GetUsedTokenReportParam{
-		AS1,
-	}
+	var param pbParam.GetUsedTokenReportParams
+	param.NodeId = AS1
 	expectedString := `[{"method":"RegisterServiceDestination","price":1,"data":""},{"method":"UpdateServiceDestination","price":1,"data":""},{"method":"RegisterMsqAddress","price":1,"data":""},{"method":"SignData","price":1,"data":"` + requestID1.String() + `"}]`
 	GetUsedTokenReport(t, param, expectedString)
 }
@@ -803,23 +800,21 @@ func TestQueryGetNamespaceList(t *testing.T) {
 }
 
 func TestIdPCreateIdentity(t *testing.T) {
-	var param = did.CreateIdentityParam{
-		accessorID1.String(),
-		"accessor_type",
-		accessorPubKey,
-		accessorGroupID1.String(),
-	}
+	var param pbParam.CreateIdentityParams
+	param.AccessorId = accessorID1.String()
+	param.AccessorType = "accessor_type"
+	param.AccessorPublicKey = accessorPubKey
+	param.AccessorGroupId = accessorGroupID1.String()
 	CreateIdentity(t, param, IdP1)
 }
 
 func TestIdPAddAccessorMethod(t *testing.T) {
-	var param = did.AccessorMethod{
-		accessorID2.String(),
-		"accessor_type_2",
-		accessorPubKey2,
-		accessorGroupID1.String(),
-		requestID2.String(),
-	}
+	var param pbParam.AccessorMethodParams
+	param.AccessorId = accessorID2.String()
+	param.AccessorType = "accessor_type_2"
+	param.AccessorPublicKey = accessorPubKey2
+	param.AccessorGroupId = accessorGroupID1.String()
+	param.RequestId = requestID2.String()
 	AddAccessorMethod(t, param, IdP1)
 }
 
@@ -1768,9 +1763,8 @@ func TestQueryGetNodeTokenInvalid(t *testing.T) {
 }
 
 func TestReportGetUsedTokenInvalid(t *testing.T) {
-	var param = did.GetUsedTokenReportParam{
-		"RP1-Invalid",
-	}
+	var param pbParam.GetUsedTokenReportParams
+	param.NodeId = "RP1-Invalid"
 	expected := "not found"
 	GetUsedTokenReport(t, param, expected)
 }

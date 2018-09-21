@@ -317,9 +317,9 @@ type Report struct {
 	Data   string  `json:"data"`
 }
 
-type GetUsedTokenReportParam struct {
-	NodeID string `json:"node_id"`
-}
+// type GetUsedTokenReportParam struct {
+// 	NodeID string `json:"node_id"`
+// }
 
 type RequestIDParam struct {
 	RequestID string `json:"request_id"`
@@ -340,12 +340,12 @@ type UpdateNodeParam struct {
 	MasterPublicKey string `json:"master_public_key"`
 }
 
-type CreateIdentityParam struct {
-	AccessorID        string `json:"accessor_id"`
-	AccessorType      string `json:"accessor_type"`
-	AccessorPublicKey string `json:"accessor_public_key"`
-	AccessorGroupID   string `json:"accessor_group_id"`
-}
+// type CreateIdentityParam struct {
+// 	AccessorID        string `json:"accessor_id"`
+// 	AccessorType      string `json:"accessor_type"`
+// 	AccessorPublicKey string `json:"accessor_public_key"`
+// 	AccessorGroupID   string `json:"accessor_group_id"`
+// }
 
 type Accessor struct {
 	AccessorType      string `json:"accessor_type"`
@@ -355,13 +355,13 @@ type Accessor struct {
 	Owner             string `json:"owner"`
 }
 
-type AccessorMethod struct {
-	AccessorID        string `json:"accessor_id"`
-	AccessorType      string `json:"accessor_type"`
-	AccessorPublicKey string `json:"accessor_public_key"`
-	AccessorGroupID   string `json:"accessor_group_id"`
-	RequestID         string `json:"request_id"`
-}
+// type AccessorMethod struct {
+// 	AccessorID        string `json:"accessor_id"`
+// 	AccessorType      string `json:"accessor_type"`
+// 	AccessorPublicKey string `json:"accessor_public_key"`
+// 	AccessorGroupID   string `json:"accessor_group_id"`
+// 	RequestID         string `json:"request_id"`
+// }
 
 type CheckExistingIdentityParam struct {
 	HashID string `json:"hash_id"`

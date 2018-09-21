@@ -31,7 +31,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
 	did "github.com/ndidplatform/smart-contract/abci/did/v1"
+	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	"github.com/tendermint/tendermint/libs/common"
 )
 
@@ -109,10 +111,10 @@ func CreateIdpResponse(t *testing.T, param did.CreateIdpResponseParam, privKeyFi
 	t.Logf("PASS: %s", fnName)
 }
 
-func CreateIdentity(t *testing.T, param did.CreateIdentityParam, nodeID string) {
+func CreateIdentity(t *testing.T, param pbParam.CreateIdentityParams, nodeID string) {
 	idpKey := getPrivateKeyFromString(idpPrivK)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -134,10 +136,10 @@ func CreateIdentity(t *testing.T, param did.CreateIdentityParam, nodeID string) 
 	t.Logf("PASS: %s", fnName)
 }
 
-func AddAccessorMethod(t *testing.T, param did.AccessorMethod, nodeID string) {
+func AddAccessorMethod(t *testing.T, param pbParam.AccessorMethodParams, nodeID string) {
 	idpKey := getPrivateKeyFromString(idpPrivK)
 	idpNodeID := []byte(nodeID)
-	paramJSON, err := json.Marshal(param)
+	paramJSON, err := proto.Marshal(&param)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
