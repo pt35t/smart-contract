@@ -23,8 +23,6 @@
 package did
 
 import (
-	"encoding/json"
-
 	"github.com/gogo/protobuf/proto"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
@@ -112,34 +110,27 @@ func addAccessorMethod(param []byte, app *DIDApplication, nodeID string) types.R
 		return ReturnDeliverTxLog(code.DuplicateAccessorID, "Duplicate Accessor ID", "")
 	}
 
-	// Request must be completed, can be used only once, special type
-	var getRequestparam GetRequestParam
-	getRequestparam.RequestID = funcParam.RequestId
-	getRequestparamJSON, err := json.Marshal(getRequestparam)
-	if err != nil {
-		return ReturnDeliverTxLog(code.MarshalError, err.Error(), "")
-	}
-	var request = getRequest(getRequestparamJSON, app, app.state.db.Version64())
-	var requestDetail = getRequestDetail(getRequestparamJSON, app, app.state.db.Version64())
-	var requestResult GetRequestResult
-	var requestDetailResult GetRequestDetailResult
-	err = json.Unmarshal([]byte(request.Value), &requestResult)
-	if err != nil {
+	requestKey := "Request" + "|" + funcParam.RequestId
+	_, requestValue := app.state.db.Get(prefixKey([]byte(requestKey)))
+
+	if requestValue == nil {
 		return ReturnDeliverTxLog(code.RequestIDNotFound, "Request ID not found", "")
 	}
-	err = json.Unmarshal([]byte(requestDetail.Value), &requestDetailResult)
+
+	var requestDetailResult data.Request
+	err = proto.Unmarshal([]byte(requestValue), &requestDetailResult)
 	if err != nil {
-		return ReturnDeliverTxLog(code.RequestIDNotFound, "Request ID not found", "")
+		return ReturnDeliverTxLog(code.UnmarshalError, err.Error(), "")
 	}
 
 	// Check accept result >= min_idp
 	acceptCount := 0
-	for _, response := range requestDetailResult.Responses {
+	for _, response := range requestDetailResult.ResponseList {
 		if response.Status == "accept" {
 			acceptCount++
 		}
 	}
-	if acceptCount < requestDetailResult.MinIdp {
+	if int64(acceptCount) < requestDetailResult.MinIdp {
 		return ReturnDeliverTxLog(code.RequestIsNotCompleted, "Request is not completed", "")
 	}
 

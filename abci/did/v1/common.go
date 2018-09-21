@@ -795,9 +795,9 @@ func getServiceList(param []byte, app *DIDApplication, height int64) types.Respo
 func getServiceNameByServiceID(serviceID string, app *DIDApplication) string {
 	key := "Service" + "|" + serviceID
 	_, value := app.state.db.Get(prefixKey([]byte(key)))
-	var result ServiceDetail
+	var result data.ServiceDetail
 	if value != nil {
-		err := json.Unmarshal([]byte(value), &result)
+		err := proto.Unmarshal([]byte(value), &result)
 		if err != nil {
 			return ""
 		}
