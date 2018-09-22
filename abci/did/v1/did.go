@@ -212,15 +212,16 @@ func (app *DIDApplication) Query(reqQuery types.RequestQuery) (res types.Respons
 		}
 	}()
 
-	parts := strings.Split(string(reqQuery.Data), "|")
-	paramByte, err := base64.StdEncoding.DecodeString(parts[1])
+	data := string(reqQuery.Data)
+	decodedData, err := base64.StdEncoding.DecodeString(data)
+	var query protoTm.Query
+	err = proto.Unmarshal(decodedData, &query)
 	if err != nil {
 		app.logger.Error(err.Error())
-		return ReturnQuery(nil, "Decoding error", app.state.db.Version64(), app)
 	}
 
-	method := string(parts[0])
-	param := paramByte
+	method := query.Method
+	param := query.Params
 
 	app.logger.Infof("Query: %s", method)
 
