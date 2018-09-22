@@ -26,7 +26,6 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/ndidplatform/smart-contract/abci/code"
 	"github.com/ndidplatform/smart-contract/protos/data"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
@@ -1147,11 +1146,13 @@ func getServicesByAsID(param []byte, app *DIDApplication, height int64) types.Re
 				}
 			}
 			var newRow pbResult.ServiceInResult
-			newRow.Active = &wrappers.BoolValue{Value: services.Services[index].Active}
+			// newRow.Active = &wrappers.BoolValue{Value: services.Services[index].Active}
+			newRow.Active = services.Services[index].Active
 			newRow.MinAal = services.Services[index].MinAal
 			newRow.MinIal = services.Services[index].MinIal
 			newRow.ServiceId = services.Services[index].ServiceId
-			newRow.Suspended = &wrappers.BoolValue{Value: services.Services[index].Suspended}
+			// newRow.Suspended = &wrappers.BoolValue{Value: services.Services[index].Suspended}
+			newRow.Suspended = services.Services[index].Suspended
 			result.Services = append(result.Services, &newRow)
 		}
 	}

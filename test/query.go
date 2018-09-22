@@ -30,7 +30,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 	pbParam "github.com/ndidplatform/smart-contract/protos/params"
 	pbResult "github.com/ndidplatform/smart-contract/protos/result"
@@ -626,11 +625,11 @@ func GetServicesByAsID(t *testing.T, param pbParam.GetServicesByAsIDParams, expe
 	}
 	var res pbResult.GetServicesByAsIDResult
 	proto.Unmarshal(resultString, &res)
-	// resJSON, _ := json.Marshal(res)
-	jsm := &jsonpb.Marshaler{
-		OrigName: true,
-	}
-	resJSON, _ := jsm.MarshalToString(&res)
+	resJSON, _ := json.Marshal(res)
+	// jsm := &jsonpb.Marshaler{
+	// 	OrigName: true,
+	// }
+	// resJSON, _ := jsm.MarshalToString(&res)
 	if actual := string(resJSON); !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, expected, actual)
 	}
