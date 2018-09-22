@@ -1568,7 +1568,7 @@ func TestASUpdateServiceDestination2(t *testing.T) {
 func TestQueryGetServicesByAsID(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID3 + `","min_ial":1.1,"min_aal":1.1,"active":true},{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID3 + `","min_ial":1.1,"min_aal":1.1,"active":true,"suspended":false},{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
 
@@ -1595,7 +1595,7 @@ func TestQueryGetAsNodesByServiceID(t *testing.T) {
 func TestQueryGetServicesByAsID2(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
 
@@ -1677,7 +1677,7 @@ func TestQueryGetAsNodesByServiceIDAfterEnable(t *testing.T) {
 func TestQueryGetServicesByAsID3(t *testing.T) {
 	var param pbParam.GetServicesByAsIDParams
 	param.AsId = AS1
-	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true}]}`
+	var expected = `{"services":[{"service_id":"` + serviceID4 + `","min_ial":2.2,"min_aal":2.2,"active":true,"suspended":false},{"service_id":"` + serviceID5 + `","min_ial":3.3,"min_aal":3.3,"active":true,"suspended":false}]}`
 	GetServicesByAsID(t, param, expected)
 }
 

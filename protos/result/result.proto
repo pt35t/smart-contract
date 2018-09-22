@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 message GetPriceFuncResult {
   double price = 1;
 }
@@ -221,8 +223,8 @@ message ServiceInResult {
   string service_id = 1;
   double min_ial = 2;
   double min_aal = 3;
-  bool active = 4;
-  bool suspended = 5;
+  google.protobuf.BoolValue active = 4;
+  google.protobuf.BoolValue suspended = 5;
 }
 
 message GetServicesByAsIDResult {
