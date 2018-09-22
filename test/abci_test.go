@@ -708,15 +708,15 @@ func TestRPCloseRequest(t *testing.T) {
 	var res []*pbParam.ResponseValid
 	var res1 pbParam.ResponseValid
 	res1.IdpId = IdP1
-	var boolIal pbParam.ResponseValid_ValidIalBool
-	boolIal.ValidIalBool = true
-	res1.ValidIal = &boolIal
-	var boolProof pbParam.ResponseValid_ValidProofBool
-	boolProof.ValidProofBool = true
-	res1.ValidProof = &boolProof
-	var boolSignature pbParam.ResponseValid_ValidSignatureBool
-	boolSignature.ValidSignatureBool = true
-	res1.ValidSignature = &boolSignature
+	var boolIal pbParam.ResponseValid_ValidIal
+	boolIal.ValidIal = true
+	res1.ValidIalBool = &boolIal
+	var boolProof pbParam.ResponseValid_ValidProof
+	boolProof.ValidProof = true
+	res1.ValidProofBool = &boolProof
+	var boolSignature pbParam.ResponseValid_ValidSignature
+	boolSignature.ValidSignature = true
+	res1.ValidSignatureBool = &boolSignature
 	res = append(res, &res1)
 	var param pbParam.CloseRequestParams
 	param.RequestId = requestID1.String()
@@ -838,15 +838,15 @@ func TestRPTimeOutRequest(t *testing.T) {
 	var res []*pbParam.ResponseValid
 	var res1 pbParam.ResponseValid
 	res1.IdpId = IdP1
-	var boolIal pbParam.ResponseValid_ValidIalBool
-	boolIal.ValidIalBool = false
-	res1.ValidIal = &boolIal
-	var boolProof pbParam.ResponseValid_ValidProofBool
-	boolProof.ValidProofBool = false
-	res1.ValidProof = &boolProof
-	var boolSignature pbParam.ResponseValid_ValidSignatureBool
-	boolSignature.ValidSignatureBool = false
-	res1.ValidSignature = &boolSignature
+	var boolIal pbParam.ResponseValid_ValidIal
+	boolIal.ValidIal = false
+	res1.ValidIalBool = &boolIal
+	var boolProof pbParam.ResponseValid_ValidProof
+	boolProof.ValidProof = false
+	res1.ValidProofBool = &boolProof
+	var boolSignature pbParam.ResponseValid_ValidSignature
+	boolSignature.ValidSignature = false
+	res1.ValidSignatureBool = &boolSignature
 	res = append(res, &res1)
 	var param pbParam.TimeOutRequestParams
 	param.RequestId = requestID3.String()

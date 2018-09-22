@@ -86,14 +86,14 @@ message TimeOutRequestParams {
 
 message ResponseValid {
   string idp_id = 1;
-  oneof valid_proof {
-    bool valid_proof_bool = 2;
+  oneof valid_proof_bool {
+    bool valid_proof = 2;
   }
-  oneof valid_ial {
-    bool valid_ial_bool = 3;
+  oneof valid_ial_bool {
+    bool valid_ial = 3;
   }
-  oneof valid_signature {
-    bool valid_signature_bool = 4;
+  oneof valid_signature_bool {
+    bool valid_signature = 4;
   }
 }
 

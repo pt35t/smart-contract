@@ -146,22 +146,22 @@ func closeRequest(param []byte, app *DIDApplication, nodeID string) types.Respon
 	for _, valid := range funcParam.ResponseValidList {
 		for index := range request.ResponseList {
 			if valid.IdpId == request.ResponseList[index].IdpId {
-				if valid.ValidProof != nil {
-					if valid.GetValidProofBool() {
+				if valid.ValidProofBool != nil {
+					if valid.GetValidProof() {
 						request.ResponseList[index].ValidProof = "true"
 					} else {
 						request.ResponseList[index].ValidProof = "false"
 					}
 				}
-				if valid.ValidIal != nil {
-					if valid.GetValidIalBool() {
+				if valid.ValidIalBool != nil {
+					if valid.GetValidIal() {
 						request.ResponseList[index].ValidIal = "true"
 					} else {
 						request.ResponseList[index].ValidIal = "false"
 					}
 				}
-				if valid.ValidSignature != nil {
-					if valid.GetValidSignatureBool() {
+				if valid.ValidSignatureBool != nil {
+					if valid.GetValidSignature() {
 						request.ResponseList[index].ValidSignature = "true"
 					} else {
 						request.ResponseList[index].ValidSignature = "false"
@@ -217,22 +217,22 @@ func timeOutRequest(param []byte, app *DIDApplication, nodeID string) types.Resp
 	for _, valid := range funcParam.ResponseValidList {
 		for index := range request.ResponseList {
 			if valid.IdpId == request.ResponseList[index].IdpId {
-				if valid.ValidProof != nil {
-					if valid.GetValidProofBool() {
+				if valid.ValidProofBool != nil {
+					if valid.GetValidProof() {
 						request.ResponseList[index].ValidProof = "true"
 					} else {
 						request.ResponseList[index].ValidProof = "false"
 					}
 				}
-				if valid.ValidIal != nil {
-					if valid.GetValidIalBool() {
+				if valid.ValidIalBool != nil {
+					if valid.GetValidIal() {
 						request.ResponseList[index].ValidIal = "true"
 					} else {
 						request.ResponseList[index].ValidIal = "false"
 					}
 				}
-				if valid.ValidSignature != nil {
-					if valid.GetValidSignatureBool() {
+				if valid.ValidSignatureBool != nil {
+					if valid.GetValidSignature() {
 						request.ResponseList[index].ValidSignature = "true"
 					} else {
 						request.ResponseList[index].ValidSignature = "false"
