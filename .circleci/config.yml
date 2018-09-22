@@ -24,8 +24,6 @@ jobs:
           name: Setup Smartcontract
           command: |
             go get github.com/tendermint/tmlibs/common
-            cd abci
-            dep ensure
 
       - run:
           name: Start ABCI
