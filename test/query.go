@@ -172,6 +172,16 @@ func GetMsqAddress(t *testing.T, param pbParam.GetMsqAddressParams, expected pbR
 	}
 	result, _ := queryTendermint([]byte(fnName), paramsByte)
 	resultObj, _ := result.(ResponseQuery)
+
+	// If expeted len == 0, log should == not found
+	if len(expected.Mq) == 0 {
+		if resultObj.Result.Response.Log != "not found" {
+			t.Fatalf("FAIL: %s\nExpected: %s\nActual: %s", fnName, "not found", resultObj.Result.Response.Log)
+		}
+		t.Logf("PASS: %s", fnName)
+		return
+	}
+
 	resultString, _ := base64.StdEncoding.DecodeString(resultObj.Result.Response.Value)
 	var res pbResult.GetMsqAddressResult
 	err = proto.Unmarshal(resultString, &res)

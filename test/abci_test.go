@@ -312,6 +312,18 @@ func TestDisableOldIdPNode1(t *testing.T) {
 		}
 	}
 }
+
+func TestQueryGetMsqAddressBeforeRegister(t *testing.T) {
+	var param pbParam.GetMsqAddressParams
+	param.NodeId = IdP1
+	var expected pbResult.GetMsqAddressResult
+	// var msq pbResult.MsqAddressInResult
+	// msq.Ip = "192.168.3.99"
+	// msq.Port = 8000
+	// expected.Mq = append(expected.Mq, &msq)
+	GetMsqAddress(t, param, expected)
+}
+
 func TestIdPRegisterMsqAddress(t *testing.T) {
 	var mq pbParam.MsqAddress
 	mq.Ip = "192.168.3.99"
