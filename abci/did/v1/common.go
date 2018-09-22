@@ -1147,7 +1147,7 @@ func getServicesByAsID(param []byte, app *DIDApplication, height int64) types.Re
 				}
 			}
 			var newRow pbResult.ServiceInResult
-			newRow.Active = services.Services[index].Active
+			newRow.Active = &wrappers.BoolValue{Value: services.Services[index].Active}
 			newRow.MinAal = services.Services[index].MinAal
 			newRow.MinIal = services.Services[index].MinIal
 			newRow.ServiceId = services.Services[index].ServiceId
