@@ -1,5 +1,17 @@
 # Changelog
 
+## TBD (Reset chain required)
+
+BREAKING CHANGES:
+
+- [DeliverTx] Check node ID is valid and role is `AS` (`RegisterServiceDestinationByNDID`, `EnableServiceDestinationByNDID` and `DisableServiceDestinationByNDID`).
+- [DeliverTx] Add new functions (`RevokeAccessorMethod`).
+- [DeliverTx] Check request is closed with valid ial, proof and signature (`AddAccessorMethod`).
+
+IMPROVEMENTS:
+
+- [Query] Add new function (`GetAccessorOwner`).
+
 ## 0.10.1 (October 9, 2018)
 
 IMPROVEMENTS:

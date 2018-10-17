@@ -55,6 +55,7 @@ var requestID1 = uuid.NewV4()
 var requestID2 = uuid.NewV4()
 var requestID3 = uuid.NewV4()
 var requestID4 = uuid.NewV4()
+var requestID5 = uuid.NewV4()
 var namespaceID1 = RandStringRunes(20)
 var namespaceID2 = RandStringRunes(20)
 var accessorID1 = uuid.NewV4()
@@ -428,6 +429,22 @@ func TestQueryGetMqAddresses(t *testing.T) {
 	msq.Port = 8000
 	expected = append(expected, msq)
 	GetMqAddresses(t, param, expected)
+}
+
+func TestRegisterServiceDestinationByNDIDForInvalidNodeID(t *testing.T) {
+	var param = did.RegisterServiceDestinationByNDIDParam{
+		serviceID1,
+		"Invalid-node-ID",
+	}
+	RegisterServiceDestinationByNDIDExpectedString(t, param, "Node ID not found")
+}
+
+func TestRegisterServiceDestinationByNDIDForInvalidRole(t *testing.T) {
+	var param = did.RegisterServiceDestinationByNDIDParam{
+		serviceID1,
+		IdP1,
+	}
+	RegisterServiceDestinationByNDIDExpectedString(t, param, "Role of node ID is not AS")
 }
 
 func TestASRegisterServiceDestinationByNDIDForAS1(t *testing.T) {
@@ -902,6 +919,22 @@ func TestQueryGetAccessorsInAccessorGroup(t *testing.T) {
 	GetAccessorsInAccessorGroup(t, param, expected)
 }
 
+func TestIdPCloseRequest(t *testing.T) {
+	var res []did.ResponseValid
+	var res1 did.ResponseValid
+	res1.IdpID = IdP1
+	tValue := true
+	res1.ValidIal = &tValue
+	res1.ValidProof = &tValue
+	res1.ValidSignature = &tValue
+	res = append(res, res1)
+	var param = did.CloseRequestParam{
+		requestID2.String(),
+		res,
+	}
+	CloseRequestByIdP(t, param, IdP10)
+}
+
 func TestIdPAddAccessorMethod(t *testing.T) {
 	var param = did.AccessorMethod{
 		accessorID2.String(),
@@ -947,6 +980,80 @@ func TestQueryGetAccessorsInAccessorGroup_WithOut_IdP_ID(t *testing.T) {
 	GetAccessorsInAccessorGroup(t, param, expected)
 }
 
+func TestIdP10CreateRequestSpecial(t *testing.T) {
+	var datas []did.DataRequest
+	var param did.Request
+	param.RequestID = requestID5.String()
+	param.MinIdp = 1
+	param.MinIal = 3
+	param.MinAal = 3
+	param.Timeout = 259200
+	param.DataRequestList = datas
+	param.MessageHash = "hash('Please allow...')"
+	param.Mode = 3
+	param.Purpose = "RevokeAccessor"
+	param.IdPIDList = append(param.IdPIDList, IdP10)
+	CreateRequest(t, param, idpPrivK, IdP10)
+}
+
+func TestIdP10DeclareIdentityProof(t *testing.T) {
+	var param did.DeclareIdentityProofParam
+	param.RequestID = requestID5.String()
+	param.IdentityProof = "Magic"
+	DeclareIdentityProof(t, param, idpPrivK, IdP10)
+}
+
+func TestIdP10CreateIdpResponse(t *testing.T) {
+	var param = did.CreateIdpResponseParam{
+		requestID5.String(),
+		3,
+		3,
+		"accept",
+		"signature",
+		"Magic",
+		"Magic",
+	}
+	CreateIdpResponse(t, param, idpPrivK, IdP10)
+}
+
+func TestIdP10CloseRequest(t *testing.T) {
+	var res []did.ResponseValid
+	var res1 did.ResponseValid
+	res1.IdpID = IdP10
+	tValue := true
+	res1.ValidIal = &tValue
+	res1.ValidProof = &tValue
+	res1.ValidSignature = &tValue
+	res = append(res, res1)
+	var param = did.CloseRequestParam{
+		requestID5.String(),
+		res,
+	}
+	CloseRequestByIdP(t, param, IdP10)
+}
+
+func TestIdP10RevokeAccessorMethod(t *testing.T) {
+	var param did.RevokeAccessorMethodParam
+	param.RequestID = requestID5.String()
+	param.AccessorIDList = append(param.AccessorIDList, accessorID2.String())
+	RevokeAccessorMethod(t, param, IdP10, "success")
+}
+
+func TestQueryGetAccessorsInAccessorGroup_WithOut_IdP_ID_After_Removed(t *testing.T) {
+	var param did.GetAccessorsInAccessorGroupParam
+	param.AccessorGroupID = accessorGroupID1.String()
+	expected := string(`{"accessor_list":["` + accessorID1.String() + `"]}`)
+	GetAccessorsInAccessorGroup(t, param, expected)
+}
+
+func TestQueryGetAccessorKeyAfterRevoke(t *testing.T) {
+	var param = did.GetAccessorGroupIDParam{
+		accessorID2.String(),
+	}
+	var expected = `{"accessor_public_key":"` + strings.Replace(accessorPubKey2, "\n", "\\n", -1) + `","active":false}`
+	GetAccessorKey(t, param, expected)
+}
+
 func TestIdP1ClearRegisterIdentityTimeout(t *testing.T) {
 	h := sha256.New()
 	h.Write([]byte(userNamespace + userID))
@@ -975,6 +1082,14 @@ func TestQueryGetAccessorGroupID(t *testing.T) {
 	}
 	var expected = `{"accessor_group_id":"` + accessorGroupID1.String() + `"}`
 	GetAccessorGroupID(t, param, expected)
+}
+
+func TestQueryGetAccessorOwner(t *testing.T) {
+	var param = did.GetAccessorOwnerParam{
+		accessorID2.String(),
+	}
+	var expected = `{"node_id":"` + IdP10 + `"}`
+	GetAccessorOwner(t, param, expected)
 }
 
 func TestQueryGetAccessorKey(t *testing.T) {
@@ -1549,6 +1664,22 @@ func TestNDIDDisableService3(t *testing.T) {
 	DisableService(t, param)
 }
 
+func TestNDIDDisableServiceDestinationByNDIDInvalidNodeID(t *testing.T) {
+	var param = did.DisableServiceDestinationByNDIDParam{
+		serviceID4,
+		"Invalid node ID",
+	}
+	DisableServiceDestinationByNDIDExpectedString(t, param, "Node ID not found")
+}
+
+func TestNDIDDisableServiceDestinationByNDIDInvalidRole(t *testing.T) {
+	var param = did.DisableServiceDestinationByNDIDParam{
+		serviceID4,
+		IdP1,
+	}
+	DisableServiceDestinationByNDIDExpectedString(t, param, "Role of node ID is not AS")
+}
+
 func TestNDIDDisableServiceDestinationByNDID(t *testing.T) {
 	var param = did.DisableServiceDestinationByNDIDParam{
 		serviceID4,
@@ -1608,6 +1739,22 @@ func TestQueryGetIdpNodes7(t *testing.T) {
 	param.MinAal = 1
 	var expected = `{"node":[{"node_id":"` + IdP1 + `","node_name":"IdP Number 1 from ...","max_ial":2.3,"max_aal":2.4},{"node_id":"` + IdP4 + `","node_name":"IdP Number 4 from ...","max_ial":3,"max_aal":3}]}`
 	GetIdpNodesExpectString(t, param, expected)
+}
+
+func TestNDIDEnableServiceDestinationByNDIDInvalidNodeID(t *testing.T) {
+	var param = did.DisableServiceDestinationByNDIDParam{
+		serviceID4,
+		"Invalid node ID",
+	}
+	EnableServiceDestinationByNDIDExpectedString(t, param, "Node ID not found")
+}
+
+func TestNDIDEnableServiceDestinationByNDIDInvalidRole(t *testing.T) {
+	var param = did.DisableServiceDestinationByNDIDParam{
+		serviceID4,
+		IdP1,
+	}
+	EnableServiceDestinationByNDIDExpectedString(t, param, "Role of node ID is not AS")
 }
 
 func TestNDIDEnableServiceDestinationByNDID(t *testing.T) {
