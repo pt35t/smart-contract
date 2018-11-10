@@ -25,7 +25,7 @@ func main() {
 	var dbDir = "DB1"
 	name := "didDB"
 	db := dbm.NewDB(name, "leveldb", dbDir)
-	oldTree := iavl.NewMutableTree(db, 0)
+	oldTree := iavl.NewVersionedTree(db, 0)
 	oldTree.Load()
 	tree, _ := oldTree.GetImmutable(oldTree.Version())
 	_, ndidNodeID := tree.Get(prefixKey([]byte("MasterNDID")))

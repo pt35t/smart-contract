@@ -43,7 +43,7 @@ var (
 )
 
 type State struct {
-	db *iavl.MutableTree
+	db *iavl.VersionedTree
 }
 
 func prefixKey(key []byte) []byte {
@@ -62,7 +62,7 @@ type DIDApplication struct {
 	CurrentChain string
 }
 
-func NewDIDApplication(logger *logrus.Entry, tree *iavl.MutableTree) *DIDApplication {
+func NewDIDApplication(logger *logrus.Entry, tree *iavl.VersionedTree) *DIDApplication {
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Errorf("%s", identifyPanic())
