@@ -534,7 +534,7 @@ func (app *DIDApplication) CheckTxRouter(method string, param string, nonce []by
 	// check token for create Tx
 	if result.Code == code.OK {
 		if !app.checkNDID(param, nodeID) && method != "InitNDID" {
-			needToken := app.getTokenPriceByFunc(method, app.state.db.Version())
+			needToken := app.getTokenPriceByFunc(method, app.state.db.Version64())
 			nodeToken, err := app.getToken(nodeID)
 			if err != nil {
 				result.Code = code.TokenAccountNotFound

@@ -95,9 +95,9 @@ func (app *DIDApplication) DeleteStateDB(key []byte) {
 func (app *DIDApplication) Info(req types.RequestInfo) (resInfo types.ResponseInfo) {
 	var res types.ResponseInfo
 	res.Version = app.Version
-	res.LastBlockHeight = app.state.db.Version()
+	res.LastBlockHeight = app.state.db.Version64()
 	res.LastBlockAppHash = app.state.db.Hash()
-	app.CurrentBlock = app.state.db.Version()
+	app.CurrentBlock = app.state.db.Version64()
 	return res
 }
 
@@ -209,7 +209,7 @@ func (app *DIDApplication) Query(reqQuery types.RequestQuery) (res types.Respons
 	defer func() {
 		if r := recover(); r != nil {
 			app.logger.Errorf("Recovered in %s, %s", r, identifyPanic())
-			res = app.ReturnQuery(nil, "Unknown error", app.state.db.Version())
+			res = app.ReturnQuery(nil, "Unknown error", app.state.db.Version64())
 		}
 	}()
 
@@ -226,13 +226,13 @@ func (app *DIDApplication) Query(reqQuery types.RequestQuery) (res types.Respons
 
 	height := reqQuery.Height
 	if height == 0 {
-		height = app.state.db.Version()
+		height = app.state.db.Version64()
 	}
 
 	if method != "" {
 		return app.QueryRouter(method, param, height)
 	}
-	return app.ReturnQuery(nil, "method can't empty", app.state.db.Version())
+	return app.ReturnQuery(nil, "method can't empty", app.state.db.Version64())
 }
 
 func getEnv(key, defaultValue string) string {
